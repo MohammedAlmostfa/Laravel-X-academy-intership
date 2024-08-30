@@ -33,7 +33,7 @@ class BookController extends Controller
      */
     public function store(BookFormRequest $request)
     {
-        $validatedData =  $request->all();
+        $validatedData =  $request->validate();
         $result = $this->bookService->createBook($validatedData);
         return response()->json([
             'message' => $result['message'],
@@ -67,7 +67,8 @@ class BookController extends Controller
 
     public function update(BookFormRequest $request, string $id)
     {
-        $validatedData =  $request->all();
+        $validatedData =  $request->validate();
+
         $result = $this->bookService->updateBook($validatedData, $id);
 
         return response()->json([

@@ -11,9 +11,8 @@ class BookService
     /**
          /**
      * * creat book
-     *
      * *@param array $data
-     * *@return array
+     * *@return array(message,status,data)
      */
     public function createBook($data)
     {
@@ -28,17 +27,17 @@ class BookService
         } catch (Exception $e) {
         
             return [
-                'message' => 'حدث خطأ أثناء الإضافة: ' . $e->getMessage(),
+                'message' => 'حدث خطأ أثناء الإضافة: ',
                 'status' => 500,
                 'data' => null,
             ];
         }
     }
     /**
- * * show book
+ * * show book data
  *
- * *@param $id
- * *@return array
+ * **@param $id
+ * **@return array(message,status,data)
  */
 
 
@@ -76,11 +75,10 @@ class BookService
 
     /**
          /**
-     * * update book
-     *
-     * *@param array $data
-     * *@param $id
-     * *@return array
+     * * update book data
+     * **@param array $data
+     * **@param $id
+     * **@return array(message,status,data)
      */
 
     public function updateBook($newData, $id)
@@ -114,7 +112,7 @@ class BookService
 
     /**
      /**
- * * delet book
+ * * delet book dataa
 
  * *@param $id
  * *@return array
