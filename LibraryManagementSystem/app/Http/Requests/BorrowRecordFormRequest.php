@@ -22,7 +22,26 @@ class BorrowRecordFormRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'book_id'=>'required',
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'book_id'=>'الكتاب',
+            'user_id'=>'المستخدم',
+           
+        ];
+
+    }
+
+    public function messages()
+    {
+        return [
+            'required' => 'حقل :attribute مطلوب',
+        
+
         ];
     }
 }

@@ -8,12 +8,7 @@ return new class extends Migration {
     /**
      * Run the migrations.
 
-id (مفتاح رئيسي)
-title (اسم الكتاب)
-author (اسم المؤلف)
-description (وصف الكتاب)
-published_at (تاريخ النشر)
-created_at
+
 
      */
     public function up(): void

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Borrow_recordController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -17,7 +18,12 @@ use Illuminate\Support\Facades\Route;
 */
 
 
+
+
 Route::resource('/books', BookController::class);
+
+
+Route::resource('/borrow', Borrow_RecordController::class);
 
 
 Route::controller(AuthController::class)->group(function () {
