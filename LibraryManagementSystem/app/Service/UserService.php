@@ -3,7 +3,9 @@
 namespace App\Service;
 
 use App\Models\User;
-use App\Models\Rating;
+
+use Exception;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
 class UserService
@@ -15,59 +17,63 @@ class UserService
         * *@return \Illuminate\Http\JsonResponse
         */
 
-    public function createUser($data)
+    public function createUser($credentials)
     {
         try {
-            $validatedData = $data->validate([
-                'name' => 'required|string|max:255',
-                'email' => 'required|string|email|max:255|unique:users',
-                'password' => 'required|string|min:8',
+            $user = User::create([
+                'name' => $credentials['name'],
+                'email' => $credentials['email'],
+                'password' => Hash::make($credentials['password']),
             ]);
-
-            $user = User::create($validatedData);
-            return response()->json([
-                'message' => 'User created successfully.',
+            return [
+                'message' => 'تم تسجيل الدخول',
+                'status' => 201,
                 'data' => $user,
-            ], 201);
-        } catch (ValidationException $e) {
-            return response()->json([
-                'message' => 'Insert failed.',
-                'errors' => $e->validator->errors(),
-            ], 422);
+            ];
+        } catch (Exception $e) {
+            return [
+                'message' => 'حدث خطاء اثنا انشاء الحساب',
+                'status' => 500,
+                'data' => 'لم يتم عرض البيانات'
+            ];
         }
     }
-
-
+    //**________________________________________________________________________________________________
+    
     /**
      * *This function is creat to update a  user.
      * * @param $data
      * *@param User $user
      * *@return \Illuminate\Http\JsonResponse
      */
-
-    public function updateUser(User $user, $data)
+    public function updateUser($data, $id)
     {
+        $user = User::find($id);
 
-
-        try {
-            $validatedData = $data->validate([
-                'name' => 'required|string|max:255',
-                'email' => 'required|string|email|max:255|unique:users',
-                'password' => 'required|string|min:8',
-            ]);
-
-            $user->update($validatedData);
-            return response()->json([
-                'message' => 'User update successfully.',
-                'data' => $user,
-            ], 201);
-        } catch (ValidationException $e) {
-            return response()->json([
-                'message' => 'update failed.',
-                'errors' => $e->validator->errors(),
-            ], 422);
+        if (!$user) {
+            return [
+                'message' => 'المستخدم غير موجود',
+                'status' => 404,
+                'data' => 'لا يوجد بيانات'
+            ];
+        } else {
+            try {
+                $user->update($data);
+                return [
+                    'message' => 'تمت عملية التحديث',
+                    'data' => $data,
+                    'status' => 200,
+                ];
+            } catch (Exception $e) {
+                return [
+                    'message' => 'حدث خطأ أثناء التحديث',
+                    'status' => 500,
+                    'data' => 'لم يتم تحديث البيانات'
+                ];
+            }
         }
     }
+
     /**
      * *This function is creat to delet  a user.
      **@param User $uder

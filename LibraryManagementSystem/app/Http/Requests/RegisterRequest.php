@@ -3,20 +3,15 @@
 namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\Validator;
-
 use Illuminate\Foundation\Http\FormRequest;
 
 class RegisterRequest extends FormRequest
 {
-
-
-        
-
-
     protected function failedValidation(Validator $validator)
     {
         throw new \Illuminate\Validation\ValidationException($validator, response()->json($validator->errors(), 422));
     }
+
     public function authorize()
     {
         return true;
@@ -24,11 +19,23 @@ class RegisterRequest extends FormRequest
 
     public function rules()
     {
-        return [
+        $rules = [
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6',
         ];
+
+        if ($this->isMethod('post')) {
+           
+            $rules['email'] = 'required|string|email|max:255|unique:users';
+            $rules['password'] = 'required|string|min:6';
+        }
+
+        if ($this->isMethod('put') || $this->isMethod('patch')) {
+            $rules['email'] = 'required|string|email|max:255';
+            $rules['password'] = 'sometimes|string|min:6';
+
+        }
+
+        return $rules;
     }
 
     public function attributes()
@@ -38,10 +45,8 @@ class RegisterRequest extends FormRequest
             'email' => 'عنوان البريد الالكتروني',
             'password' => 'كلمة السر',
         ];
-
     }
 
-    
     public function messages()
     {
         return [
@@ -49,8 +54,8 @@ class RegisterRequest extends FormRequest
             'string' => 'يجب أن يكون حقل :attribute من نوع نصي',
             'unique' => 'ان حقل ال :attribute مستعمل مسبقا',
             'email' => 'يجب أن يكون حقل :attribute صالح',
-            'max:255'=>'عدد احرف ال :attribute يجب ان يكون اق من 255',
-            'min'=>'ان عدد احرف  :attribute يجب ان يكون اكبر من 6'
+            'max' => 'عدد احرف ال :attribute يجب ان يكون أقل من 255',
+            'min' => 'ان عدد احرف :attribute يجب ان يكون أكبر من 6'
         ];
     }
 }

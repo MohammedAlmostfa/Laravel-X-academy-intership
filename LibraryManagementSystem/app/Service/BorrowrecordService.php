@@ -45,7 +45,7 @@ class BorrowrecordService
             ];
         } catch (Exception $e) {
             return [
-                'message' => 'حدث خطأ أثناء الاستعارة: ' . $e->getMessage(),
+                'message' => 'حدث خطأ أثناء الاستعارة: ',
                 'status' => 500,
                 'data' => null,
             ];

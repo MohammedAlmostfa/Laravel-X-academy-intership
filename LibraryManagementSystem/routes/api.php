@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
+
 use App\Http\Controllers\Borrow_recordController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -25,12 +27,7 @@ Route::resource('/books', BookController::class);
 Route::middleware('auth:api')->group(function () {
     Route::resource('/borrow', Borrow_RecordController::class);
 });
-
-
-
-
-
-
+Route::apiResource('User', UserController::class);
 
 Route::controller(AuthController::class)->group(function () {
     Route::post('login', 'login');
