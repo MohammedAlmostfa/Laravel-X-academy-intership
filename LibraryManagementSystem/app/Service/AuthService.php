@@ -15,6 +15,7 @@ class AuthService
        * *@return array(message,status,data)
        */
 
+    //**________________________________________________________________________________________________
 
 
     public function login2($credentials)
@@ -49,7 +50,8 @@ class AuthService
     }
 
 
-    
+    //**________________________________________________________________________________________________
+
     /**
        * * register user
        * *@param $data (data of user(email,password))

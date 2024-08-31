@@ -1,47 +1,29 @@
 <?php
-
 namespace App\Http\Requests;
+
+use Illuminate\Contracts\Validation\Validator;
 
 use Illuminate\Foundation\Http\FormRequest;
 
 class BorrowRecordFormRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
+    protected function failedValidation(Validator $validator)
+    {
+        throw new \Illuminate\Validation\ValidationException($validator, response()->json($validator->errors(), 422));
+    }
+    //**________________________________________________________________________________________________
+
     public function authorize(): bool
     {
-        return false;
+     
+        return auth()->check();
     }
-
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
-    public function rules(): array
+    //**________________________________________________________________________________________________
+    public function rules()
     {
         return [
-            'book_id'=>'required',
-        ];
-    }
-
-    public function attributes()
-    {
-        return [
-            'book_id'=>'الكتاب',
-            'user_id'=>'المستخدم',
-           
-        ];
-
-    }
-
-    public function messages()
-    {
-        return [
-            'required' => 'حقل :attribute مطلوب',
-        
-
+            'book_id' => 'required|exists:books,id',
+            
         ];
     }
 }

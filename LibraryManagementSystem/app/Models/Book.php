@@ -11,5 +11,6 @@ class Book extends Model
         'author',
         'description',
         'published_at',
+        'case',
     ];
 }

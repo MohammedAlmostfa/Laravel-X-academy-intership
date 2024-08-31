@@ -7,20 +7,19 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class BookFormRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
+  
     public function authorize(): bool
     {
         return true;
     }
 
+    //**________________________________________________________________________________________________
+
     protected function failedValidation(Validator $validator)
     {
         throw new \Illuminate\Validation\ValidationException($validator, response()->json($validator->errors(), 422));
     }
-
- 
+    //**________________________________________________________________________________________________
 
     public function attributes()
     {
@@ -29,9 +28,10 @@ class BookFormRequest extends FormRequest
             'author' => 'اسم المؤلف',
             'description' => 'الوصف',
             'published_at' => 'تاريخ النشر',
+            'case'=>'حالة الكتاب'
         ];
     }
-
+    //**________________________________________________________________________________________________
     public function messages()
     {
         return [
@@ -41,12 +41,8 @@ class BookFormRequest extends FormRequest
             'date' => 'يجب أن يكون :attribute تاريخ صالح',
         ];
     }
+  
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
@@ -54,6 +50,7 @@ class BookFormRequest extends FormRequest
             'author' => 'required|string|min:3',
             'description' => 'nullable|string',
             'published_at' => 'nullable|date',
+            'case'=>'required|string|nullable',
         ];
     }
 }

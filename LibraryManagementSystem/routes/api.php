@@ -22,8 +22,14 @@ use Illuminate\Support\Facades\Route;
 
 Route::resource('/books', BookController::class);
 
+Route::middleware('auth:api')->group(function () {
+    Route::resource('/borrow', Borrow_RecordController::class);
+});
 
-Route::resource('/borrow', Borrow_RecordController::class);
+
+
+
+
 
 
 Route::controller(AuthController::class)->group(function () {

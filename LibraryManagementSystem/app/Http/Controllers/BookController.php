@@ -4,28 +4,23 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\BookFormRequest;
 use App\Models\Book;
-use Illuminate\Http\Request;
 use App\Service\BookService;
 
 class BookController extends Controller
 {
 
     protected $bookService;
-
     public function __construct(BookService $bookService)
     {
         $this->bookService = $bookService;
     }
+    //**________________________________________________________________________________________________
 
-
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        return Book::all();
     }
-
+    //**________________________________________________________________________________________________
     /**
      ** create a new book
     ** @param BookFormRequest $request
@@ -33,21 +28,19 @@ class BookController extends Controller
      */
     public function store(BookFormRequest $request)
     {
-        $validatedData =  $request->validate();
+        $validatedData = $request->validated();
         $result = $this->bookService->createBook($validatedData);
         return response()->json([
             'message' => $result['message'],
             'data' => $result['data'],
         ], $result['status']);
     }
-
- 
+    //**________________________________________________________________________________________________
     /**
      ** show book
     **@parm $id
     **return Responsejson(data,message)
     */
-
     public function show(string $id)
     {
         $result = $this->bookService->ShowBook($id);
@@ -57,7 +50,7 @@ class BookController extends Controller
           ], $result['status']);
     }
 
-    
+    //**________________________________________________________________________________________________
     /**
      **update book
     **@parBookFormRequest $request
@@ -67,7 +60,7 @@ class BookController extends Controller
 
     public function update(BookFormRequest $request, string $id)
     {
-        $validatedData =  $request->validate();
+        $validatedData =  $request->validated();
 
         $result = $this->bookService->updateBook($validatedData, $id);
 
@@ -76,9 +69,7 @@ class BookController extends Controller
             'data' => $result['data'],
         ], $result['status']);
     }
-
-    
-    
+    //**________________________________________________________________________________________________
     /**
      **delete a book
       **@parm $id

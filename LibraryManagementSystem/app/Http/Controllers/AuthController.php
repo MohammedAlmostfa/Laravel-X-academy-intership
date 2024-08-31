@@ -17,6 +17,7 @@ class AuthController extends Controller
         $this->middleware('auth:api', ['except' => ['login', 'register']]);
         $this->authService = $authService;
     }
+    //**________________________________________________________________________________________________
 
 
     /**
@@ -35,6 +36,8 @@ class AuthController extends Controller
             'authorisation' => $result['authorisation']
         ], $result['status']);
     }
+
+    //**________________________________________________________________________________________________
 
     /**
      ** register user
@@ -55,6 +58,8 @@ class AuthController extends Controller
         ], $result['status']);
     }
 
+    //**________________________________________________________________________________________________
+
 
     /**
  ** register user
@@ -70,6 +75,10 @@ class AuthController extends Controller
             'message' => 'Successfully logged out',
         ], 200);
     }
+
+
+    //**________________________________________________________________________________________________
+
 
     /**
  ** refresh user
