@@ -31,7 +31,7 @@ class RegisterRequest extends FormRequest
 
         if ($this->isMethod('put') || $this->isMethod('patch')) {
             $rules['email'] = 'required|string|email|max:255';
-            $rules['password'] = 'sometimes|string|min:6';
+            $rules['password'] = 'required|string|min:6';
 
         }
 

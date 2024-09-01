@@ -19,8 +19,6 @@ class Borrow_recordController extends Controller
     }
 
     //**________________________________________________________________________________________________
-
-
     public function store(BorrowRecordFormRequest $request)
     {
         $validatedData =  $request->only('book_id');
@@ -30,12 +28,8 @@ class Borrow_recordController extends Controller
             'data' => $result['data'],
         ], $result['status']);
     }
-
-
     //**________________________________________________________________________________________________
-
-
-    public function update($id)
+    public function update(BorrowRecordFormRequest $request, $id)
     {
         $result = $this->borrowrecordService->updateBorrow($id);
         return response()->json([
@@ -44,15 +38,13 @@ class Borrow_recordController extends Controller
         ], $result['status']);
     }
     //**________________________________________________________________________________________________
-
-    
     public function index()
     {
         return BorrowRecord::all();
     }
     //**________________________________________________________________________________________________
 
-    // عرض سجل استعارة محدد
+  
     public function show($id)
     {
         return BorrowRecord::find($id);

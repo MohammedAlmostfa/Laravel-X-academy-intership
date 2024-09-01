@@ -12,8 +12,8 @@ class BorrowrecordService
 
 
 
+  
     /**
-         /**
      * * creat book
      * *@param array $data
      * *@return array(message,status,data)
@@ -26,7 +26,7 @@ class BorrowrecordService
             $borrow = BorrowRecord::create([
                 'book_id' => $data['book_id'],
                 'user_id' => Auth::user()->id,
-                'borrowed_at' => now(),
+                'borrowed_at' => date('Y-m-d'),
                 'due_date' => null,
                 'returned_at' => now()->addDays(14),
             ]);

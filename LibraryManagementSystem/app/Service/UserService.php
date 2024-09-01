@@ -6,6 +6,7 @@ use App\Models\User;
 
 use Exception;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
 class UserService
@@ -26,7 +27,7 @@ class UserService
                 'password' => Hash::make($credentials['password']),
             ]);
             return [
-                'message' => 'تم تسجيل الدخول',
+                'message' => 'نم انشاء الحساب',
                 'status' => 201,
                 'data' => $user,
             ];
@@ -65,6 +66,7 @@ class UserService
                     'status' => 200,
                 ];
             } catch (Exception $e) {
+                
                 return [
                     'message' => 'حدث خطأ أثناء التحديث',
                     'status' => 500,

@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 
 use App\Http\Controllers\Borrow_recordController;
+use App\Http\Controllers\RatingController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -26,6 +27,7 @@ Route::resource('/books', BookController::class);
 
 Route::middleware('auth:api')->group(function () {
     Route::resource('/borrow', Borrow_RecordController::class);
+    Route::resource('/Rating', RatingController::class);
 });
 Route::apiResource('User', UserController::class);
 
