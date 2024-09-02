@@ -40,10 +40,7 @@ class RatingService
     public function updateRating($data, $id)
     {
 
-        //filter null vules of data
-        $filteredData = array_filter($data, function ($value) {
-            return !is_null($value);
-        });
+        
 
         $rating=Rating::find($id);
         if (!$rating) {
@@ -55,6 +52,11 @@ class RatingService
         
         } else {
             try {
+                //filter null vules of data
+                $filteredData = array_filter($data, function ($value) {
+                    return !is_null($value);
+                });
+
                 $rating->update($filteredData);
                 return [
                     'message' => 'تمت عملية التحديث',

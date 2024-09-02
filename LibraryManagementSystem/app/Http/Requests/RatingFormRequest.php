@@ -34,13 +34,11 @@ class RatingFormRequest extends FormRequest
 
             $rules['book_id'] ='nullable|exists:books,id';
             $rules['rating'] = 'nullable|integer|between:1,5';
-            $rules['review'] = 'nullable|string'
-            ;
+            $rules['review'] = 'nullable|string';
         }
         return $rules;
         
     }
-
     //**________________________________________________________________________________________________
     public function attributes()
     {

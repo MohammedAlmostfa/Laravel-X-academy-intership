@@ -2,62 +2,74 @@
 namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\Validator;
-
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\ValidationException;
 
 class BorrowRecordFormRequest extends FormRequest
 {
     protected function failedValidation(Validator $validator)
     {
-        throw new \Illuminate\Validation\ValidationException($validator, response()->json($validator->errors(), 422));
+        throw new ValidationException($validator, response()->json($validator->errors(), 422));
     }
-    //**________________________________________________________________________________________________
 
     public function authorize(): bool
     {
-     
         return auth()->check();
     }
+
     //**________________________________________________________________________________________________
-    public function rules()
+
+    protected function passedValidation()
     {
-        $rules = [];
-
+        // for borrow a book
         if ($this->isMethod('post')) {
-           
-            $rules['book_id'] =  'required|exists:books,id';
-        
+            //corect th date format
+            $this->merge([
+                'borrowed_at' => date('Y-m-d', strtotime($this->input('borrowed_at'))),
+            ]);
         }
-
+        //for return book
+        elseif ($this->isMethod('put') || $this->isMethod('patch')) {
+            $this->merge([
+                    'due_date' => date('Y-m-d', strtotime($this->input('due_date'))),
+                ]);
+        }
+    }
+    //**________________________________________________________________________________________________
+    public function rules(): array
+    {
+        $rules = [ ];
+        // for borrowed book
+        if ($this->isMethod('post')) {
+            $rules['book_id'] = 'required|exists:books,id';
+            $rules['borrowed_at']  = 'required|date|before:tomorrow';
+        }
+        // for return book
         if ($this->isMethod('put') || $this->isMethod('patch')) {
-            $rules['book_id'] = ' required|exists:books,id';
-            $rules['due_date'] = 'required|date';
-
+            $rules['due_date'] = 'required|date|after:borrowed_at';
         }
         return $rules;
-
-
     }
+    //**________________________________________________________________________________________________
 
-
-    public function attributes()
+    public function attributes(): array
     {
         return [
-           
-                'book_id' => 'رقم الكتاب',
-                'due_date'=> 'تاريخ الاعادو',
+            'book_id' => 'رقم الكتاب',
+            'due_date' => 'تاريخ الإعادة',
+            'borrowed_at' => 'تاريخ الاستعارة'
         ];
     }
-
-    public function messages()
+    //**________________________________________________________________________________________________
+    public function messages(): array
     {
         return [
             'required' => 'حقل :attribute مطلوب',
             'string' => 'يجب أن يكون حقل :attribute من نوع نصي',
-            'data' => 'يجب أن يكون حقل :attribute تاريخ صالح  ',
-           
-            'exists'=>'يجب ان يكون حقل  :attribute  موجود ضمن ال جدول الكتب'
-
+            'date' => 'يجب أن يكون حقل :attribute تاريخ صالح',
+            'exists' => 'يجب أن يكون حقل :attribute موجود ضمن جدول الكتب',
+            'before' => 'يجب أن يكون :attribute قبل الغد',
+            'after' => 'يجب أن يكون :attribute بعد تاريخ الاستعارة',
         ];
     }
 }

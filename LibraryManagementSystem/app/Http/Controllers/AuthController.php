@@ -14,7 +14,7 @@ class AuthController extends Controller
 
     public function __construct(AuthService $authService)
     {
-        $this->middleware('auth:api', ['except' => ['login', 'register']]);
+       
         $this->authService = $authService;
     }
     //**________________________________________________________________________________________________
@@ -28,74 +28,67 @@ class AuthController extends Controller
 
     public function login(LoginRequest $request)
     {
+        // Retrieve the validated data from the request
         $credentials = $request->validated();
+        // login the user
         $result = $this->authService->login2($credentials);
+        //return Responsejson
         return response()->json([
             'message' => $result['message'],
             'data' => $result['data'],
             'authorisation' => $result['authorisation']
         ], $result['status']);
     }
-
     //**________________________________________________________________________________________________
-
     /**
      ** register user
     ** @param RegisterRequest $request(user data)
     ** @return Responsejson(data,message)
      */
-
-
-
     public function register(RegisterRequest $request)
-    {
+    {// Retrieve the validated data from the request
         $credentials = $request->validated();
+        // register the user
         $result = $this->authService->register2($credentials);
+        //return Responsejson
         return response()->json([
             'message' => $result['message'],
             'data' => $result['data'],
             'authorisation' => $result['authorisation']
         ], $result['status']);
     }
-
     //**________________________________________________________________________________________________
-
-
     /**
  ** register user
 ** @param  @param Nothing
 ** @return Responsejson(data,message)
  */
-
     public function logout()
     {
-        Auth::logout();
+        //logout the user
+        $result = $this->authService->logout2();
+        //return Response
         return response()->json([
-            'status' => 'success',
-            'message' => 'Successfully logged out',
-        ], 200);
+            'message' => $result['message'] ,
+        ], $result['status']);
     }
 
 
     //**________________________________________________________________________________________________
-
-
     /**
  ** refresh user
 ** @param Nothing
 ** @return Responsejson(data ,user's data,authorisation)
  */
-
     public function refresh()
     {
+        //update user
+        $result = $this->authService->refresh2();
+        //return Responsejson
         return response()->json([
-            'status' => 'success',
-            'user' => Auth::user(),
-            'authorisation' => [
-                'token' => Auth::refresh(),
-                'type' => 'bearer',
-                'message' => 'Successfully refresh',
-            ]
-        ], 200);
+            'message' => $result['status'],
+            'user' => $result['user'],
+            'authorisation' =>$result['authorisation'],
+        ], $result['status']);
     }
 }

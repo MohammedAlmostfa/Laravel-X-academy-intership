@@ -21,20 +21,24 @@ class Borrow_recordController extends Controller
     //**________________________________________________________________________________________________
     public function store(BorrowRecordFormRequest $request)
     {
-        $validatedData =  $request->only('book_id');
+        // Retrieve the validated data from the request
+        $validatedData =  $request->validated();
+        //create a new borrow record
         $result = $this->borrowrecordService->createBorrow($validatedData);
+        //return resposjson
         return response()->json([
             'message' => $result['message'],
-            'data' => $result['data'],
         ], $result['status']);
     }
     //**________________________________________________________________________________________________
     public function update(BorrowRecordFormRequest $request, $id)
     {
-        $result = $this->borrowrecordService->updateBorrow($id);
+        // Retrieve the validated data from the request
+        $validateddue_date =  $request->validated();
+        //updata the borrow record
+        $result = $this->borrowrecordService->updateBorrow($id, $validateddue_date);
         return response()->json([
             'message' => $result['message'],
-            'data' => $result['data'],
         ], $result['status']);
     }
     //**________________________________________________________________________________________________

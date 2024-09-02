@@ -11,24 +11,47 @@ use Illuminate\Validation\ValidationException;
 
 class UserService
 {
+    //**________________________________________________________________________________________________
+    public function showUsers()
+    {
+        try {
+            //get all users
+            $data=User::all();
+            // rturn all users
+            return [
+                   'message' => 'نم عرض المستخدمين ',
+                   'status' => 200,
+                   'data' => $data,
+                       ];
+        } catch (Exception $e) {
 
+            return [
+                'message' => 'حدث خطاء اثنا عرض المستخدمسن',
+                'status' => 500,
+                'data' => 'لم يتم عرض البيانات'
+            ];
+        }
+
+    }
+    //**________________________________________________________________________________________________
     /**
         * *This function is created to store a new User.
         ** @param$ data
         * *@return \Illuminate\Http\JsonResponse
         */
-
     public function createUser($credentials)
     {
         try {
+            // Create user
             $user = User::create([
                 'name' => $credentials['name'],
                 'email' => $credentials['email'],
                 'password' => Hash::make($credentials['password']),
             ]);
+            //return $user data
             return [
                 'message' => 'نم انشاء الحساب',
-                'status' => 201,
+                'status' => 200,
                 'data' => $user,
             ];
         } catch (Exception $e) {
@@ -75,23 +98,76 @@ class UserService
             }
         }
     }
-
+    //**________________________________________________________________________________________________
     /**
      * *This function is creat to delet  a user.
-     **@param User $uder
+     **@param $id
      * *@return \Illuminate\Http\JsonResponse
      */
-
-
-    public function deletUser(User $user)
+    public function deletUser($id)
     {
-        if ($user->delete()) {
-            return response()->json(['message' => 'User deleted successfully.'], 200);
+        // find the user
+        $user = User::find($id);
+
+        if (!$user) {
+            //if the user not exist
+            return [
+                'message' => 'المستخدم غير موجود',
+                'status' => 404,
+            ];
         } else {
-            return response()->json(['message' => 'User not deleted.'], 500);
+            try {
+                //delete the user
+                $user->delete();
+                return [
+                    'message' => 'تمت عملية الحذف',
+                    'status' => 200,
+                ];
+            } catch (Exception $e) {
+                
+                return [
+                    'message' => 'حدث خطأ أثناء الحذف',
+                    'status' => 500,
+                ];
+            }
         }
     }
+    //**________________________________________________________________________________________________
+    /**
+     * *This function is creat to show  a user.
+     **@param $id
+     * *@return \Illuminate\Http\JsonResponse
+     */
+    public function showUser($id)
+    {
+        //find the user
+        $user = User::find($id);
 
+        if (!$user) {
+            //if the user not exist
 
+            return [
+                'message' => 'المستخدم غير موجود',
+                'status' => 404,
+                'data' => 'لا يوجد بيانات'
+            ];
+        } else {
+            try {
+                // rturn uuser data
+                return [
+                    'message' => 'تمت عملية العرض',
+                     'data' => $user,
+                    'status' => 200,
+                ];
+            } catch (Exception $e) {
+                
+                return [
+                    'message' => 'حدث خطأ أثناء العرض',
+                    'status' => 500,
+                      'data' => 'لا يوجد بيانات'
+                ];
+            }
+        }
+    }
 
 }

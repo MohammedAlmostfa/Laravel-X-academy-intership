@@ -8,111 +8,104 @@ use Illuminate\Support\Facades\Auth;
 
 class BorrowrecordService
 {
-
-
-
-
-  
     /**
-     * * creat book
+     * * Borrow a book
      * *@param array $data
      * *@return array(message,status,data)
      */
     public function createBorrow($data)
     {
         try {
-
-            // create boorrow record
-            $borrow = BorrowRecord::create([
-                'book_id' => $data['book_id'],
-                'user_id' => Auth::user()->id,
-                'borrowed_at' => date('Y-m-d'),
-                'due_date' => null,
-                'returned_at' => now()->addDays(14),
-            ]);
-
-            //Update book case
             $book = Book::find($data['book_id']);
-            $book->update([
-               'case'=>'Borrowed',
-            ]);
 
-            //return messegge
-            return [
-                'message' => 'تمت عملية الاستعارة بنجاح',
-                'data' => $borrow,
-                'status' => 201,
-            ];
+            if ($book['case'] == 'Borrowed') {
+                return [
+                    'message' => 'الكتاب  مستعار',
+                    'status' => 404,
+                ];
+            } else {
+    
+                // create boorrow record
+                $borrow = BorrowRecord::create([
+                    'book_id' => $data['book_id'],
+                    'user_id' => Auth::user()->id,
+                    'borrowed_at' => $data['borrowed_at'],
+                    'returned_at' => now()->addDays(14),
+                ]);
+                //Update book case
+                $book->update([
+                   'case'=>'Borrowed',
+                ]);
+                //return messegge
+                return [
+                    'message' => 'تمت عملية الاستعارة بنجاح',
+                    'status' => 201,
+                ];
+            }
         } catch (Exception $e) {
             return [
-                'message' => 'حدث خطأ أثناء الاستعارة: ',
+                
+                'message' => 'حدث خطأ أثناء الاستعارة: '. $e->getMessage() ,
                 'status' => 500,
                 'data' => null,
-            ];
+              ];
         }
     }
     //**________________________________________________________________________________________________
     /**
- ** update book data
-     * **@param array $data
-     * **@param $id
-     * **@return array(message,status,data)
+ ** Return the book
+     **@param array $data
+     **@param $id
+     **@return array(message,status,data)
      */
-
-    public function updateBorrow($id)
+    public function updateBorrow($id, $data)
     {
-        // Find the borrow record
-        $borrow = BorrowRecord::find($id);
-        // Find the book
-        $book = Book::find($borrow['book_id']);
-
-        // Check the status of the book
-        if ($book['case'] == 'existing') {
-            return [
-                'message' => 'الكتاب غير مستعار',
-                'status' => 404,
-                'data' => 'لا يوجد بيانات'
-            ];
-        }
-
-        // Check the status of who borrowed the book
-        if (Auth::check() && Auth::user()->id != $borrow['user_id']) {
-            return [
-                'message' => 'لم تقم انت باستعارة الكتاب',
-                'data' => $borrow,
-                'status' => 403,
-            ];
-        } else {
-            
-           
-            try {
-                //Update book case
-                $book->update([
-                    'case' => 'existing',
-                ]);
-
-                // Return the book
-                // inster the date of  return
-                $borrow->update([
-                    'due_date' => now(),
-                ]);
-                // return meessegw
+        try {
+            // Find the borrow record
+            $borrow = BorrowRecord::find($id);
+            // Find the book
+            $book = Book::find($borrow['book_id']);
+            // Check the status of who borrowed the book
+            if (Auth::check() && Auth::user()->id != $borrow['user_id']) {
                 return [
-                    'message' => 'تمت عملية الإعادة',
+                    'message' => 'لم تقم انت باستعارة الكتاب',
                     'data' => $borrow,
-                    'status' => 200,
+                    'status' => 403,
                 ];
-            } catch (Exception $e) {
-                return [
-                    'message' => 'حدث خطأ أثناء عملية الإعادة',
-                    'status' => 500,
-                    'data' => 'لم يتم تحديث البيانات'
-                ];
+            } else {
+        
+                // Check the status of the book
+                if ($book['case'] == 'existing') {
+                    return [
+                        'message' => 'الكتاب غير مستعار',
+                        'status' => 404,
+                    ];
+                } else {
+                    //Update book case
+                    $book->update([
+                        'case' => 'existing',
+                    ]);
+                    // Return the book
+                    // inster the date of  return
+                    $borrow->update(['due_date' =>$data['due_date'],
+                    ]);
+                    // return meessegw
+                    return [
+                        'message' => 'تمت عملية الإعادة',
+                        'data' => $borrow,
+                        'status' => 200,
+                    ];
+                }
             }
+        } catch (Exception $e) {
+            return [
+                'message' => 'حدث خطأ أثناء عملية الإعادة',
+                'status' => 500,
+                   
+            ];
         }
+        
     }
-
-
     //**________________________________________________________________________________________________
     /**
  * * delet book dataa

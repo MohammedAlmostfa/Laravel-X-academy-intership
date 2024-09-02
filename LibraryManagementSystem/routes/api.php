@@ -32,9 +32,9 @@ Route::middleware('auth:api')->group(function () {
 Route::apiResource('User', UserController::class);
 
 Route::controller(AuthController::class)->group(function () {
-    Route::post('login', 'login');
-    Route::post('register', 'register');
-    Route::post('logout', 'logout');
-    Route::post('refresh', 'refresh');
+    Route::post('/login', 'login');
+    Route::post('/register', 'register');
+    Route::post('/logout', 'logout');
+    Route::post('/refresh', 'refresh');
 
 });

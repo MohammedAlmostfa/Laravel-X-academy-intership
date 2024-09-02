@@ -18,6 +18,35 @@ class UserController extends Controller
     {
         $this->userService = $userService;
     }
+    //**________________________________________________________________________________________________
+    
+    public function index()
+    {
+        $result =  $this->userService->showUsers();
+        return response()->json([
+                   'message' => $result['message'],
+                   'data' => $result['data'],
+               ], $result['status']);
+
+    
+    }
+
+    //**________________________________________________________________________________________________
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /**
      * *This function is created to store a new user.
@@ -36,25 +65,13 @@ class UserController extends Controller
             'data' => $result['data'],
         ], $result['status']);
     }
-
-
-
-
-
-
-
-    
-
-    
-
-
+    //**________________________________________________________________________________________________
     /**
-     * *This function is creat to update a new user.
-     * *@param \Illuminate\Http\Request $request
-     * * @param $id
-     * * @return \Illuminate\Http\JsonResponse
-     */
-
+      * *This function is creat to update a new user.
+      * *@param \Illuminate\Http\Request $request
+      * * @param $id
+      * * @return \Illuminate\Http\JsonResponse
+      */
     public function update(RegisterRequest $request, $id)
     {// Get the validation of data
         $validatedData =  $request->validated();
@@ -66,11 +83,7 @@ class UserController extends Controller
             'data' => $result['data'],
         ], $result['status']);
     }
-
-
-
-      
-
+    //**________________________________________________________________________________________________
     /**
      * *This function is created to show  a user.
      * *@param $id
@@ -79,21 +92,15 @@ class UserController extends Controller
 
     public function show($id)
     {
-        $user = User::find($id);
-        if (!$user) {
-
-
-            return response()->json(['error' => 'user not found'], 404);
-        } else {
-            return response()->json([
-                'data' => $user
-            ]);
-        }
+        //show the user
+        $result =  $this->userService->showUser($id);
+        //return the response
+        return response()->json([
+            'message' => $result['message'],
+           'data' => $result['data'],
+        ], $result['status']);
     }
-
-
-
-
+    //**________________________________________________________________________________________________
     /**
      * *This function is creat to delet a user.
      * *@param $id
@@ -102,15 +109,13 @@ class UserController extends Controller
 
     public function destroy($id)
     {
-        $user = User::find($id);
-        if (!$user) {
-            return response()->json(['error' => 'User not found.'], 404);
-        }
+        //delet user
+        $result =  $this->userService->deletUser($id);
+        //return response
+        return response()->json([
+        'message' => $result['message'],
+        ], $result['status']);
 
-        $user->delete();
 
-        return response()->json(['message' => 'Deleted successfully.'], 200);
     }
-
-
 }

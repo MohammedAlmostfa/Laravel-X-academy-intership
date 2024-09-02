@@ -22,13 +22,13 @@ class RegisterRequest extends FormRequest
         $rules = [
             'name' => 'required|string|max:255',
         ];
-
+        // for store use an register
         if ($this->isMethod('post')) {
            
             $rules['email'] = 'required|string|email|max:255|unique:users';
             $rules['password'] = 'required|string|min:6';
         }
-
+        // for update user
         if ($this->isMethod('put') || $this->isMethod('patch')) {
             $rules['email'] = 'required|string|email|max:255';
             $rules['password'] = 'required|string|min:6';

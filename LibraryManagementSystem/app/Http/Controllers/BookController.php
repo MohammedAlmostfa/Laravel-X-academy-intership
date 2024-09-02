@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\BookFormRequest;
+
 use App\Models\Book;
 use App\Service\BookService;
+use Illuminate\Http\Request;
 
 class BookController extends Controller
 {
@@ -16,43 +18,63 @@ class BookController extends Controller
     }
     //**________________________________________________________________________________________________
 
-    public function index()
+
+    
+    public function index(BookFormRequest $request)
     {
-        return Book::all();
-    }
-    //**________________________________________________________________________________________________
-    /**
-     ** create a new book
-    ** @param BookFormRequest $request
-    ** @return Responsejson(data,message)
-     */
-    public function store(BookFormRequest $request)
-    {
+        // Retrieve the validated data from the request
         $validatedData = $request->validated();
-        $result = $this->bookService->createBook($validatedData);
+        // Create a new book using the validated data
+        $result = $this->bookService-> showfilterbooks($validatedData);
+        // Return a JSON response with the result
         return response()->json([
             'message' => $result['message'],
             'data' => $result['data'],
         ], $result['status']);
     }
+
     //**________________________________________________________________________________________________
-    /**
-     ** show book
-    **@parm $id
-    **return Responsejson(data,message)
-    */
-    public function show(string $id)
-    {
-        $result = $this->bookService->ShowBook($id);
-        return response()->json([
-              'message' => $result['message'],
-              'data' => $result['data'],
-          ], $result['status']);
-    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     //**________________________________________________________________________________________________
     /**
-     **update book
+ ** Create a new book
+ ** @param BookFormRequest $request
+ * *@return \Illuminate\Http\JsonResponse
+ */
+    public function store(BookFormRequest $request)
+    {
+        // Retrieve the validated data from the request
+        $validatedData = $request->validated();
+        // Create a new book using the validated data
+        $result = $this->bookService->createBook($validatedData);
+        // Return a JSON response with the result
+        return response()->json([
+            'message' => $result['message'],
+            'data' => $result['data'],
+        ], $result['status']);
+    }
+
+   
+    //**________________________________________________________________________________________________
+    /**
+     **update The book
     **@parBookFormRequest $request
     **@parm $id
     **return Responsejson(data,message)
@@ -60,10 +82,11 @@ class BookController extends Controller
 
     public function update(BookFormRequest $request, string $id)
     {
+        // Retrieve the validated data from the request
         $validatedData =  $request->validated();
-
+        //update book using the validated data
         $result = $this->bookService->updateBook($validatedData, $id);
-
+        // Return a JSON response with the result
         return response()->json([
             'message' => $result['message'],
             'data' => $result['data'],
@@ -71,16 +94,35 @@ class BookController extends Controller
     }
     //**________________________________________________________________________________________________
     /**
-     **delete a book
+     **delete The  book
       **@parm $id
       **return Responsejson(data,message)
       */
     public function destroy(string $id)
     {
+        //delete the book
         $result = $this->bookService->deleteBook($id);
+        // Return a response
         return response()->json([
               'message' => $result['message'],
               'data' => $result['data'],
           ], $result['status']);
     }
+    //**________________________________________________________________________________________________
+    /**
+     ** show The book
+    **@parm $id
+    **return Responsejson(data,message)
+    */
+    public function show(string $id)
+    {
+        //show the book
+        $result = $this->bookService->ShowBook($id);
+        // return response
+        return response()->json([
+              'message' => $result['message'],
+              'data' => $result['data'],
+          ], $result['status']);
+    }
+
 }
