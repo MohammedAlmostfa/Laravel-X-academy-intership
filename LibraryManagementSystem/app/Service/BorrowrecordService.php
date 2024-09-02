@@ -31,6 +31,7 @@ class BorrowrecordService
                     'user_id' => Auth::user()->id,
                     'borrowed_at' => $data['borrowed_at'],
                     'returned_at' => now()->addDays(14),
+                   'due_date'=>null,
                 ]);
                 //Update book case
                 $book->update([
@@ -69,7 +70,6 @@ class BorrowrecordService
             if (Auth::check() && Auth::user()->id != $borrow['user_id']) {
                 return [
                     'message' => 'لم تقم انت باستعارة الكتاب',
-                    'data' => $borrow,
                     'status' => 403,
                 ];
             } else {
@@ -82,17 +82,14 @@ class BorrowrecordService
                     ];
                 } else {
                     //Update book case
-                    $book->update([
-                        'case' => 'existing',
-                    ]);
-                    // Return the book
+                    $book->update([ 'case' => 'existing',]);
+                   
                     // inster the date of  return
                     $borrow->update(['due_date' =>$data['due_date'],
                     ]);
                     // return meessegw
                     return [
                         'message' => 'تمت عملية الإعادة',
-                        'data' => $borrow,
                         'status' => 200,
                     ];
                 }
@@ -108,41 +105,111 @@ class BorrowrecordService
     }
     //**________________________________________________________________________________________________
     /**
- * * delet book dataa
+     **show the borrows
+      **@param array $data
+      **@return array(message,status,data)
+      */
+    public function showBorrows($data)
+    {
+        try {
+            $query = BorrowRecord::query();
+            // check of the parameters that user need to filter the book
+
+            if (!empty($data['borrowed_at'])) {
+                $query->byborrowed_at($data['borrowed_at']);
+            }
+            // GET the borrows
+            $borrows = $query->get()->makeHidden(['created_at', 'updated_at']);
+            //return borrows;
+            return [
+                'message' => 'السجل',
+                'data' => $borrows,
+                'status' => 200,
+            ];
+        } catch (Exception $e) {
+            return [
+                'message' => 'حدث خطأ أثناء العرض: ',
+                'data' => null,
+                'status' => 500,
+            ];
+        }
+    }
+    //**________________________________________________________________________________________________
+
+    /**
+        **show the borrows
+         **@param $id
+         **@return array(message,status,data)
+         */
+
+    public function showBorrow($id)
+    {
+        try {
+            // find borrows
+            $borrow = BorrowRecord::find($id);
+            //check that borrow exists
+            if (!$borrow) {
+                return [
+                    'message' => 'السجل غير موجود',
+                    'status' => 404,
+                    'data' =>'لا يوجد بيانات'
+                ];
+            } else {
+                return [
+                'message' => 'بيانات السجل',
+                'data' => $borrow,
+                'status' => 200,
+];
+            }
+        } catch (Exception $e) {
+            return [
+                'message' => 'حدث خطا اثناء عمليةالعرض',
+                'status' => 500,
+                'data' => 'لم يتم عرض البيانات'
+            ];
+        }
+    }
+    
+
+    //**________________________________________________________________________________________________
+    /**
+ * * delet Borrowrecord with Before a specific date
  * *@param $id
  * *@return array
  */
-
-    public function deleteBook($id)
+    public function deleteBooksBeforeDate($date)
     {
-        $book = Borrowrecord::find($id);
-
-        if (!$book) {
-            return [
-                'message' => 'الكتاب غير موجود',
-                'status' => 404,
-                'data' =>'لا يوجد بيانات'
-            ];
-        } else {
-
-            try {
-                $book->delete();
-
-                return [
-                    'message' => 'تمت عملية الحذف',
-                    'data' => $book,
-                    'status' => 200,
-                ];
-            } catch (Exception $e) {
-                return [
-                    'message' => 'حدث خطا اثناء عملية الحذف',
-                    'status' => 500,
-                    'data' => 'لم يتم حذف البيانات'
-                ];
+        try {
+            $query = BorrowRecord::query();
+            // check of the parameters that user need to filter the book
+            if (!empty($date)) {
+                $borrow = $query->byborrowed_at2($date);
+                // check if there are  borroow recordto  to delet
+                if($borrow=="") {
+                    //delete the date
+                    foreach ($borrow as $borrow) {
+                        $borrow->delete();
+                    }
+                    return [
+                        'message' => 'تمت عملية الحذف',
+                         'status' => 200,
+                                    ];
+                } else {
+                    return [
+                        'message' => '  لا يوجد بيانات لالحذف  قبل هذا التاريخ',
+                        'status' => 404,
+                    ];
+                }
             }
+        } catch (Exception $e) {
+            return [
+                'message' => 'حدث خطأ أثناء عملية الحذف',
+                'status' => 500,
+                'data' => 'لم يتم حذف البيانات'
+            ];
         }
+        
     }
-
 
 
 

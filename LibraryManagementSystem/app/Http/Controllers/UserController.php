@@ -33,21 +33,6 @@ class UserController extends Controller
 
     //**________________________________________________________________________________________________
    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     /**
      * *This function is created to store a new user.
      * *@param \Illuminate\Http\Request $request
@@ -67,7 +52,7 @@ class UserController extends Controller
     }
     //**________________________________________________________________________________________________
     /**
-      * *This function is creat to update a new user.
+      * *This function is creat to update  user.
       * *@param \Illuminate\Http\Request $request
       * * @param $id
       * * @return \Illuminate\Http\JsonResponse
@@ -115,7 +100,6 @@ class UserController extends Controller
         return response()->json([
         'message' => $result['message'],
         ], $result['status']);
-
 
     }
 }

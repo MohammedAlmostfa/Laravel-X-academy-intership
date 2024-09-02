@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Ramsey\Uuid\Type\Integer;
 
 class Book extends Model
 {
@@ -31,14 +32,21 @@ class Book extends Model
         return $query->where('case', $case);
     }
     
-    public function rating()
-    {
-       
-        return $this->hasMany(Rating::class);
-       
-    
-       
 
+
+    public function ratings()
+    {
+        return $this->hasMany(Rating::class);
+    }
+    
+    public function averageRating()
+    {
+        return $this->ratings()->avg('rating');
+    }
+
+    public function borrow()
+    {
+        return $this->hasMany(BorrowRecord::class);
     }
 
 }

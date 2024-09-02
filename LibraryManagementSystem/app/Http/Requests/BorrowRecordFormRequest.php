@@ -15,6 +15,7 @@ class BorrowRecordFormRequest extends FormRequest
     public function authorize(): bool
     {
         return auth()->check();
+       
     }
 
     //**________________________________________________________________________________________________
@@ -38,18 +39,26 @@ class BorrowRecordFormRequest extends FormRequest
     //**________________________________________________________________________________________________
     public function rules(): array
     {
-        $rules = [ ];
-        // for borrowed book
-        if ($this->isMethod('post')) {
+        $rules = [];
+
+        if ($this->isMethod('get')) {
+            $rules['borrowed_at'] = 'nullable|date';
+        } elseif ($this->isMethod('post')) {
+            // Rules for creating a borrowed book record
             $rules['book_id'] = 'required|exists:books,id';
-            $rules['borrowed_at']  = 'required|date|before:tomorrow';
+            $rules['borrowed_at'] = 'required|date|before:tomorrow';
+        } elseif ($this->isMethod('put') || $this->isMethod('patch')) {
+            // Rules for updating a borrowed book record
+            $rules['due_date'] = 'required|date';
+        } elseif ($this->isMethod('delet')) {
+            // Rules for creating a borrowed book record
+            $rules['update_at'] = 'required|exists:books,id';
+           
         }
-        // for return book
-        if ($this->isMethod('put') || $this->isMethod('patch')) {
-            $rules['due_date'] = 'required|date|after:borrowed_at';
-        }
+
         return $rules;
     }
+
     //**________________________________________________________________________________________________
 
     public function attributes(): array

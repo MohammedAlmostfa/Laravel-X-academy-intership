@@ -61,4 +61,26 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
+    // fitter by name
+    public function scopebyName($query, $name)
+    {
+        return $query->where('name', $name);
+    }
+
+    //relations
+    public function borrow()
+    {
+        return $this->hasMany(BorrowRecord::class);
+    }
+    
+    //relations
+
+    public function rating()
+    {
+        return $this->hasMany(Rating::class);
+    }
+
+
+
+
 }

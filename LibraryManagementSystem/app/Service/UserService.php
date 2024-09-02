@@ -72,32 +72,34 @@ class UserService
      */
     public function updateUser($data, $id)
     {
-        $user = User::find($id);
+        try {
+            $user = User::find($id);
 
-        if (!$user) {
-            return [
-                'message' => 'المستخدم غير موجود',
-                'status' => 404,
-                'data' => 'لا يوجد بيانات'
-            ];
-        } else {
-            try {
+            if (!$user) {
+                return [
+                    'message' => 'المستخدم غير موجود',
+                    'status' => 404,
+                    'data' => 'لا يوجد بيانات'
+                ];
+            } else {
+           
                 $user->update($data);
                 return [
                     'message' => 'تمت عملية التحديث',
                     'data' => $data,
                     'status' => 200,
                 ];
-            } catch (Exception $e) {
-                
-                return [
-                    'message' => 'حدث خطأ أثناء التحديث',
-                    'status' => 500,
-                    'data' => 'لم يتم تحديث البيانات'
-                ];
             }
+        } catch (Exception $e) {
+                
+            return [
+                'message' => 'حدث خطأ أثناء التحديث',
+                'status' => 500,
+                'data' => 'لم يتم تحديث البيانات'
+            ];
         }
     }
+    
     //**________________________________________________________________________________________________
     /**
      * *This function is creat to delet  a user.
@@ -106,42 +108,46 @@ class UserService
      */
     public function deletUser($id)
     {
-        // find the user
-        $user = User::find($id);
+        try {
+            // find the user
+            $user = User::find($id);
 
-        if (!$user) {
-            //if the user not exist
-            return [
-                'message' => 'المستخدم غير موجود',
-                'status' => 404,
-            ];
-        } else {
-            try {
+            if (!$user) {
+                //if the user not exist
+                return [
+                    'message' => 'المستخدم غير موجود',
+                    'status' => 404,
+                ];
+            } else {
+           
                 //delete the user
                 $user->delete();
                 return [
                     'message' => 'تمت عملية الحذف',
                     'status' => 200,
                 ];
-            } catch (Exception $e) {
-                
-                return [
-                    'message' => 'حدث خطأ أثناء الحذف',
-                    'status' => 500,
-                ];
             }
+        } catch (Exception $e) {
+                
+            return [
+                'message' => 'حدث خطأ أثناء الحذف',
+                'status' => 500,
+            ];
         }
     }
+    
     //**________________________________________________________________________________________________
     /**
      * *This function is creat to show  a user.
      **@param $id
      * *@return \Illuminate\Http\JsonResponse
      */
-    public function showUser($id)
+    public function showUser($name)
     {
         //find the user
-        $user = User::find($id);
+        $query =User::query();
+        //filter data by name
+        $user=$query->byname($name)->get();
 
         if (!$user) {
             //if the user not exist

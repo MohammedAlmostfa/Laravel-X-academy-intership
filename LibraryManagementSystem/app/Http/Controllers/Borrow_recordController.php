@@ -9,16 +9,19 @@ use App\Service\BorrowrecordService;
 
 class Borrow_recordController extends Controller
 {
-
-
     protected $borrowrecordService;
 
     public function __construct(BorrowrecordService $borrowrecordService)
     {
         $this->borrowrecordService =  $borrowrecordService;
     }
-
     //**________________________________________________________________________________________________
+  
+    /**
+ ** Create a new borrowed
+ ** @param BookFormRequest $request
+ * *@return \Illuminate\Http\JsonResponse
+ */
     public function store(BorrowRecordFormRequest $request)
     {
         // Retrieve the validated data from the request
@@ -31,35 +34,68 @@ class Borrow_recordController extends Controller
         ], $result['status']);
     }
     //**________________________________________________________________________________________________
+    /**
+ ** return  the book
+ ** @param BookFormRequest $request
+  ** @param $id
+ * *@return \Illuminate\Http\JsonResponse
+ */
     public function update(BorrowRecordFormRequest $request, $id)
     {
         // Retrieve the validated data from the request
-        $validateddue_date =  $request->validated();
+        $validated_date =  $request->validated();
         //updata the borrow record
-        $result = $this->borrowrecordService->updateBorrow($id, $validateddue_date);
+        $result = $this->borrowrecordService->updateBorrow($id, $validated_date);
         return response()->json([
             'message' => $result['message'],
         ], $result['status']);
     }
     //**________________________________________________________________________________________________
-    public function index()
+    /**
+    ** show the borrow record
+ ** @param nothing
+ * *@return \Illuminate\Http\JsonResponse
+ */
+    public function index(BorrowRecordFormRequest $request)
     {
-        return BorrowRecord::all();
+        // Retrieve the validated data from the request
+        $validated_date =  $request->validated();
+        // show the borrow record
+        $result = $this->borrowrecordService->showBorrows($validated_date);
+        return response()->json([
+            'message' => $result['message'],
+            'data' => $result['data'],
+        ], $result['status']);
     }
+    
     //**________________________________________________________________________________________________
-
-  
+    /**
+** show the borrow
+ ** @param id
+ * *@return \Illuminate\Http\JsonResponse
+ */
     public function show($id)
     {
-        return BorrowRecord::find($id);
+        $result = $this->borrowrecordService->showBorrow($id);
+        return response()->json([
+            'message' => $result['message'],
+            'data' => $result['data'],
+        ], $result['status']);
     }
-
     //**________________________________________________________________________________________________
-
-    // حذف سجل استعارة
-    public function destroy($id)
+    /**
+     ** delet  the borrow Before a specific date
+ ** @param data
+ * *@return \Illuminate\Http\JsonResponse
+ */
+    public function destroy($date)
     {
-        return BorrowRecord::destroy($id);
+        $result = $this->borrowrecordService->deleteBooksBeforeDate($date);
+        return response()->json([
+            'message' => $result['message'],
+        ], $result['status']);
+
     }
+   
 
 }

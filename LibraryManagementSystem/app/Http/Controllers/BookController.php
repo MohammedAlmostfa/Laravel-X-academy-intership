@@ -17,9 +17,11 @@ class BookController extends Controller
         $this->bookService = $bookService;
     }
     //**________________________________________________________________________________________________
-
-
-    
+    /**
+       ** show all boo; wit filters
+    ** @param BookFormRequest $request
+    * *@return \Illuminate\Http\JsonResponse
+    */
     public function index(BookFormRequest $request)
     {
         // Retrieve the validated data from the request
@@ -32,24 +34,6 @@ class BookController extends Controller
             'data' => $result['data'],
         ], $result['status']);
     }
-
-    //**________________________________________________________________________________________________
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     //**________________________________________________________________________________________________
@@ -105,7 +89,6 @@ class BookController extends Controller
         // Return a response
         return response()->json([
               'message' => $result['message'],
-              'data' => $result['data'],
           ], $result['status']);
     }
     //**________________________________________________________________________________________________

@@ -8,30 +8,40 @@ class BookService
 {
     public function showfilterbooks($data)
     {
-        // checkoh the parameters the user need to filter the book
-        $query = Book::with('rating');
+        try {
+   
+            $query = Book::with('rating');
+            // check of the parameters that user need to filter the book
 
-        if (!empty($data['author'])) {
-            $query->byAuthor($data['author']);
-        }
+            if (!empty($data['author'])) {
+                $query->byAuthor($data['author']);
+            }
 
-        if (!empty($data['category'])) {
-            $query->byCategory($data['category']);
-        }
+            if (!empty($data['category'])) {
+                $query->byCategory($data['category']);
+            }
 
-        if (!empty($data['case'])) {
-            $query->byCase($data['case']);
+            if (!empty($data['case'])) {
+                $query->byCase($data['case']);
+            }
+            // GET the book
+            $books = $query->get();
+            //return $books;
+            return [
+                'message' => 'الكتب',
+                'data' => $books,
+                'status' => 200,
+            ];
+        } catch (Exception $e) {
+            return [
+                'message' => 'حدث خطأ أثناء العرض: ',
+                'data' => null,
+                'status' => 500,
+            ];
         }
-        // GET the book
-        $books = $query->get();
-        //return $books;
-        return [
-            'message' => 'الكتب',
-            'data' => $books,
-            'status' => 200,
-        ];
     }
 
+    //**________________________________________________________________________________________________
 
     /**
         * * creat book
@@ -61,9 +71,9 @@ class BookService
     //**________________________________________________________________________________________________
     /**
      * * update book data
-     * **@param array $data
-     * **@param $id
-     * **@return array(message,status,data)
+     * *@param array $data
+     * *@param $id
+     * *@return array(message,status,data)
      */
     public function updateBook($data, $id)
     {
@@ -108,34 +118,35 @@ class BookService
      */
     public function ShowBook($id)
     {
-        // find book
-        $book = Book::with('rating')->find($id);
-        //check that book exists
-        if (!$book) {
-            return [
-                'message' => 'الكتاب غير موجود',
-                'status' => 404,
-                'data' =>'لا يوجد بيانات'
-            ];
-        } else {
+        try {
+            // find book
+            $book = Book::with('ratings')->find($id);
+            //check that book exists
+            if (!$book) {
+                return [
+                    'message' => 'الكتاب غير موجود',
+                    'data' => $book,
+                    'status' => 404,
+                   
+                ];
+            } else {
 
-            try {
                
                 return [
-    'message' => 'بيانات الكتاب',
-    'data' => $book,
-    'status' => 200,
+                'message' => 'بيانات الكتاب',
+                 'data' => $book,
+                'status' => 200,
 ];
-
-            } catch (Exception $e) {
-                return [
-                    'message' => 'حدث خطا اثناء عمليةالعرض',
-                    'status' => 500,
-                    'data' => 'لم يتم عرض البيانات'
-                ];
             }
+        } catch (Exception $e) {
+            return [
+                'message' => 'حدث خطا اثناء عمليةالعرض',
+                'status' => 500,
+              
+            ];
         }
     }
+    
     //**________________________________________________________________________________________________
     /**
  * * delet book dataa
@@ -144,18 +155,19 @@ class BookService
  */
     public function deleteBook($id)
     {
-        // find book
-        $book = Book::find($id);
-        //check that book exists
-        if (!$book) {
-            return [
-                'message' => 'الكتاب غير موجود',
-                'status' => 404,
-                'data' =>'لا يوجد بيانات'
-            ];
-        } else {
+        try {
+            // find book
+            $book = Book::find($id);
+            //check that book exists
+            if (!$book) {
+                return [
+                    'message' => 'الكتاب غير موجود',
+                    'status' => 404,
+                    'data' =>'لا يوجد بيانات'
+                ];
+            } else {
 
-            try {
+            
                 $book->delete();
 
                 return [
@@ -163,16 +175,16 @@ class BookService
                     'data' => $book,
                     'status' => 200,
                 ];
-            } catch (Exception $e) {
-                return [
-                    'message' => 'حدث خطا اثناء عملية الحذف',
-                    'status' => 500,
-                    'data' => 'لم يتم حذف البيانات'
-                ];
             }
+        } catch (Exception $e) {
+            return [
+                'message' => 'حدث خطا اثناء عملية الحذف',
+                'status' => 500,
+                'data' => 'لم يتم حذف البيانات'
+            ];
         }
     }
-
+    
 
 
 

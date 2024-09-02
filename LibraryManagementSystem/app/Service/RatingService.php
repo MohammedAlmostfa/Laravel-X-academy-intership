@@ -40,18 +40,16 @@ class RatingService
     public function updateRating($data, $id)
     {
 
+        try {
+            $rating=Rating::find($id);
+            if (!$rating) {
+                return [
+                    'message' => 'التقيم غسر موجود غير موجود',
+                    'status' => 404,
+                    'data' =>'لا يوجد بيانات'
+                ];
         
-
-        $rating=Rating::find($id);
-        if (!$rating) {
-            return [
-                'message' => 'التقيم غسر موجود غير موجود',
-                'status' => 404,
-                'data' =>'لا يوجد بيانات'
-            ];
-        
-        } else {
-            try {
+            } else {
                 //filter null vules of data
                 $filteredData = array_filter($data, function ($value) {
                     return !is_null($value);
@@ -63,74 +61,72 @@ class RatingService
                     'data' => $rating,
                     'status' => 200,
                 ];
-            } catch (Exception $e) {
-                return [
-                    'message' => 'حدث خطأ أثناء التحديث',
-                    'status' => 500,
-                    'data' => 'لم يتم تحديث البيانات'
-                ];
             }
+        } catch (Exception $e) {
+            return [
+                'message' => 'حدث خطأ أثناء التحديث',
+                'status' => 500,
+                'data' => 'لم يتم تحديث البيانات'
+            ];
         }
-
     }
-
+    //**________________________________________________________________________________________________
 
     public function deleteRating($id)
-    {//find the Rating
-        $rating=Rating::find($id);
-        if(!$rating) {
-            return [
-                      'message' => 'التقيم غير موجود',
-                      'status' => 404,
-                    
-                  ];
-        } else {
-        }
-
+    {
         try {
-            //delete the Rating
-            $rating->delete();
+            //find the Rating
+            $rating=Rating::find($id);
+            if(!$rating) {
+                return [
+                          'message' => 'التقيم غير موجود',
+                          'status' => 404,
+                      ];
+            } else {
+                //delete the Rating
+                $rating->delete();
 
-            return [
-                'message' => 'تمت عملية الحذف',
-                'status' => 200,
-            ];
+                return [
+                    'message' => 'تمت عملية الحذف',
+                    'status' => 200,
+                ];
+            }
         } catch (Exception $e) {
             return [
                 'message' => 'حدث خطا اثناء عملية الحذف',
                 'status' => 500,
-                  
             ];
         }
     }
 
-
+    //**________________________________________________________________________________________________
     public function showRating($id)
     {
-        //find the Rating
-        $rating=Rating::find($id);
-        if(!$rating) {
-            return [
-                      'message' => 'التقيم غير موجود',
-                      'status' => 404,
-                      'data' =>'لا يوجد بيانات'
-                  ];
-        } else {
-        }
-        //show Rating data
         try {
-            return [
-                'message' => 'التقييم',
-                 'data' =>$rating,
-                'status' => 200,
-            ];
+            //find the Rating
+            
+            $rating=Rating::find($id);
+            if(!$rating) {
+                return [
+                          'message' => 'التقيم غير موجود',
+                          'status' => 404,
+                          'data' =>'لا يوجد بيانات'
+                      ];
+            } else {
+                //show Rating data
+                return [
+                    'message' => 'التقييم',
+                     'data' =>$rating,
+                    'status' => 200,
+                ];
+            }
         } catch (Exception $e) {
-            return [
-                'message' => 'حدث خطا اثناء عملية الحذف',
-                'status' => 500,
-                  
-            ];
         }
+        return [
+            'message' => 'حدث خطا اثناء عملية الحذف',
+            'status' => 500,
+                  
+        ];
+        
     }
-
 }
