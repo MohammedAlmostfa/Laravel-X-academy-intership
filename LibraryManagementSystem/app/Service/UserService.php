@@ -144,35 +144,37 @@ class UserService
      */
     public function showUser($name)
     {
-        //find the user
-        $query =User::query();
-        //filter data by name
-        $user=$query->byname($name)->get();
+        try {
+            //find the user
+            $query =User::query();
+            //filter data by name
+            $user=$query->byname($name)->get();
 
-        if (!$user) {
-            //if the user not exist
+            if (!$user) {
+                //if the user not exist
 
-            return [
-                'message' => 'المستخدم غير موجود',
-                'status' => 404,
-                'data' => 'لا يوجد بيانات'
-            ];
-        } else {
-            try {
+                return [
+                    'message' => 'المستخدم غير موجود',
+                    'status' => 404,
+                    'data' => 'لا يوجد بيانات'
+                ];
+            } else {
+         
                 // rturn uuser data
                 return [
                     'message' => 'تمت عملية العرض',
                      'data' => $user,
                     'status' => 200,
                 ];
-            } catch (Exception $e) {
-                
-                return [
-                    'message' => 'حدث خطأ أثناء العرض',
-                    'status' => 500,
-                      'data' => 'لا يوجد بيانات'
-                ];
             }
+        } catch (Exception $e) {
+                
+            return [
+                'message' => 'حدث خطأ أثناء العرض',
+                'status' => 500,
+                  'data' => 'لا يوجد بيانات'
+            ];
+            
         }
     }
 

@@ -98,13 +98,11 @@ class RatingService
             ];
         }
     }
-
     //**________________________________________________________________________________________________
     public function showRating($id)
     {
         try {
             //find the Rating
-            
             $rating=Rating::find($id);
             if(!$rating) {
                 return [
