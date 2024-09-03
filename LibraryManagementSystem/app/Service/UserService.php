@@ -16,13 +16,13 @@ class UserService
     {
         try {
             //get all users
-            $data=User::all();
+            $data = User::all();
             // rturn all users
             return [
-                   'message' => 'نم عرض المستخدمين ',
-                   'status' => 200,
-                   'data' => $data,
-                       ];
+                'message' => 'نم عرض المستخدمين ',
+                'status' => 200,
+                'data' => $data,
+            ];
         } catch (Exception $e) {
 
             return [
@@ -31,14 +31,13 @@ class UserService
                 'data' => 'لم يتم عرض البيانات'
             ];
         }
-
     }
     //**________________________________________________________________________________________________
     /**
-        * *This function is created to store a new User.
-        ** @param$ data
-        * *@return \Illuminate\Http\JsonResponse
-        */
+     * *This function is created to store a new User.
+     ** @param$ data
+     * *@return array(message,data,status)
+     */
     public function createUser($credentials)
     {
         try {
@@ -55,6 +54,7 @@ class UserService
                 'data' => $user,
             ];
         } catch (Exception $e) {
+            Log::error('Error in returning book: ' . $e->getMessage());
             return [
                 'message' => 'حدث خطاء اثنا انشاء الحساب',
                 'status' => 500,
@@ -63,12 +63,11 @@ class UserService
         }
     }
     //**________________________________________________________________________________________________
-    
     /**
      * *This function is creat to update a  user.
      * * @param $data
      * *@param User $user
-     * *@return \Illuminate\Http\JsonResponse
+     * *@retur array(message.status.data)
      */
     public function updateUser($data, $id)
     {
@@ -82,7 +81,7 @@ class UserService
                     'data' => 'لا يوجد بيانات'
                 ];
             } else {
-           
+
                 $user->update($data);
                 return [
                     'message' => 'تمت عملية التحديث',
@@ -91,7 +90,7 @@ class UserService
                 ];
             }
         } catch (Exception $e) {
-                
+            Log::error('Error in returning book: ' . $e->getMessage());
             return [
                 'message' => 'حدث خطأ أثناء التحديث',
                 'status' => 500,
@@ -99,12 +98,12 @@ class UserService
             ];
         }
     }
-    
+
     //**________________________________________________________________________________________________
     /**
      * *This function is creat to delet  a user.
      **@param $id
-     * *@return \Illuminate\Http\JsonResponse
+     * *@return(status, data,message)
      */
     public function deletUser($id)
     {
@@ -119,7 +118,6 @@ class UserService
                     'status' => 404,
                 ];
             } else {
-           
                 //delete the user
                 $user->delete();
                 return [
@@ -128,54 +126,50 @@ class UserService
                 ];
             }
         } catch (Exception $e) {
-                
+            Log::error('Error in returning book: ' . $e->getMessage());
             return [
                 'message' => 'حدث خطأ أثناء الحذف',
                 'status' => 500,
             ];
         }
     }
-    
+
     //**________________________________________________________________________________________________
     /**
      * *This function is creat to show  a user.
      **@param $id
-     * *@return \Illuminate\Http\JsonResponse
+     * *@return($message,status,data)
      */
     public function showUser($name)
     {
+        //find the user
+        $query = User::query();
+        //filter data by name
+        $user = $query->byname($name);
         try {
-            //find the user
-            $query =User::query();
-            //filter data by name
-            $user=$query->byname($name)->get();
-
-            if (!$user) {
+            if (empty($user)) {
                 //if the user not exist
-
                 return [
                     'message' => 'المستخدم غير موجود',
                     'status' => 404,
                     'data' => 'لا يوجد بيانات'
                 ];
             } else {
-         
+
                 // rturn uuser data
                 return [
                     'message' => 'تمت عملية العرض',
-                     'data' => $user,
+                    'data' => $user,
                     'status' => 200,
                 ];
             }
         } catch (Exception $e) {
-                
+            Log::error('Error in returning book: ' . $e->getMessage());
             return [
                 'message' => 'حدث خطأ أثناء العرض',
                 'status' => 500,
-                  'data' => 'لا يوجد بيانات'
+                'data' => 'لا يوجد بيانات'
             ];
-            
         }
     }
-
 }

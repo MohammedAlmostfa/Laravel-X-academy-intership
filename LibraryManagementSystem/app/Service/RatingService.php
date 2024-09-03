@@ -1,32 +1,33 @@
 <?php
+
 namespace App\Service;
 
 use App\Models\Rating;
 use Illuminate\Support\Facades\Auth;
 use Exception;
+use Illuminate\Support\Facades\Log;
 
 class RatingService
 {
     /**
-      * *This function is created to store a new Rating.
-          ** @param$ data
-          * *@return \Illuminate\Http\JsonResponse
-          */
+     * *This function is created to store a new Rating.
+     ** @param$ data
+     * *@return \Illuminate\Http\JsonResponse
+     */
 
     public function createRating($data)
     {
-
         try {
             //creat new Rating
             $rating = Rating::create([
-               'user_id' => Auth::user()->id,
-               'book_id'=>$data['book_id'],
-               'rating'=>$data['rating'],
-               'review'=>$data['review'],
+                'user_id' => Auth::user()->id,
+                'book_id' => $data['book_id'],
+                'rating' => $data['rating'],
+                'review' => $data['review'],
             ]);
             //return Response::json
             return [
-                'message' =>'تم التقييم بنجاح',
+                'message' => 'تم التقييم بنجاح',
                 'status' => 201,
             ];
         } catch (Exception $e) {
@@ -36,19 +37,26 @@ class RatingService
             ];
         }
     }
+    //**________________________________________________________________________________________________
+
+    /**
+         **updat Rating
+         **@param $id
+         **@param $data
+         **@return array(message,status,message)
+         */
 
     public function updateRating($data, $id)
     {
 
         try {
-            $rating=Rating::find($id);
+            $rating = Rating::find($id);
             if (!$rating) {
                 return [
                     'message' => 'التقيم غسر موجود غير موجود',
                     'status' => 404,
-                    'data' =>'لا يوجد بيانات'
+                    'data' => 'لا يوجد بيانات'
                 ];
-        
             } else {
                 //filter null vules of data
                 $filteredData = array_filter($data, function ($value) {
@@ -63,6 +71,7 @@ class RatingService
                 ];
             }
         } catch (Exception $e) {
+            Log::error('Error in returning book: ' . $e->getMessage());
             return [
                 'message' => 'حدث خطأ أثناء التحديث',
                 'status' => 500,
@@ -72,16 +81,22 @@ class RatingService
     }
     //**________________________________________________________________________________________________
 
+    /**
+     **delet the Rating
+     **@param $id
+     **@return array(message,status)
+     */
+
     public function deleteRating($id)
     {
         try {
             //find the Rating
-            $rating=Rating::find($id);
-            if(!$rating) {
+            $rating = Rating::find($id);
+            if (!$rating) {
                 return [
-                          'message' => 'التقيم غير موجود',
-                          'status' => 404,
-                      ];
+                    'message' => 'التقيم غير موجود',
+                    'status' => 404,
+                ];
             } else {
                 //delete the Rating
                 $rating->delete();
@@ -92,39 +107,48 @@ class RatingService
                 ];
             }
         } catch (Exception $e) {
+            Log::error('Error in returning book: ' . $e->getMessage());
             return [
                 'message' => 'حدث خطا اثناء عملية الحذف',
                 'status' => 500,
             ];
         }
     }
+
     //**________________________________________________________________________________________________
+  
+    /**
+       **show the ratings
+       **@param $id
+       **@return array(message,status,data)
+       */
+
     public function showRating($id)
     {
         try {
             //find the Rating
-            $rating=Rating::find($id);
-            if(!$rating) {
+            $rating = Rating::find($id);
+            if (!$rating) {
                 return [
-                          'message' => 'التقيم غير موجود',
-                          'status' => 404,
-                          'data' =>'لا يوجد بيانات'
-                      ];
+                    'message' => 'التقيم غير موجود',
+                    'status' => 404,
+                    'data' => 'لا يوجد بيانات'
+                ];
             } else {
                 //show Rating data
                 return [
                     'message' => 'التقييم',
-                     'data' =>$rating,
+                    'data' => $rating,
                     'status' => 200,
                 ];
             }
         } catch (Exception $e) {
+            Log::error('Error in returning book: ' . $e->getMessage());
+            return [
+                'message' => 'حدث خطا اثناء عملية الحذف',
+                'status' => 500,
+
+            ];
         }
-        return [
-            'message' => 'حدث خطا اثناء عملية الحذف',
-            'status' => 500,
-                  
-        ];
-        
     }
 }

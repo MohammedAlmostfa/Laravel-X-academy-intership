@@ -16,7 +16,11 @@ return new class extends Migration {
             $table->string('email')->unique();
             $table->string('password');
             $table->rememberToken();
+            $table->string('role')->default('user');
+
             $table->timestamps();
+           
+
         });
     }
 

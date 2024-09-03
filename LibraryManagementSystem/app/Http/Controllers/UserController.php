@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\userFormRequest;
 use Illuminate\Validation\ValidationException;
 use App\Models\User;
 use App\Service\UserService ;
@@ -35,10 +36,10 @@ class UserController extends Controller
    
     /**
      * *This function is created to store a new user.
-     * *@param \Illuminate\Http\Request $request
+     * *@param \Illuminate\Http\userFormRequest $request
      * *@return \Illuminate\Http\JsonResponse
      */
-    public function store(RegisterRequest $request)
+    public function store(userFormRequest $request)
     {
         // Get the validation of data
         $validatedData =  $request->validated();
@@ -53,11 +54,11 @@ class UserController extends Controller
     //**________________________________________________________________________________________________
     /**
       * *This function is creat to update  user.
-      * *@param \Illuminate\Http\Request $request
+      * *@param \Illuminate\Http\userFormRequest $request
       * * @param $id
       * * @return \Illuminate\Http\JsonResponse
       */
-    public function update(RegisterRequest $request, $id)
+    public function update(userFormRequest $request, $id)
     {// Get the validation of data
         $validatedData =  $request->validated();
         // get the result
@@ -74,11 +75,10 @@ class UserController extends Controller
      * *@param $id
      * *@return \Illuminate\Http\JsonResponse
      */
-
-    public function show($id)
+    public function show($name)
     {
         //show the user
-        $result =  $this->userService->showUser($id);
+        $result =  $this->userService->showUser($name);
         //return the response
         return response()->json([
             'message' => $result['message'],

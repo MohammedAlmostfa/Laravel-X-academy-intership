@@ -1,23 +1,20 @@
 <?php
+
 namespace App\Service;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use Exception;
+use Illuminate\Support\Facades\Log;
 
 class AuthService
 {
-
     /**
-       * * login user
-       * *@param $credentials (data of user(email,password))
-       * *@return array(message,status,data)
-       */
-
-    //**________________________________________________________________________________________________
-
-
+     * * login user
+     * *@param $credentials (data of user(email,password))
+     * *@return array(message,status,data)
+     */
     public function login2($credentials)
     {
         try {
@@ -28,7 +25,7 @@ class AuthService
                     'message' => 'لا يوجد حساب',
                     'data' => 'لا يوجد بيانات',
                     'status' => 401,
-                'authorisation' => []
+                    'authorisation' => []
                 ];
             } else {
                 $user = Auth::user();
@@ -37,9 +34,9 @@ class AuthService
                     'message' => 'تم تسجيل الدخول',
                     'status' => 201,
                     'data' => [
-                             'name' => $user['name'],
-                             'email' => $user['email']
-    ],
+                        'name' => $user['name'],
+                        'email' => $user['email']
+                    ],
                     'authorisation' => [
                         //rturn tokeen
                         'token' => $token,
@@ -48,6 +45,8 @@ class AuthService
                 ];
             }
         } catch (Exception $e) {
+            Log::error('Error in returning book: ' . $e->getMessage());
+
             return [
                 'message' => 'حدث خطاء اثناء عملية تسديل الدخول',
                 'status' => 500,
@@ -57,10 +56,10 @@ class AuthService
     }
     //**________________________________________________________________________________________________
     /**
-       * * register user
-       * *@param $data (data of user(email,password))
-       * *@return array(message,status,data,'authorisation' )
-       */
+     * * register user
+     * *@param $data (data of user(email,password))
+     * *@return array(message,status,data,authorisation)
+     */
     public function register2($credentials)
     {
         try {
@@ -74,20 +73,19 @@ class AuthService
             $token = Auth::login($user);
             //return
             return [
-    'message' => 'تم تسجيل الدخول',
-    'status' => 201,
-    'data' => [
-        'name' => $user['name'],
-        'email' => $user['email']
-    ],
-    'authorisation' => [
-        'token' => $token,
-        'type' => 'bearer',
-    ]
-];
-
-    
+                'message' => 'تم تسجيل الدخول',
+                'status' => 201,
+                'data' => [
+                    'name' => $user['name'],
+                    'email' => $user['email']
+                ],
+                'authorisation' => [
+                    'token' => $token,
+                    'type' => 'bearer',
+                ]
+            ];
         } catch (Exception $e) {
+            Log::error('Error in returning book: ' . $e->getMessage());
             return [
                 'message' => 'حدث خطاء اثنا انشاء الحساب',
                 'status' => 500,
@@ -95,9 +93,7 @@ class AuthService
             ];
         }
     }
-
     //**________________________________________________________________________________________________
-   
     /*
     * logout user
        * *@param Nothing
@@ -107,20 +103,17 @@ class AuthService
     {
         try {
             Auth::logout();
-
             return [
-                 'message' => 'تم تسجيل الخروج',
+                'message' => 'تم تسجيل الخروج',
                 'status' => 200,
             ];
         } catch (Exception $e) {
+            Log::error('Error in returning book: ' . $e->getMessage());
             return [
                 'message' => ' حدث خطاء اثناء تسجيل الخروج',
                 'status' => 500,
-                
             ];
         }
-
-
     }
     //**________________________________________________________________________________________________
     /*
@@ -140,8 +133,4 @@ class AuthService
             ]
         ];
     }
-
-
-
-
 }

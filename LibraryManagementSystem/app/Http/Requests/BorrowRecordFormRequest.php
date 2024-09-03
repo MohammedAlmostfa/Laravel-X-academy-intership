@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\Validator;
@@ -15,7 +16,6 @@ class BorrowRecordFormRequest extends FormRequest
     public function authorize(): bool
     {
         return auth()->check();
-       
     }
 
     //**________________________________________________________________________________________________
@@ -24,18 +24,20 @@ class BorrowRecordFormRequest extends FormRequest
     {
         // for borrow a book
         if ($this->isMethod('post')) {
-            //corect th date format
+            // Correct the date format and calculate returned date
             $this->merge([
                 'borrowed_at' => date('Y-m-d', strtotime($this->input('borrowed_at'))),
+
             ]);
         }
-        //for return book
+        // for return book
         elseif ($this->isMethod('put') || $this->isMethod('patch')) {
             $this->merge([
-                    'due_date' => date('Y-m-d', strtotime($this->input('due_date'))),
-                ]);
+                'due_date' => date('Y-m-d', strtotime($this->input('due_date'))),
+            ]);
         }
     }
+
     //**________________________________________________________________________________________________
     public function rules(): array
     {
@@ -53,7 +55,6 @@ class BorrowRecordFormRequest extends FormRequest
         } elseif ($this->isMethod('delet')) {
             // Rules for creating a borrowed book record
             $rules['update_at'] = 'required|exists:books,id';
-           
         }
 
         return $rules;

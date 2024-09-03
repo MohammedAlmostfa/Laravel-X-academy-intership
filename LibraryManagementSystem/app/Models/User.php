@@ -20,6 +20,7 @@ class User extends Authenticatable implements JWTSubject
         'name',
         'email',
         'password',
+        'role'
     ];
 
     /**
@@ -61,11 +62,6 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
-    // fitter by name
-    public function scopebyName($query, $name)
-    {
-        return $query->where('name', $name);
-    }
 
     //relations
     public function borrow()
@@ -79,6 +75,14 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Rating::class);
     }
+
+    // fitter by name
+    public function scopebyName($query, $name)
+    {
+        return $query->where('name', $name) ->get();
+    }
+
+   
 
 
 

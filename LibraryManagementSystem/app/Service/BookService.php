@@ -1,16 +1,24 @@
 <?php
+
 namespace App\Service;
 
 use App\Models\Book;
 use Exception;
+use Illuminate\Support\Facades\Log;
 
 class BookService
 {
+    /**
+        * * show books
+        * *@param array $data
+        * *@return array(message,status,data)
+        */
+
     public function showfilterbooks($data)
     {
         try {
-   
-            $query = Book::with('rating');
+
+            $query = Book::with('ratings');
             // check of the parameters that user need to filter the book
 
             if (!empty($data['author'])) {
@@ -33,6 +41,7 @@ class BookService
                 'status' => 200,
             ];
         } catch (Exception $e) {
+            Log::error('Error in returning book: ' . $e->getMessage());
             return [
                 'message' => 'حدث خطأ أثناء العرض: ',
                 'data' => null,
@@ -44,10 +53,10 @@ class BookService
     //**________________________________________________________________________________________________
 
     /**
-        * * creat book
-        * *@param array $data
-        * *@return array(message,status,data)
-    */
+     * * creat book
+     * *@param array $data
+     * *@return array(message,status,data)
+     */
     public function createBook($data)
     {
         try {
@@ -61,6 +70,7 @@ class BookService
                 'status' => 201,
             ];
         } catch (Exception $e) {
+            log::error('Error in returning book: ' . $e->getMessage());
             return [
                 'message' => 'حدث خطأ أثناء الإضافة: ',
                 'data' => null,
@@ -77,17 +87,17 @@ class BookService
      */
     public function updateBook($data, $id)
     {
-        // find the book
-        $book = Book::find($id);
-        // check if the book is  excite
-        if (!$book) {
-            return [
-                'message' => 'الكتاب غير موجود',
-                'status' => 404,
-                'data' =>'لا يوجد بيانات'
-            ];
-        } else {
-            try {
+        try {
+            // find the book
+            $book = Book::find($id);
+            // check if the book is  excite
+            if (!$book) {
+                return [
+                    'message' => 'الكتاب غير موجود',
+                    'status' => 404,
+                    'data' => 'لا يوجد بيانات'
+                ];
+            } else {
                 //filter null vules of data
                 $filteredData = array_filter($data, function ($value) {
                     return !is_null($value);
@@ -100,21 +110,21 @@ class BookService
                     'data' => $book,
                     'status' => 200,
                 ];
-            } catch (Exception $e) {
-                //reurn response
-                return [
-                    'message' => 'حدث خطأ أثناء التحديث',
-                    'status' => 500,
-                    'data' => 'لم يتم تحديث البيانات'
-                ];
             }
+        } catch (Exception $e) {
+            //reurn response
+            return [
+                'message' => 'حدث خطأ أثناء التحديث',
+                'status' => 500,
+                'data' => 'لم يتم تحديث البيانات'
+            ];
         }
     }
     //**________________________________________________________________________________________________
     /**
-     * * show book data
-     * **@param $id
-     * **@return array(message,status,data)
+     ** show book data
+     * *@param $id
+     * *@return array(message,status,data)
      */
     public function ShowBook($id)
     {
@@ -127,32 +137,29 @@ class BookService
                     'message' => 'الكتاب غير موجود',
                     'data' => $book,
                     'status' => 404,
-                   
+
                 ];
             } else {
-
-               
                 return [
-                'message' => 'بيانات الكتاب',
-                 'data' => $book,
-                'status' => 200,
-];
+                    'message' => 'بيانات الكتاب',
+                    'data' => $book,
+                    'status' => 200,
+                ];
             }
         } catch (Exception $e) {
+            log::error('Error in returning book: ' . $e->getMessage());
             return [
                 'message' => 'حدث خطا اثناء عمليةالعرض',
                 'status' => 500,
-              
             ];
         }
     }
-    
     //**________________________________________________________________________________________________
     /**
- * * delet book dataa
- * *@param $id
- * *@return array
- */
+     * * delet book dataa
+     * *@param $id
+     * *@return array(status, message,data)
+     */
     public function deleteBook($id)
     {
         try {
@@ -163,13 +170,10 @@ class BookService
                 return [
                     'message' => 'الكتاب غير موجود',
                     'status' => 404,
-                    'data' =>'لا يوجد بيانات'
+                    'data' => 'لا يوجد بيانات'
                 ];
             } else {
-
-            
                 $book->delete();
-
                 return [
                     'message' => 'تمت عملية الحذف',
                     'data' => $book,
@@ -177,6 +181,7 @@ class BookService
                 ];
             }
         } catch (Exception $e) {
+            log::error('Error in returning book: ' . $e->getMessage());
             return [
                 'message' => 'حدث خطا اثناء عملية الحذف',
                 'status' => 500,
@@ -184,12 +189,4 @@ class BookService
             ];
         }
     }
-    
-
-
-
-
-
-
-
 }

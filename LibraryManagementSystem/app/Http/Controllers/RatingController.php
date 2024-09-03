@@ -16,13 +16,6 @@ class RatingController extends Controller
         $this->ratingService=$ratingService;
     }
 
-
-    public function index()
-    {
-
-    }
-
-
     /**
          ** create a new Rating
         ** @param RatingFormRequest $request

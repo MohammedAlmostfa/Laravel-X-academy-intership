@@ -1,6 +1,6 @@
-# Simple blog management system
+# Simple library management system
 
-A library system that enables you to borrow and return books
+A library system that enables you to borrow and return books.
 
 ## Attributes
 
@@ -18,7 +18,7 @@ A library system that enables you to borrow and return books
 -   Add, delete, modify and view users.
 -   View user by his name.
 -   View borrowing history.
--   Delete the borrowing record using a date so that anything before this date is deleted.
+-   Delete the borrowing record which is returned using a date so that anything before this date is deleted.
 -   View transaction history by a specific date.
 -   Delete reviews
 
