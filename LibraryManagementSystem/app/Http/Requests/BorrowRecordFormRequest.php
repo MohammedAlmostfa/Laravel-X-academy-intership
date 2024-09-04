@@ -20,7 +20,7 @@ class BorrowRecordFormRequest extends FormRequest
 
     //**________________________________________________________________________________________________
 
-    protected function passedValidation()
+    protected function prepareForValidation()
     {
         // for borrow a book
         if ($this->isMethod('post')) {

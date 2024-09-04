@@ -130,7 +130,7 @@ class BookService
     {
         try {
             // find book
-            $book = Book::with('ratings')->find($id);
+            $book = Book::with('averageRatin')->find($id);
             //check that book exists
             if (!$book) {
                 return [

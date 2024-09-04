@@ -20,9 +20,6 @@ class userFormRequest extends FormRequest
 
     public function rules()
     {
-
-
-        
         // for store useer an register
         if ($this->isMethod('post')) {
   
