@@ -47,10 +47,7 @@ class User extends Authenticatable implements JWTSubject
     ];
 
     //timestamp sittings
-    public $timestamps = true;
-    const CREATED_AT = 'created_on';
-    const UPDATED_AT = 'updated_on';
-
+   
 
 
     public function getJWTIdentifier()

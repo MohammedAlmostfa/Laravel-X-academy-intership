@@ -50,7 +50,6 @@ class UserService
             $user->password = $credentials['password'];
             $user->role = $credentials['role'];
             $user->save();
-
             //return $user data
             return [
                 'message' => 'نم انشاء الحساب',
