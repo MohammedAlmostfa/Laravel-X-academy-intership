@@ -43,18 +43,17 @@ class UserService
      ** @param$ data email, password,name,role)
      ** @return array (message,data[name,email,role],status)
      */
-    public function createUser(array $credentials)
+    public function createUser($credentials)
     {
         try {
-            // توليد سلسلة نصية عشوائية بطول 10 أحرف
-            $randomString = str_shuffle('abcdefghijklmnopqrstuvwxyz');
-            //CREATE USER
-            $user = new User;
-            $user->name = $credentials['name'];
-            $user->email = $credentials['email'];
-            $user->password = substr($randomString, 0, 10);
-            $user->role = 'user';
+            $user = new User([
+             'name'=>$credentials['name'],
+             'email'=>$credentials['email'],
+        ]);
+            $user->password=Hash::make($credentials['password']);
+            $user->role='user';
             $user->save();
+
             //return $user data
             return [
                 'message' => 'نم انشاء الحساب',

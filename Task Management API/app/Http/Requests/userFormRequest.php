@@ -32,6 +32,8 @@ class userFormRequest extends FormRequest
         if ($this->isMethod('post')) {
             $rules['email'] = 'required|string|email|max:255|unique:users';
             $rules['name'] = 'required|string|max:255';
+            $rules['password'] = 'nullable|string|min:6';
+
         }
         // for update user
         elseif($this->isMethod('put') || $this->isMethod('patch')) {

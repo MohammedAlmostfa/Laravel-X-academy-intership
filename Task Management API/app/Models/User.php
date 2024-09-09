@@ -9,6 +9,8 @@ use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+use function Laravel\Prompts\password;
+
 class User extends Authenticatable implements JWTSubject
 {
 
@@ -25,6 +27,10 @@ class User extends Authenticatable implements JWTSubject
         'password',
         'role'
 ];
+    protected $fillable=[
+        'name',
+       'email',
+    ];
 
     /**
      * The attributes that should be hidden for serialization.
