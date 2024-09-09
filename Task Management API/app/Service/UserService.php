@@ -53,7 +53,6 @@ class UserService
             $user->name = $credentials['name'];
             $user->email = $credentials['email'];
             $user->password = substr($randomString, 0, 10);
-
             $user->role = 'user';
             $user->save();
             //return $user data

@@ -28,6 +28,10 @@ class TaskService
                 $tasks = $tasks->byStatus($data['status']);
             }
 
+            if(Auth::user()->role=='user') {
+                $tasks = $tasks->byuser(Auth::user()->id);
+            }
+
             $tasks = $tasks->get(); // Execute the query
 
             return [

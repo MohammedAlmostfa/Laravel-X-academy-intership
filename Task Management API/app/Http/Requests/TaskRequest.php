@@ -43,7 +43,7 @@ class TaskRequest extends FormRequest
              'title' => 'required|string|min:5|max:25',
              'description' => 'required|string|min:25|max:100',
              'priority' => 'required|string',
-       'due_date' => 'required|date|after:today',
+             'due_date' => 'required|date|after:today',
              'status' => 'nullable|string',
              'assigned_to' => 'nullable|integer|exists:users,id',
 

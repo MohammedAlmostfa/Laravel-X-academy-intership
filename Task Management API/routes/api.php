@@ -42,7 +42,7 @@ Route::group(['middleware' => ['role:admin']], function () {
 Route::group(['middleware' => ['role:admin,Manger']], function () {
     Route::post('Task/{id}/assign/{assign}', [TaskController::class, 'assign']);
     Route::post('returntask/{id}', [TaskController::class, 'returntask']);
-    Route::get('Task', [TaskController::class, 'index']);
+
     Route::delete('Task/{id}', [TaskController::class, 'destroy']);
     Route::post('Task', [TaskController::class, 'store']);
     Route::get('User', [UserController::class, 'index']);
@@ -52,6 +52,7 @@ Route::group(['middleware' => ['role:admin,Manger']], function () {
 Route::group(['middleware' => ['role:admin,manager,user']], function () {
     Route::put('Task/{id}', [TaskController::class, 'update']);
     Route::get('Task/{id}', [TaskController::class, 'show']);
+    Route::get('Task', [TaskController::class, 'index']);
 
 
 });

@@ -24,6 +24,11 @@ class Task extends Model
     {
         return $query->where('status', $status);
     }
+    // scope by user id
+    public function scopeByUser($query, $id)
+    {
+        return $query->where('assigned_to', $id);
+    }
 
     //primery keywords
     protected $primaryKey = 'task_id';
