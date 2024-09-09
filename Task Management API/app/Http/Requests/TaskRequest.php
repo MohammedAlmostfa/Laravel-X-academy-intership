@@ -24,11 +24,12 @@ class TaskRequest extends FormRequest
     //prepar for validation
     public function prepareForValidation()
     {// organize  the date
-        $this->merge([
-            'due_date' => Carbon::parse($this->input('due_date'))->format('Y-m-d'),
-        ]);
+        if ($this->isMethod('post')) {
+            $this->merge([
+                 'due_date' => Carbon::parse($this->input('due_date'))->format('Y-m-d'),
+            ]);
+        }
     }
-
 
     /**
      * Get the validation rules that apply to the request.
@@ -56,7 +57,7 @@ class TaskRequest extends FormRequest
               'title' => 'nullable|string|min:5|max:25',
               'description' => 'nullable|string|min:25|max:100',
               'priority' => 'nullable|string',
-                'due_date' => 'required|date|after:today',
+                'due_date' => 'nullable|date|after:today',
               'status' => 'nullable|string',
               'assigned_to' => 'nullable|integer|exists:users,id',
      ];

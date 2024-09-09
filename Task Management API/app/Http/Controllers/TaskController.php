@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ratingformrequest;
 use App\Http\Requests\TaskRequest;
 
 use App\Service\TaskService;
@@ -122,6 +123,19 @@ class TaskController extends Controller
             'message' => $result['message'],
            'data' => $result['data'],
         ], $result['status']);
+
+    }
+    //**________________________________________________________________________________________________
+
+    public function Rating($id, ratingformrequest $request)
+    {
+        $valitedData=$request->validated();
+        $result =  $this->taskservisce->RatingUserTask($id, $valitedData);
+
+        return response()->json([
+                 'message' => $result['message'],
+             ], $result['status']);
+
 
     }
 

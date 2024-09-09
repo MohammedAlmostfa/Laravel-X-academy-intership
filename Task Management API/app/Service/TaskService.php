@@ -28,7 +28,7 @@ class TaskService
                 $tasks = $tasks->byStatus($data['status']);
             }
 
-            if(Auth::user()->role=='user') {
+            if (Auth::user()->role == 'user') {
                 $tasks = $tasks->byuser(Auth::user()->id);
             }
 
@@ -123,10 +123,10 @@ class TaskService
                 }
                 // Check if the role of user to allow him to change the information of task  and he add the task
             } elseif (Auth::user()->role == 'admin' || Auth::user()->id == $task->assigned_by) {
-                if (isset($data['status'])) {
+                if (isset($data['status']) || isset($data['rating'])) {
                     return [
                         // if he want to update th status of task
-                        'message' => 'لا يحق لك تغيير حالة المهمة',
+                        'message' => 'لا يحق لك  هذا التغيير  ',
                         'status' => 403,
                         'data' => 'لم يتم عرض البيانات'
                     ];
@@ -319,6 +319,50 @@ class TaskService
             Log::error('Error in return task tasks: ' . $e->getMessage());
             return [
                 'message' => 'حدث خطأ أثناء اسناد المهمة',
+                'status' => 500,
+            ];
+        }
+    }
+
+    //**________________________________________________________________________________________________
+
+    public function RatingUserTask($id, $rating)
+    {
+        try {
+            $task = Task::find($id);
+            if (!$task) {
+                return [
+                    'message' => 'المهمة غير موجودة',
+                    'status' => 402,
+                ];
+            } else {
+                // check if who creat tase he want to rating the task
+                if ($task->assigned_by == Auth::user()->id) {
+                    // check if the task finsh or failed
+                    if ($task->status == 'done' || $task->status == 'failed') {
+                        $task->Rating = $rating['rating'];
+                        $task->save(); // Don't forget to save the task
+                        return [
+                            'message' => 'تم التقييم',
+                            'status' => 200,
+                        ];
+                    } else {
+                        return [
+                            'message' => 'لا يمكنك التقييم الآن',
+                            'status' => 402,
+                        ];
+                    }
+                } else {
+                    return [
+                        'message' => '   لم تقم انت بانشاء المهمة لتقيمها ',
+                        'data' => ' لا يوحد بيانات',
+                        'status' => 402,
+                    ];
+                }
+            }
+        } catch (\Exception $e) {
+            return [
+                'message' => 'حدث خطأ ما',
                 'status' => 500,
             ];
         }

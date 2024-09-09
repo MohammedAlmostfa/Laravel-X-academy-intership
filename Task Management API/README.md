@@ -18,6 +18,7 @@ This project aims to build an application programming interface (API) for task m
     Show all tasks.
 -   Assigan task to user.
 -   Return deleted task.
+-   rating tasks which he added after done or failed
 
 ### Manger Attributes
 
@@ -27,6 +28,7 @@ This project aims to build an application programming interface (API) for task m
 -   Show all tasks.
 -   Assigan task to user.
 -   Delete and return the task he added
+-   rating tasks which he added after done or failed
 
 ## Installation
 

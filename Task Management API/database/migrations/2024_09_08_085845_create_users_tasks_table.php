@@ -17,8 +17,9 @@ return new class extends Migration {
             $table->date('due_date');
             $table->foreignId('assigned_to')->constrained('users');
             $table->integer('assigned_by');
-            $table->timestamp('created_on');
-            $table->timestamp('updated_on');
+            $table->timestamp('created_on')->useCurrent();
+            $table->timestamp('updated_on')->useCurrent()->useCurrentOnUpdate();
+            $table->integer('rating')->check('rating >= 1 and rating <= 5')->nullable();
             $table->softDeletes();
         });
     }
