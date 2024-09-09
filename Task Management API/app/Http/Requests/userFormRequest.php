@@ -18,15 +18,20 @@ class userFormRequest extends FormRequest
 
     }
 
+    public function prepareForValidation()
+    {
+        // Change the first letter from lowercase to uppercase
+        $this->merge([
+            'name' => ucfirst($this->name),
+        ]);
+    }
+
     public function rules()
     {
         // for store useer an register
         if ($this->isMethod('post')) {
-  
             $rules['email'] = 'required|string|email|max:255|unique:users';
-            $rules['password'] = 'required|string|min:6';
             $rules['name'] = 'required|string|max:255';
-            $rules['role'] = 'required|string ';
         }
         // for update user
         elseif($this->isMethod('put') || $this->isMethod('patch')) {

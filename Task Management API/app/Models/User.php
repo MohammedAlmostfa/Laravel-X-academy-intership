@@ -2,30 +2,30 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable implements JWTSubject
 {
 
-    use HasApiTokens, HasFactory, Notifiable ,Notifiable;
+
+    use HasApiTokens, HasFactory, Notifiable ,Notifiable,SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
-  
+
     protected $guarded = [
-        'name',
-        'email',
         'password',
         'role'
 ];
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -45,11 +45,17 @@ class User extends Authenticatable implements JWTSubject
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
-    //timestamp sittings
-   
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
+    }
 
-
+    //  jwt setting
     public function getJWTIdentifier()
     {
         return $this->getKey();
@@ -64,4 +70,8 @@ class User extends Authenticatable implements JWTSubject
     {
         return $query->where('role', $role);
     }
-}
+    //timestamp sittings
+
+    const CREATED_AT = 'created_on';
+    const UPDATED_AT = 'updated_on';
+};

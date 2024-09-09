@@ -10,6 +10,7 @@ return new class extends Migration {
      */
     public function up(): void
     {
+        // the rows of table
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
@@ -18,13 +19,14 @@ return new class extends Migration {
             $table->enum('role', ['user','admin','manger'])->default('user');
             $table->string('password');
             $table->rememberToken();
-            $table->timestamps();
+            $table->timestamp('created_on')->nullable();
+            $table->timestamp('updated_on')->nullable();
+            $table->softDeletes();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
+
+
     public function down(): void
     {
         Schema::dropIfExists('users');

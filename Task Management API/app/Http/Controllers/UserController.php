@@ -6,7 +6,7 @@ use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\userFormRequest;
 use Illuminate\Validation\ValidationException;
 use App\Models\User;
-use App\Service\UserService ;
+use App\Service\UserService;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -20,22 +20,25 @@ class UserController extends Controller
         $this->userService = $userService;
     }
     //**________________________________________________________________________________________________
-    
+
+    /**
+     * *This function is created toshow all users
+     * *@param No thing
+     **@return \Illuminate\Http\JsonResponse(data,message,status)
+     */
     public function index()
     {
         $result =  $this->userService->showUsers();
         return response()->json([
-                   'message' => $result['message'],
-                   'data' => $result['data'],
-               ], $result['status']);
+            'message' => $result['message'],
+            'data' => $result['data'],
+        ], $result['status']);
     }
-
     //**________________________________________________________________________________________________
-   
     /**
      * *This function is created to store a new user.
-     * *@param \Illuminate\Http\userFormRequest $request
-     * *@return \Illuminate\Http\JsonResponse
+     * *@param userFormRequest $request
+     **@return \Illuminate\Http\JsonResponse(data,message,status)
      */
     public function store(userFormRequest $request)
     {
@@ -49,16 +52,15 @@ class UserController extends Controller
             'data' => $result['data'],
         ], $result['status']);
     }
-    
     //**________________________________________________________________________________________________
     /**
-      * *This function is creat to update  user.
-      * *@param \Illuminate\Http\userFormRequest $request
-      * * @param $id
-      * * @return \Illuminate\Http\JsonResponse
-      */
+     * *This function is creat to update  user.
+     * *@param \Illuminate\Http\userFormRequest $request
+     * * @param $id
+     **@return \Illuminate\Http\JsonResponse(data,message,status)
+     */
     public function update(userFormRequest $request, $id)
-    {// Get the validation of data
+    { // Get the validation of data
         $validatedData =  $request->validated();
         // get the result
         $result =  $this->userService->updateUser($validatedData, $id);
@@ -69,26 +71,11 @@ class UserController extends Controller
         ], $result['status']);
     }
     //**________________________________________________________________________________________________
-    /**
-     * *This function is created to show  a user.
-     * *@param $id
-     * *@return \Illuminate\Http\JsonResponse
-     */
-    public function show($name)
-    {
-        //show the user
-        $result =  $this->userService->showUser($name);
-        //return the response
-        return response()->json([
-            'message' => $result['message'],
-           'data' => $result['data'],
-        ], $result['status']);
-    }
-    //**________________________________________________________________________________________________
+
     /**
      * *This function is creat to delet a user.
      * *@param $id
-     * *@return \Illuminate\Http\JsonResponse
+     **@return \Illuminate\Http\JsonResponse(,message,status)
      */
 
     public function destroy($id)
@@ -97,8 +84,41 @@ class UserController extends Controller
         $result =  $this->userService->deletUser($id);
         //return response
         return response()->json([
-        'message' => $result['message'],
+            'message' => $result['message'],
         ], $result['status']);
-
     }
+
+    //**________________________________________________________________________________________________
+    /**
+     * *This function is creat to return user
+     * *@param $id
+     **@return \Illuminate\Http\JsonResponse(data,message,status)
+     */
+
+    public function returnUser($id)
+    {
+        $result =  $this->userService->returnUser($id);
+        //return the response
+        return response()->json([
+            'message' => $result['message'],
+            'data' => $result['data'],
+        ], $result['status']);
+    }
+    //**________________________________________________________________________________________________
+    /**
+    * *This function is created to show  a user.
+    * *@param $id
+    **@return \Illuminate\Http\JsonResponse(data,message,status)
+    */
+    public function show($id)
+    {
+        //show the user
+        $result =  $this->userService->showUser($id);
+        //return the response
+        return response()->json([
+            'message' => $result['message'],
+            'data' => $result['data'],
+        ], $result['status']);
+    }
+
 }

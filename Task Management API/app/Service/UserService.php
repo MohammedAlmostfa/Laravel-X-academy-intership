@@ -14,19 +14,22 @@ class UserService
     //**________________________________________________________________________________________________
     /**
      **This function is created to show all the user.
-     ** @param$ data           (email, password,name,role)
-     ** @return array          (message,data[name],status)
+     ** @param$ dat(email, password,name,role)
+     ** @return array(message,data[name],status)
      */
-
-
     public function showUsers()
     {
         try {
             //get the data
-            $data = User::byRole('user')->get(['id','name']);
+            $data = User::byRole('user')->get(['id', 'name']);
             //return data of user
-            return ['message' => 'بيانات المستخدمين', 'status' => 200, 'data' => $data,];
+            return [
+                'message' => 'بيانات المستخدمين',
+                'status' => 200,
+                'data' => $data,
+            ];
         } catch (Exception $e) {
+            Log::error('Error in show all users  : ' . $e->getMessage());
             return [
                 'message' => 'حدث خطاء اثنا عرض المستخدمسن',
                 'status' => 500,
@@ -37,31 +40,33 @@ class UserService
     //**________________________________________________________________________________________________
     /**
      **This function is created to store a new User.
-     ** @param$ data           (email, password,name,role)
-     ** @return array          (message,data[name,email,role],status)
+     ** @param$ data email, password,name,role)
+     ** @return array (message,data[name,email,role],status)
      */
-    public function createUser($credentials)
+    public function createUser(array $credentials)
     {
         try {
-            // Create user
+            // توليد سلسلة نصية عشوائية بطول 10 أحرف
+            $randomString = str_shuffle('abcdefghijklmnopqrstuvwxyz');
+            //CREATE USER
             $user = new User;
-            $user->email = $credentials['email'];
             $user->name = $credentials['name'];
-            $user->password = $credentials['password'];
-            $user->role = $credentials['role'];
+            $user->email = $credentials['email'];
+            $user->password = substr($randomString, 0, 10);
+
+            $user->role = 'user';
             $user->save();
             //return $user data
             return [
                 'message' => 'نم انشاء الحساب',
                 'status' => 200,
                 'data' => [
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'role' => $user->role,
+                    'name' => $credentials['name'],
+                    'email' => $credentials['email'],
                 ],
             ];
         } catch (Exception $e) {
-            Log::error('Error in returning book: ' . $e->getMessage());
+            Log::error('Error in creat user  : ' . $e->getMessage());
             return [
                 'message' => 'حدث خطاء اثنا انشاء الحساب',
                 'status' => 500,
@@ -72,9 +77,9 @@ class UserService
     //**________________________________________________________________________________________________
     /**
      * *This function is creat to update a  user.
-     **  @param$ data         (email, password,name,role)
-     **  @param $id           (id of user)
-     * *@return array         (message,data[name,email,role],status)
+     **  @param$ data (email, password,name,role)
+     **  @param $id (id of user)
+     * *@return array (message,data[name,email,role],status)
      */
     public function updateUser($data, $id)
     {
@@ -89,12 +94,12 @@ class UserService
                 ];
             } else {
                 //update user
-                $user->name = $data['name'] ?? $user->name;
-                $user->email = $data['email'] ?? $user->email;
-                $user->password = $data['password'] ?? $user->password;
-                $user->role = $data['role'] ?? $user->role;
-                $user->save();
-
+                $user->update([
+                    'name' => $data['name'] ?? $user->name,
+                    'email' => $data['email'] ?? $user->email,
+                    'password' => $data['password'] ?? $user->password,
+                    'role' => $data['role'] ?? $user->role,
+                ]);
                 return [
                     'message' => 'تمت عملية التحديث',
                     'status' => 200,
@@ -117,8 +122,8 @@ class UserService
     //**________________________________________________________________________________________________
     /**
      * *This function is creat to delet  a user.
-     **@param $id                (id of user)
-     * *@return                  (status, data,message)
+     **@param $id (id of user)
+     * *@return  (status, data,message)
      */
     public function deletUser($id)
     {
@@ -140,18 +145,53 @@ class UserService
                 ];
             }
         } catch (Exception $e) {
-            Log::error('Error in returning book: ' . $e->getMessage());
+            Log::error('Error in delet user: ' . $e->getMessage());
             return [
                 'message' => 'حدث خطأ أثناء الحذف',
                 'status' => 500,
             ];
         }
     }
+
+    //**________________________________________________________________________________________________
+    /**
+     * *This function is creat to return task
+     * *@param $id(id of user)
+     **@return array(data,message,status)
+     */
+
+    public function returnUser($id)
+    {
+        try {
+            $user = User::withTrashed()->find($id);
+            if ($user) {
+                $user->restore();
+                return [
+                    'message' => 'تم اعاد المستخدم بنجاح',
+                    'data' => $user,
+                    'status' => 200,
+                ];
+            } else {
+                return [
+                    'message' => ' لايوحد مستخدم',
+                    'data' => 'لايوجد بيانات',
+                    'status' => 200,
+                ];
+            }
+        } catch (Exception $e) {
+            Log::error('Error in returning user: ' . $e->getMessage());
+            return [
+                'message' => 'حدث خطأ أثناءاعادة المستخدم',
+                'status' => 500,
+                'data' => 'لا يوجد بيانات'
+            ];
+        }
+    }
     //**________________________________________________________________________________________________
     /**
      * *This function is creat to show  a user.
-     **@param $id                    (id of user)
-     * *@return                      ($message,status,data)
+     **@param $id(id of user)
+     * *@return ($message,status,data)
      */
     public function showUser($id)
     {
@@ -176,7 +216,7 @@ class UserService
                 ];
             }
         } catch (Exception $e) {
-            Log::error('Error in returning book: ' . $e->getMessage());
+            Log::error('Error in show user: ' . $e->getMessage());
             return [
                 'message' => 'حدث خطأ أثناء العرض',
                 'status' => 500,

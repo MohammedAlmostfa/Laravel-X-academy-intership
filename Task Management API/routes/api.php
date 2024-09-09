@@ -20,13 +20,38 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+// for all user
 Route::controller(AuthController::class)->group(function () {
     Route::post('/login', 'login');
-    Route::post('/register', 'register');
     Route::post('/logout', 'logout');
     Route::post('/refresh', 'refresh');
 });
 
-Route::resource('User', UserController::class);
+//routs for admins
 
-Route::resource('Task', TaskController::class);
+Route::group(['middleware' => ['role:admin']], function () {
+    Route::post('User', [UserController::class, 'store']);
+    Route::delete('User/{id}', [UserController::class, 'destroy']);
+    Route::put('User/{id}', [UserController::class, 'update']);
+    Route::get('User/{id}', [UserController::class, 'show']);
+    Route::post('returnuser/{id}', [UserController::class, 'returnuser']);
+});
+
+//routs for admins and mangers
+Route::group(['middleware' => ['role:admin,Manger']], function () {
+    Route::post('Task/{id}/assign/{assign}', [TaskController::class, 'assign']);
+    Route::post('returntask/{id}', [TaskController::class, 'returntask']);
+    Route::get('Task', [TaskController::class, 'index']);
+    Route::delete('Task/{id}', [TaskController::class, 'destroy']);
+    Route::post('Task', [TaskController::class, 'store']);
+    Route::get('User', [UserController::class, 'index']);
+
+});
+//routs for adminsand mangers user
+Route::group(['middleware' => ['role:admin,manager,user']], function () {
+    Route::put('Task/{id}', [TaskController::class, 'update']);
+    Route::get('Task/{id}', [TaskController::class, 'show']);
+
+
+});

@@ -5,23 +5,21 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
-    /**
-     * Run the migrations.
-     */
+
     public function up(): void
     {
-        Schema::create('tasks', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+        Schema::create('users_tasks', function (Blueprint $table) {
+            $table->id('task_id');
             $table->string('title');
             $table->string('description');
             $table->enum('priority', ['low', 'medium', 'high'])->default('medium');
-            $table->enum('status', ['success','In progress','Not started'])->default('Not started');
+            $table->enum('status', ['pinned', 'In progress', 'done','faild'])->default('pinned');
             $table->date('due_date');
-            $table->integer('assigned_to');
+            $table->foreignId('assigned_to')->constrained('users');
             $table->integer('assigned_by');
-
-
+            $table->timestamp('created_on');
+            $table->timestamp('updated_on');
+            $table->softDeletes();
         });
     }
 
@@ -30,6 +28,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('tasks');
+        Schema::dropIfExists('users_tasks'); // يجب استخدام dropIfExists هنا
     }
 };
