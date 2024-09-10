@@ -1,0 +1,330 @@
+{
+	"info": {
+		"_postman_id": "045b790d-0bfb-4cf5-bb2f-e310c0423b65",
+		"name": "Test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "37858198"
+	},
+	"item": [
+		{
+			"name": "dispaly the movies",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/Movies",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"Movies"
+					],
+					"query": [
+						{
+							"key": "genre",
+							"value": "Action",
+							"disabled": true
+						},
+						{
+							"key": "director",
+							"value": "James",
+							"disabled": true
+						},
+						{
+							"key": "sort_by",
+							"value": "release_year",
+							"disabled": true
+						},
+						{
+							"key": "sort_dir",
+							"value": "desc",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "view th information of movie",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/Movies/1",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"Movies",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "insert movie",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "title",
+						"value": "movie title",
+						"type": "text"
+					},
+					{
+						"key": "director",
+						"value": "Mohammed",
+						"type": "text"
+					},
+					{
+						"key": "genre",
+						"value": "action",
+						"type": "text"
+					},
+					{
+						"key": "release_year",
+						"value": "2004",
+						"type": "text"
+					},
+					{
+						"key": "description",
+						"value": "Beautiful",
+						"type": "text"
+					},
+					{
+						"key": "",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "title",
+							"value": "movie title",
+							"type": "text"
+						},
+						{
+							"key": "director",
+							"value": "Mohammed",
+							"type": "text"
+						},
+						{
+							"key": "genre",
+							"value": "action",
+							"type": "text"
+						},
+						{
+							"key": "release_year",
+							"value": "2004",
+							"type": "text"
+						},
+						{
+							"key": "description",
+							"value": "Beautiful",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/Movies",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"Movies"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update movie",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "title",
+							"value": "movie title",
+							"type": "text"
+						},
+						{
+							"key": "director",
+							"value": "Mohammed",
+							"type": "text"
+						},
+						{
+							"key": "genre",
+							"value": "farcical",
+							"type": "text"
+						},
+						{
+							"key": "release_year",
+							"value": "2004",
+							"type": "text"
+						},
+						{
+							"key": "description",
+							"value": "Beautiful",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/Movies/30",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"Movies",
+						"30"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delet movie",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/Movies/1",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"Movies",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "insert Rating",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "user_id",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "movie_id",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "rating",
+							"value": "2",
+							"type": "text"
+						},
+						{
+							"key": "review",
+							"value": "good",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/Rating",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"Rating"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "display the information of rating",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/Rating/1",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"Rating",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delet Rating",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "update rating",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	]
+}
