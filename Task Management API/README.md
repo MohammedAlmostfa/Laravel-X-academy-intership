@@ -16,6 +16,7 @@ This project aims to build an application programming interface (API) for task m
 -   Return deleted user.
 -   Add task,update information of task expect the status of task,show task by id and
     Show all tasks.
+-   Add ,delet,show,updaate category.
 -   Assigan task to user.
 -   Return deleted task.
 -   rating tasks which he added after done or failed
