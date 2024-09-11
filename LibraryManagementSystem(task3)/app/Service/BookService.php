@@ -25,8 +25,8 @@ class BookService
                 $query->byAuthor($data['author']);
             }
 
-            if (!empty($data['category'])) {
-                $query->byCategory($data['category']);
+            if (!empty($data['category_id'])) {
+                $query->byCategory($data['category_id']);
             }
 
             if (!empty($data['case'])) {
@@ -51,7 +51,6 @@ class BookService
     }
 
     //**________________________________________________________________________________________________
-
     /**
      * * creat book
      * *@param array $data
@@ -98,12 +97,17 @@ class BookService
                     'data' => 'لا يوجد بيانات'
                 ];
             } else {
-                //filter null vules of data
-                $filteredData = array_filter($data, function ($value) {
-                    return !is_null($value);
-                });
+
+
+
                 // update data
-                $book->update($filteredData);
+                $book->update([
+'title'=>$data['title']??$book->title,
+'author'=>$data['author']??$book->author,
+'description'=>$data['description']??$book->description,
+'published_at'=>$data['published_at']??$book->published_at,
+'case'=>$data['case']??$book->case,
+                ]);
                 //reurn response wirh data
                 return [
                     'message' => 'تمت عملية التحديث',
@@ -130,7 +134,7 @@ class BookService
     {
         try {
             // find book
-            $book = Book::with('averageRatin')->find($id);
+            $book = Book::find($id);
             //check that book exists
             if (!$book) {
                 return [
@@ -150,6 +154,7 @@ class BookService
             log::error('Error in returning book: ' . $e->getMessage());
             return [
                 'message' => 'حدث خطا اثناء عمليةالعرض',
+                'data' => 'لا يوجد بيانات لالعرض',
                 'status' => 500,
             ];
         }

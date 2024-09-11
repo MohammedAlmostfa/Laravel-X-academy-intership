@@ -140,12 +140,11 @@ class UserService
      **@param $id
      * *@return($message,status,data)
      */
-    public function showUser($name)
+    public function showUser($id)
     {
         //find the user
-        $query = User::query();
-        //filter data by name
-        $user = $query->byname($name);
+        $query = User::find($id);
+
         try {
             if (empty($user)) {
                 //if the user not exist

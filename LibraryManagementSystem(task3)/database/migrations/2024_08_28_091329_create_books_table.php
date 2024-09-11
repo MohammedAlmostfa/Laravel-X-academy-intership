@@ -19,7 +19,7 @@ return new class extends Migration {
             $table->string('author');
             $table->string('description');
             $table->date('published_at');
-            $table->string('category');
+            $table->foreignId('category_id')->constrained('categories')->cascadeOnDelete();
             $table->string('case')->default('existing');
             $table->timestamps();
 

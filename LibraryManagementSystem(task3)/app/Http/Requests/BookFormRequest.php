@@ -29,7 +29,7 @@ class BookFormRequest extends FormRequest
             'description' => 'الوصف',
             'published_at' => 'تاريخ النشر',
             'case' => 'حالة الكتاب',
-            'category' => 'فئة الكتاب',
+            'category_id' => 'فئة الكتاب',
         ];
     }
     //**________________________________________________________________________________________________
@@ -40,7 +40,9 @@ class BookFormRequest extends FormRequest
             'string' => 'يجب أن يكون حقل :attribute من نوع نصي',
             'min' => 'يجب أن يكون حقل :attribute عدد حروفه أكبر من :min',
             'date' => 'يجب أن يكون :attribute تاريخ صالح',
+            'integer' => 'يجب ان يمون ال :attribute رقم صحيح',
             'max' => 'يجب أن يكون حقل :attribute عدد حروفه اصغر من :max',
+            'exists'=>'يجب ان يكون موجود في حقل اللفئات'
         ];
     }
 
@@ -51,7 +53,7 @@ class BookFormRequest extends FormRequest
         if ($this->isMethod('get')) {
 
             $rules['author'] = 'nullable|string|min:3';
-            $rules['category'] = 'nullable|string|min:3|max:10';
+            $rules['category_id'] = 'nullable|integer|exists:categories,id';
             $rules['case'] = 'nullable|string';
         }
         // for add book
@@ -60,7 +62,7 @@ class BookFormRequest extends FormRequest
             $rules['author'] = 'required|string|min:3|max:20';
             $rules['description'] = 'nullable|string|max:255';
             $rules['published_at'] = 'nullable|date';
-            $rules['category'] = 'required|string|min:3|max:10';
+            $rules['category_id'] = 'required|integer|exists:categories,id';
         }
         // for update book
 
@@ -71,7 +73,7 @@ class BookFormRequest extends FormRequest
             $rules['description'] = 'nullable|string';
             $rules['published_at'] = 'nullable|date';
             $rules['case'] = 'nullable|string';
-            $rules['category'] = 'nullable|string|min:3|max:10';
+            $rules['category_id'] = 'nullable|integer|min:3|max:10';
         }
         return $rules;
     }

@@ -84,7 +84,6 @@ class BorrowrecordService
                 } else {
                     //Update book case
                     $book->update(['case' => 'existing',]);
-
                     // inster the date of  return
                     $borrow->update([
                         'due_date' => $data['due_date'],

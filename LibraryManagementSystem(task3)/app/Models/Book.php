@@ -12,7 +12,7 @@ class Book extends Model
         'author',
         'description',
         'published_at',
-        'category',
+        'category_id',
         'case',
     ];
 
@@ -22,31 +22,35 @@ class Book extends Model
         return $query->where('author', $author);
     }
     //filter by category
-    public function scopebyCategory($query, $category)
+    public function scopebyCategory($query, $category_id)
     {
-        return $query->where('category', $category);
+        return $query->where('category_id', $category_id);
     }
     //filter by category
     public function scopebyCase($query, $case)
     {
         return $query->where('case', $case);
     }
-    
-
 
     public function ratings()
     {
         return $this->hasMany(Rating::class);
     }
-    
+
     public function averageRating()
     {
         return $this->ratings()->avg('rating');
     }
-
+    //browsr
     public function borrow()
     {
         return $this->hasMany(BorrowRecord::class);
+    }
+
+
+    public function category()
+    {
+        return $this->hasone(Category::class);
     }
 
 }

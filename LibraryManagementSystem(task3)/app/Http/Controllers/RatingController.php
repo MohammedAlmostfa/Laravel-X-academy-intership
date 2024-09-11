@@ -28,12 +28,9 @@ class RatingController extends Controller
         $result =  $this->ratingService->createRating($validatedData);
         return response()->json([
             'message' => $result['message'],
-           
+ 'data' => $result['data'],
         ], $result['status']);
     }
-
-
-
     /**
          * *This function is creat to update the Rating.
          * *@param \Illuminate\Http\RatingFormRequest $request
@@ -47,9 +44,8 @@ class RatingController extends Controller
         $result =  $this->ratingService->updateRating($validatedData, $id);
         return response()->json([
             'message' => $result['message'],
+               'data' => $result['data'],
         ], $result['status']);
-
-
     }
 
     /**
@@ -63,9 +59,7 @@ class RatingController extends Controller
 
         return response()->json([
                     'message' => $result['message'],
-                    
                 ], $result['status']);
-
 
     }
 
@@ -84,7 +78,7 @@ class RatingController extends Controller
 
 
 
-    
+
 
 
 }

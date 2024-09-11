@@ -19,59 +19,70 @@ class RatingService
     {
         try {
             //creat new Rating
-            $rating = Rating::create([
-                'user_id' => Auth::user()->id,
-                'book_id' => $data['book_id'],
-                'rating' => $data['rating'],
-                'review' => $data['review'],
-            ]);
+            if(Auth::user()->role=='user') {
+                $rating = Rating::create([
+                    'user_id' => Auth::user()->id,
+                    'book_id' => $data['book_id'],
+                    'rating' => $data['rating'],
+                    'review' => $data['review'],
+                ]);
+            }
+
             //return Response::json
             return [
                 'message' => 'تم التقييم بنجاح',
+                 'data' => $rating,
                 'status' => 201,
             ];
         } catch (Exception $e) {
             return [
                 'message' => 'حدث خطاء اثنا  التقييم',
+                  'data' => ' لايوجد بيانات',
+
                 'status' => 500,
             ];
         }
     }
     //**________________________________________________________________________________________________
-
     /**
          **updat Rating
          **@param $id
          **@param $data
          **@return array(message,status,message)
          */
-
     public function updateRating($data, $id)
     {
-
         try {
             $rating = Rating::find($id);
             if (!$rating) {
                 return [
-                    'message' => 'التقيم غسر موجود غير موجود',
+                    'message' => 'التقييم غير موجود',
                     'status' => 404,
                     'data' => 'لا يوجد بيانات'
                 ];
             } else {
-                //filter null vules of data
-                $filteredData = array_filter($data, function ($value) {
-                    return !is_null($value);
-                });
-
-                $rating->update($filteredData);
-                return [
-                    'message' => 'تمت عملية التحديث',
-                    'data' => $rating,
-                    'status' => 200,
-                ];
+                if ($rating->user_id == Auth::user()->id || Auth::user()->role == 'admin') {
+                    // Filter null values of data
+                    $rating->update([
+                        'book_id' => $data['book_id'] ?? $rating->book_id,
+                        'rating' => $data['rating'] ?? $rating->rating,
+                        'review' => $data['review'] ?? $rating->review,
+                    ]);
+                    return [
+                        'message' => 'تمت عملية التحديث',
+                        'data' => $rating,
+                        'status' => 200,
+                    ];
+                } else {
+                    return [
+                        'message' => 'لا يحق لك التقييم',
+                        'data' => 'لا يوجد بيانات',
+                        'status' => 403,
+                    ];
+                }
             }
         } catch (Exception $e) {
-            Log::error('Error in returning book: ' . $e->getMessage());
+            Log::error('Error in updating rating: ' . $e->getMessage());
             return [
                 'message' => 'حدث خطأ أثناء التحديث',
                 'status' => 500,
@@ -116,7 +127,7 @@ class RatingService
     }
 
     //**________________________________________________________________________________________________
-  
+
     /**
        **show the ratings
        **@param $id

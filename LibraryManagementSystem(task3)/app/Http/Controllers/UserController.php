@@ -20,7 +20,7 @@ class UserController extends Controller
         $this->userService = $userService;
     }
     //**________________________________________________________________________________________________
-    
+
     public function index()
     {
         $result =  $this->userService->showUsers();
@@ -29,11 +29,11 @@ class UserController extends Controller
                    'data' => $result['data'],
                ], $result['status']);
 
-    
+
     }
 
     //**________________________________________________________________________________________________
-   
+
     /**
      * *This function is created to store a new user.
      * *@param \Illuminate\Http\userFormRequest $request
@@ -75,10 +75,10 @@ class UserController extends Controller
      * *@param $id
      * *@return \Illuminate\Http\JsonResponse
      */
-    public function show($name)
+    public function show($id)
     {
         //show the user
-        $result =  $this->userService->showUser($name);
+        $result =  $this->userService->showUser($id);
         //return the response
         return response()->json([
             'message' => $result['message'],

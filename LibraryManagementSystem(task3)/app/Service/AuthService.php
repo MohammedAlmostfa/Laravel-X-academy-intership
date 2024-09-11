@@ -29,7 +29,7 @@ class AuthService
                 ];
             } else {
                 $user = Auth::user();
-                // rturn respons
+                // return respons
                 return [
                     'message' => 'تم تسجيل الدخول',
                     'status' => 201,
