@@ -120,5 +120,38 @@ class UserController extends Controller
             'data' => $result['data'],
         ], $result['status']);
     }
+    //**________________________________________________________________________________________________
+    /**
+    * *This function is created to show  dele user.
+    * *@param $id
+    **@return \Illuminate\Http\JsonResponse(data,message,status)
+    */
+
+    public function showdeleted()
+    {
+
+        $result =  $this->userService->showdeletedUser();
+        //return the response
+        return response()->json([
+            'message' => $result['message'],
+            'data' => $result['data'],
+        ], $result['status']);
+    }
+    //**________________________________________________________________________________________________
+
+    /**
+     * *This function is creat to delet a user finally.
+     * *@param $id
+     **@return \Illuminate\Http\JsonResponse(,message,status)
+     */
+    public function destroyfinally($id)
+    {
+        //delet user
+        $result =  $this->userService->finallyDelete($id);
+        //return response
+        return response()->json([
+            'message' => $result['message'],
+        ], $result['status']);
+    }
 
 }

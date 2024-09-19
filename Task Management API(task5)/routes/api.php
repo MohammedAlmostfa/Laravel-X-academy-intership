@@ -35,13 +35,20 @@ Route::group(['middleware' => ['role:admin']], function () {
     Route::delete('User/{id}', [UserController::class, 'destroy']);
     Route::put('User/{id}', [UserController::class, 'update']);
     Route::get('User/{id}', [UserController::class, 'show']);
+    Route::get('Users', [UserController::class, 'showdeleted']);
     Route::post('returnuser/{id}', [UserController::class, 'returnuser']);
+    Route::post('returntask/{id}', [TaskController::class, 'returntask']);
+    Route::delete('Tasks/{id}', [TaskController::class, 'destroyfinally']);
+    Route::delete('Users/{id}', [UserController::class, 'destroyfinally']);
+
+
 });
 
 //routs for admins and mangers
-Route::group(['middleware' => ['role:admin,Manger']], function () {
+Route::group(['middleware' => ['role:admin,manger']], function () {
     Route::post('Task/{id}/assign/{assign}', [TaskController::class, 'assign']);
-    Route::post('returntask/{id}', [TaskController::class, 'returntask']);
+
+    Route::get('tasks', [TaskController::class, 'showdeleted']);
     Route::post('rating/{id}', [TaskController::class, 'Rating']);
     Route::delete('Task/{id}', [TaskController::class, 'destroy']);
     Route::post('Task', [TaskController::class, 'store']);
@@ -50,9 +57,15 @@ Route::group(['middleware' => ['role:admin,Manger']], function () {
 });
 //routs for adminsand mangers user
 Route::group(['middleware' => ['role:admin,manager,user']], function () {
-    Route::put('Task/{id}', [TaskController::class, 'update']);
+    Route::put('Task/{id}', [TaskController::class, 'userupdate']);
     Route::get('Task/{id}', [TaskController::class, 'show']);
     Route::get('Task', [TaskController::class, 'index']);
+
+
+});
+Route::group(['middleware' => ['role:user']], function () {
+    Route::put('Task/{id}', [TaskController::class, 'userupdate']);
+    Route::get('Tasks', [TaskController::class, 'usershowtasks']);
 
 
 });

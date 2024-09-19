@@ -8,7 +8,7 @@ This project aims to build an application programming interface (API) for task m
 
 -   log in , log out adn refresh .
 -   Change task status['pinned', 'In progress', 'done','faild'].
--   Show the task s assiben to him.
+-   Show the tasks assigen to him.
 
 ### admin Attributes
 
@@ -20,6 +20,7 @@ This project aims to build an application programming interface (API) for task m
 -   Assigan task to user.
 -   Return deleted task.
 -   rating tasks which he added after done or failed
+-   force delet to user and task
 
 ### Manger Attributes
 

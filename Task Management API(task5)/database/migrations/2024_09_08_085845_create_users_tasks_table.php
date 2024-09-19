@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->enum('status', ['pinned', 'In progress', 'done','faild'])->default('pinned');
             $table->date('due_date');
             $table->foreignId('assigned_to')->constrained('users');
-            $table->integer('assigned_by');
+            $table->foreignId('assigned_by')->constrained('users');
             $table->timestamp('created_on')->useCurrent();
             $table->timestamp('updated_on')->useCurrent()->useCurrentOnUpdate();
             $table->integer('rating')->check('rating >= 1 and rating <= 5')->nullable();

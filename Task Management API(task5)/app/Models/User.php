@@ -51,15 +51,18 @@ class User extends Authenticatable implements JWTSubject
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
-    public function user()
+
+
+    public function assignedTasks()
     {
-        return $this->belongsTo(User::class);
+        return $this->hasMany(Task::class, 'assigned_to');
     }
 
-    public function tasks()
+    public function assignedByTasks()
     {
-        return $this->hasMany(Task::class);
+        return $this->hasMany(Task::class, 'assigned_by');
     }
+
 
     //  jwt setting
     public function getJWTIdentifier()

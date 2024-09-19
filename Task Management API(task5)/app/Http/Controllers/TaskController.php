@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\crTaskFormRquest;
 use App\Http\Requests\ratingformrequest;
 use App\Http\Requests\TaskRequest;
 
@@ -39,7 +40,7 @@ class TaskController extends Controller
      **@parm TaskRequest $request
      **@return \Illuminate\Http\JsonResponse (data,message,status)
      */
-    public function store(TaskRequest $request)
+    public function store(crTaskFormRquest $request)
     {// validate data
         $validatedData = $request->validated();
         $result = $this->taskservisce->createTask($validatedData);
@@ -56,10 +57,27 @@ class TaskController extends Controller
      **@parm $id(id of task)
      **@return \Illuminate\Http\JsonResponse(data,message,status)
      */
-    public function update(TaskRequest $request, $id)
+    public function userupdate(TaskRequest $request, $id)
     {
         $validatedData = $request->validated();
-        $result = $this->taskservisce->updateTask($validatedData, $id);
+        $result = $this->taskservisce->userupdateTask($validatedData, $id);
+
+        return response()->json([
+            'message' => $result['message'],
+            'data' => $result['data'],
+        ], $result['status']);
+    }
+    //**________________________________________________________________________________________________
+    /**
+     ** updat the   task
+     **@parm TaskRequest $request
+     **@parm $id(id of task)
+     **@return \Illuminate\Http\JsonResponse(data,message,status)
+     */
+    public function Mangerupdate(TaskRequest $request, $id)
+    {
+        $validatedData = $request->validated();
+        $result = $this->taskservisce->managerUpdateTask($validatedData, $id);
 
         return response()->json([
             'message' => $result['message'],
@@ -138,7 +156,54 @@ class TaskController extends Controller
 
 
     }
+    //**________________________________________________________________________________________________
 
 
+    public function usershowtasks()
+    {
+
+        $result =  $this->taskservisce->show_his_task();
+
+        return response()->json([
+                 'message' => $result['message'],
+                 'data' => $result['data'],
+             ], $result['status']);
+
+
+    }
+    //**________________________________________________________________________________________________
+
+    /**
+    * *This function is created to show  deleted user.
+    * *@param $id
+    **@return \Illuminate\Http\JsonResponse(data,message,status)
+    */
+
+    public function showdeleted()
+    {
+
+        $result =  $this->taskservisce->showdeletedTask();
+        //return the response
+        return response()->json([
+            'message' => $result['message'],
+            'data' => $result['data'],
+        ], $result['status']);
+    }
+    //**________________________________________________________________________________________________
+
+    /**
+    * *This function is creat to delet a task finally.
+    * *@param $id
+    **@return \Illuminate\Http\JsonResponse(,message,status)
+    */
+    public function destroyfinally($id)
+    {
+        //delet user
+        $result =  $this->taskservisce->finallyDeleteTask($id);
+        //return response
+        return response()->json([
+            'message' => $result['message'],
+        ], $result['status']);
+    }
 
 }

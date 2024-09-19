@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Http\Requests\TaskRequest;
 use App\Models\Task;
+use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
@@ -83,13 +84,12 @@ class TaskService
     }
     //**________________________________________________________________________________________________
     /**
-     * *This function is created to update an existing task.
-     ** @param array $data
-     ** @param int $id
-     * *@return array(data,status,message)
-     */
-    //بتم في هذا الكود التحقق من دور المستخدم الذي قوم بالعملية والتحقق بصلاحيتو بالتديل عليها و بالبيانات الت سوف يعدلها
-    public function updateTask($data, $id)
+ * This function is created to user  update task.
+ * @param array $data
+ * @param int $id
+ * @return array(data,status,message)
+ */
+    public function userupdateTask($data, $id)
     {
         try {
             $task = Task::find($id);
@@ -101,32 +101,65 @@ class TaskService
                     'data' => 'لم يتم عرض البيانات'
                 ];
             }
-            // Check if the role of  user to allow him to change the status of the task and the task is assogned to him
-            if (Auth::user()->role == 'user' && Auth::user()->id == $task->assigned_to) {
-                // chck ih he want to updat the status of task
+            // Check if the role of user to allow him to change the status of the task and the task is assigned to him
+            if (Auth::user()->id == $task->assigned_to) {
+                // Check if he wants to update the status of the task
                 if (isset($data['status'])) {
                     // Update the status
                     $task->update(['status' => $data['status'] ?? $task->status]);
-                    //if he want update  the status of task
                     return [
                         'message' => 'تم تغيير حالة المهمة',
                         'data' => $task,
                         'status' => 201,
                     ];
                 } else {
-                    //if he want update  the information of task
                     return [
                         'message' => 'لا يحق لك تغيير إلا حالة المهمة',
                         'status' => 403,
                         'data' => 'لم يتم عرض البيانات'
                     ];
                 }
-                // Check if the role of user to allow him to change the information of task  and he add the task
-            } elseif (Auth::user()->role == 'admin' || Auth::user()->id == $task->assigned_by) {
+            } else {
+                return [
+                    'message' => 'لا يحق لك القيام بهذه العملية',
+                    'status' => 403,
+                    'data' => 'لم يتم عرض البيانات'
+                ];
+            }
+        } catch (Exception $e) {
+            Log::error('Error in updating task: ' . $e->getMessage());
+            return [
+                'message' => 'حدث خطأ أثناء التحديث',
+                'status' => 500,
+                'data' => 'لم يتم تحديث البيانات'
+            ];
+        }
+    }
+    //**________________________________________________________________________________________________
+    /**
+     * This function is created to  manger update task.
+     * @param array $data
+     * @param int $id
+     * @return array(data,status,message)
+     */
+
+    public function managerUpdateTask($data, $id)
+    {
+        try {
+            $task = Task::find($id);
+            // Check if the task exists
+            if (!$task) {
+                return [
+                    'message' => 'المهمة غير موجودة',
+                    'status' => 404,
+                    'data' => 'لم يتم عرض البيانات'
+                ];
+            }
+            // Check if the role of user to allow him to change the information of task and he added the task
+            if (Auth::user()->role == 'admin' || Auth::user()->id == $task->assigned_by) {
                 if (isset($data['status']) || isset($data['rating'])) {
                     return [
-                        // if he want to update th status of task
-                        'message' => 'لا يحق لك  هذا التغيير  ',
+                        'message' => 'لا يحق لك هذا التغيير',
                         'status' => 403,
                         'data' => 'لم يتم عرض البيانات'
                     ];
@@ -146,7 +179,6 @@ class TaskService
                         'data' => $task
                     ];
                 }
-                // if he dos't check th prievous conditions
             } else {
                 return [
                     'message' => 'لا يحق لك القيام بهذه العملية',
@@ -163,6 +195,7 @@ class TaskService
             ];
         }
     }
+
     //**________________________________________________________________________________________________
     /**
      **This function is created to delete an existing task.
@@ -367,4 +400,93 @@ class TaskService
             ];
         }
     }
+    //**________________________________________________________________________________________________
+
+
+    public function show_his_task()
+    {
+        try {
+            $user = User::find(Auth::user()->id);
+            $tasks = $user->assignedTasks()->get();
+
+            return [
+                'message' => 'تم عرض التاسكات الخاصة بك',
+                'data' => $tasks,
+                'status' => 200,
+            ];
+
+        } catch (\Exception $e) {
+            return [
+                'message' => 'حدث خطأ ما أثناء عرض التاسكات',
+                'data'=>[],
+                'status' => 500,
+            ];
+        }
+    }
+
+
+    //**________________________________________________________________________________________________
+    /**
+ * This function is created to show deleted tasks.
+ *
+ * @param none
+ * @return array ($message, $status, $data)
+ */
+    public function showdeletedTask()
+    {
+        try {
+            $tasks = Task::onlyTrashed()->get();
+
+            return [
+                'message' => 'بيانات المهام المحذوفة',
+                'data' => $tasks,
+                'status' => 200,
+            ];
+
+        } catch (\Exception $e) {
+            Log::error('Error in show task: ' . $e->getMessage());
+            return [
+                'message' => 'حدث خطأ أثناء العرض: ' . $e->getMessage(),
+                'status' => 500,
+                'data' => 'لا يوجد بيانات',
+            ];
+        }
+    }
+    /**
+         /**
+ * This function is created to permanently delete a task.
+ *
+ * @param int $id
+ * @return array
+ */
+    public function finallyDeleteTask($id)
+    {
+        try {
+            $task = Task::find($id);
+
+            if (!$task) {
+                return [
+                    'message' => 'المهمة غير موجودة',
+                    'status' => 404,
+                ];
+            }
+
+            $task->forceDelete();
+
+            return [
+                'message' => 'تم الحذف نهائيا',
+                'status' => 200,
+            ];
+        } catch (\Exception $e) {
+            Log::error('Error in finallyDeleteTask: ' . $e->getMessage());
+
+            return [
+                'message' => 'حدث خطأ أثناء الحذف',
+                'status' => 500,
+                'data' => 'لا يوجد بيانات',
+            ];
+        }
+    }
+
+
 }

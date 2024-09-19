@@ -47,11 +47,11 @@ class UserService
     {
         try {
             $user = new User([
-             'name'=>$credentials['name'],
-             'email'=>$credentials['email'],
-        ]);
-            $user->password=Hash::make($credentials['password']);
-            $user->role='user';
+                'name' => $credentials['name'],
+                'email' => $credentials['email'],
+            ]);
+            $user->password = Hash::make($credentials['password']);
+            $user->role = 'user';
             $user->save();
 
             //return $user data
@@ -95,9 +95,11 @@ class UserService
                 $user->update([
                     'name' => $data['name'] ?? $user->name,
                     'email' => $data['email'] ?? $user->email,
-                    'password' => $data['password'] ?? $user->password,
-                    'role' => $data['role'] ?? $user->role,
                 ]);
+                $user->password = $data['password'] ?? $user->password;
+                $user->role = $data['role'] ?? $user->role;
+                $user->save();
+
                 return [
                     'message' => 'تمت عملية التحديث',
                     'status' => 200,
@@ -214,7 +216,7 @@ class UserService
                 ];
             }
         } catch (Exception $e) {
-            Log::error('Error in show user: ' . $e->getMessage());
+            Log::error('Error in show user s task: ' . $e->getMessage());
             return [
                 'message' => 'حدث خطأ أثناء العرض',
                 'status' => 500,
@@ -222,4 +224,66 @@ class UserService
             ];
         }
     }
+
+
+    //**________________________________________________________________________________________________
+    /**
+     * *This function is creat to show  deleted  user.
+     **@param nothing
+     * *@return ($message,status,data)
+     */
+
+    public function showdeletedUser()
+    {
+        try {
+            $users = User::onlyTrashed()->get();
+
+            return [
+                'message' => 'بيانات المستخدمين المحذوفين',
+                'data' => $users,
+                'status' => 200,
+            ];
+        } catch (\Exception $e) {
+            Log::error('Error in show user: ' . $e->getMessage());
+            return [
+                'message' => 'حدث خطأ أثناء العرض',
+                'status' => 500,
+                'data' => 'لا يوجد بيانات',
+            ];
+        }
+    }
+    //**________________________________________________________________________________________________
+    /**
+     * *This function is creat to   deleted  user finally .
+     **@param id
+     * *@return ($message,status,)
+     */
+
+
+    public function finallyDelete($id)
+    {
+        try {
+            $user = User::find($id);
+            if ($user) {
+                $user->forceDelete();
+                return [
+                    'message' => 'تم الحذف نهائيا',
+                    'status' => 200,
+                ];
+            } else {
+                return [
+                    'message' => 'المستخدم غير موجود',
+                    'status' => 404,
+                ];
+            }
+        } catch (\Exception $e) {
+            Log::error('Error in deleting user: ' . $e->getMessage());
+            return [
+                'message' => 'حدث خطأ أثناء الحذف',
+                'status' => 500,
+                'data' => 'لا يوجد بيانات',
+            ];
+        }
+    }
+
 }
