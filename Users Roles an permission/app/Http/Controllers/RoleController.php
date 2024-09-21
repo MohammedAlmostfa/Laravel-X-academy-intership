@@ -12,11 +12,21 @@ class RoleController extends Controller
 {
     protected $RoleService;
 
+    /**
+     * Constructor to initialize RoleService.
+     *
+     * @param RoleService $RoleService
+     */
     public function __construct(RoleService $RoleService)
     {
         $this->RoleService = $RoleService;
     }
 
+    /**
+     * Display a listing of all roles.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function index()
     {
         $result = $this->RoleService->showAllRoles();
@@ -26,31 +36,39 @@ class RoleController extends Controller
         ], $result['status']);
     }
 
-
+    /**
+     * Store a newly created role in storage.
+     *
+     * @param crRoleFormRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function store(crRoleFormRequest $request)
     {
         // Get the validation of data
         $validatedData =  $request->validated();
-        // get the result
+        // Get the result
         $result = $this->RoleService->createRole($validatedData);
-        // return the result
+        // Return the result
         return response()->json([
             'message' => $result['message'],
             'data' => $result['data'],
         ], $result['status']);
     }
 
-
     /**
-     * Update the specified resource in storage.
+     * Update the specified role in storage.
+     *
+     * @param upRoleFormRequest $request
+     * @param string $id
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(upRoleFormRequest $request, string $id)
     {
         // Get the validation of data
         $validatedData =  $request->validated();
-        // get the result
+        // Get the result
         $result = $this->RoleService->updateRole($validatedData, $id);
-        // return the result
+        // Return the result
         return response()->json([
             'message' => $result['message'],
             'data' => $result['data'],
@@ -58,16 +76,66 @@ class RoleController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified role from storage.
+     *
+     * @param string $id
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy(string $id)
     {
-        // get the result
+        // Get the result
         $result = $this->RoleService->deleteRole($id);
-        // return the result
+        // Return the result
         return response()->json([
             'message' => $result['message'],
+        ], $result['status']);
+    }
 
+    /**
+     * Add a permission to a role.
+     *
+     * @param string $permission
+     * @param string $role
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function addpermission(string $permission, string $role)
+    {
+        $result = $this->RoleService->addPermission($role, $permission);
+        // Return the result
+        return response()->json([
+            'message' => $result['message'],
+        ], $result['status']);
+    }
+
+    /**
+     * Remove a permission from a role.
+     *
+     * @param string $permission
+     * @param string $role
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function deletpermission(string $permission, string $role)
+    {
+        $result =  $this->RoleService->deletePermission($permission, $role);
+        // Return the response
+        return response()->json([
+            'message' => $result['message'],
+        ], $result['status']);
+    }
+
+    /**
+     * Display the specified role.
+     *
+     * @param string $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show(string $id)
+    {
+        $result =  $this->RoleService->showrole($id);
+        // Return the response
+        return response()->json([
+            'message' => $result['message'],
+            'data' => $result['data'],
         ], $result['status']);
     }
 }

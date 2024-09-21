@@ -79,4 +79,31 @@ class PermissionService
             ];
         }
     }
+
+    public function showPermission($id)
+    {
+        try {
+            $permission = permission::find($id);
+            if ($permission) {
+
+                return [
+                    'message' => 'الصلاحية',
+                    'data'=>$permission,
+                    'status' => 200,
+                ];
+            } else {
+                return [
+                    'message' => 'الاصلاحية غير موجودة',
+                    'status' => 404,
+                ];
+            }
+        } catch (Exception $e) {
+            Log::error('Error in delete permission: ' . $e->getMessage());
+            return [
+                'message' => 'حدث خطأ أثناء  عرض الصلاحية: ' . $e->getMessage(),
+                'status' => 500,
+                'data' => 'لا يوجد بيانات'
+            ];
+        }
+    }
 }

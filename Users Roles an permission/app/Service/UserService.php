@@ -191,6 +191,57 @@ class UserService
         }
     }
 
+    public function addRole($userId, $roleId)
+    {
+        try {
+            $user = User::find($userId);
+            if ($user) {
+                $user->roles()->attach($roleId);
+                return [
+                    'message' => 'تم تعيين المستخدم بدور',
+                    'status' => 200,
+                ];
+            } else {
+                return [
+                    'message' => 'المستخدم غير موجود',
+                    'status' => 404,
+                ];
+            }
+        } catch (Exception $e) {
+            Log::error('Error in add role: ' . $e->getMessage());
+            return [
+                'message' => 'حدث خطأ أثناء تعيين الدور'. $e->getMessage(),
+                'status' => 500,
+                'data' => 'لا يوجد بيانات'
+            ];
+        }
+    }
+    public function deleteRole($userId, $roleId)
+    {
+        try {
+            $user = User::find($userId);
+            if ($user && $user->roles()->where('role_id', $roleId)->exists()) {
+                $user->roles()->detach($roleId);
+                return [
+                    'message' => 'تم إلغاء الدور للمستخدم بنجاح',
+                    'status' => 200,
+                ];
+            } else {
+                return [
+                    'message' => 'المستخدم أو الدور غير موجود',
+                    'status' => 404,
+                ];
+            }
+        } catch (Exception $e) {
+            Log::error('Error in delete role: ' . $e->getMessage());
+            return [
+                'message' => 'حدث خطأ أثناء إلغاء الدور: ' . $e->getMessage(),
+                'status' => 500,
+                'data' => 'لا يوجد بيانات'
+            ];
+        }
+
+    }
 
 
 

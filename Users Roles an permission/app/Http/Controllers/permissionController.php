@@ -4,22 +4,29 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\crpermissionFormRequest;
 use App\Http\Requests\uppermissionFormRequest;
-use App\Models\permission;
+use App\Models\Permission;
 use App\Service\PermissionService;
 use Illuminate\Http\Request;
 
-class permissionController extends Controller
+class PermissionController extends Controller
 {
     protected $PermissionService;
+
+    /**
+     * Constructor to initialize PermissionService.
+     *
+     * @param PermissionService $PermissionService
+     */
     public function __construct(PermissionService $PermissionService)
     {
-        $this->PermissionService=$PermissionService;
-
-
+        $this->PermissionService = $PermissionService;
     }
 
-
-
+    /**
+     * Display a listing of all permissions.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function index()
     {
         $result = $this->PermissionService->showAllPermissions();
@@ -29,31 +36,39 @@ class permissionController extends Controller
         ], $result['status']);
     }
 
-
+    /**
+     * Store a newly created permission in storage.
+     *
+     * @param crpermissionFormRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function store(crpermissionFormRequest $request)
     {
         // Get the validation of data
-        $validatedData =  $request->validated();
-        // get the result
+        $validatedData = $request->validated();
+        // Get the result
         $result = $this->PermissionService->createPermission($validatedData);
-        // return the result
+        // Return the result
         return response()->json([
             'message' => $result['message'],
             'data' => $result['data'],
         ], $result['status']);
     }
 
-
     /**
-     * Update the specified resource in storage.
+     * Update the specified permission in storage.
+     *
+     * @param uppermissionFormRequest $request
+     * @param string $id
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(uppermissionFormRequest $request, string $id)
     {
         // Get the validation of data
-        $validatedData =  $request->validated();
-        // get the result
+        $validatedData = $request->validated();
+        // Get the result
         $result = $this->PermissionService->updatePermission($validatedData, $id);
-        // return the result
+        // Return the result
         return response()->json([
             'message' => $result['message'],
             'data' => $result['data'],
@@ -61,16 +76,35 @@ class permissionController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified permission from storage.
+     *
+     * @param string $id
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy(string $id)
     {
-        // get the result
+        // Get the result
         $result = $this->PermissionService->deletePermission($id);
-        // return the result
+        // Return the result
         return response()->json([
             'message' => $result['message'],
+        ], $result['status']);
+    }
 
+    /**
+     * Display the specified permission.
+     *
+     * @param string $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show($id)
+    {
+        // Get the result
+        $result = $this->PermissionService->showPermission($id);
+        // Return the result
+        return response()->json([
+            'message' => $result['message'],
+            'data' => $result['data'],
         ], $result['status']);
     }
 }
