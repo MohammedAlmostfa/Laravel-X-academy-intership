@@ -2,90 +2,86 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CourseRequestCreate;
-use App\Http\Requests\CourseRequestGet;
-use App\Http\Requests\CourseRequestUpdate;
-use App\Services\CourseService;
+use App\Http\Requests\StudentRequestCreat;
+use App\Http\Requests\StudentRequestUpdate;
+
+use App\Services\StudentService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
-class CourseController extends Controller
+class StudentController extends Controller
 {
-    protected $courseService;
+    protected $StudentService;
 
     /**
-     * Constructor to initialize CourseService.
+     * Constructor to initialize StudentService.
      *
-     * @param CourseService $courseService
+     * @param StudentService $StudentService
      */
-    public function __construct(CourseService $courseService)
+    public function __construct(StudentService $StudentService)
     {
-        $this->courseService = $courseService;
+        $this->StudentService = $StudentService;
     }
 
     /**
-     * Display a listing of the courses.
+     * Display a listing of the Student.
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index(CourseRequestGet $request)
+    public function index()
     {
-        $validatedData = $request->validated();
-        $result = $this->courseService->showAllCourses($validatedData);
+        $result = $this->StudentService->showAllStudent();
         return response()->json(['message' => $result['message'], 'data' => $result['data']], $result['status']);
     }
 
     /**
-     * Store a newly created course in storage.
+     * Store a newly created Student in storage.
      *
-     * @param CourseRequestCreate $request
+     * @param StudentRequestCreate $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(CourseRequestCreate $request)
+    public function store(StudentRequestCreat $request)
     {
         $validatedData = $request->validated();
-        $result = $this->courseService->createCourse($validatedData);
+        $result = $this->StudentService->createStudent($validatedData);
         return response()->json(['message' => $result['message'], 'data' => $result['data']], $result['status']);
     }
 
     /**
-     * Display the specified course resource.
+     * Display the specified Student resource.
      *
      * @param string $id
      * @return \Illuminate\Http\JsonResponse
      */
     public function show(string $id)
     {
-        $result = $this->courseService->showCourse($id);
+        $result = $this->StudentService->showStudent($id);
         return response()->json(['message' => $result['message'], 'data' => $result['data']], $result['status']);
     }
 
     /**
-     * Update the specified course in storage.
+     * Update the specified Student in storage.
      *
-     * @param CourseRequestUpdate $request
+     * @param StudentRequestUpdate $request
      * @param string $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(CourseRequestUpdate $request, string $id)
+    public function update(StudentRequestUpdate $request, string $id)
     {
         $validatedData = $request->validated();
-        $result = $this->courseService->updateCourse($validatedData, $id);
+        $result = $this->StudentService->updateStudent($validatedData, $id);
         return response()->json(['message' => $result['message'], 'data' => $result['data']], $result['status']);
     }
 
     /**
-     * Remove the specified course from storage.
+     * Remove the specified Student from storage.
      *
      * @param string $id
      * @return \Illuminate\Http\JsonResponse
      */
     public function destroy(string $id)
     {
-        $result = $this->courseService->deleteCourse($id);
+        $result = $this->StudentService->deleteStudent($id);
         return response()->json(['message' => $result['message']], $result['status']);
     }
-
-
-
 }

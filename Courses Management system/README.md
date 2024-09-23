@@ -1,4 +1,4 @@
-# User Roles and permission system
+# Courses and permission system
 
 This project aims to build an application programming interface (API) for add courses and instruction
 

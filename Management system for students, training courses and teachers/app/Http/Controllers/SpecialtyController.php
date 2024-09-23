@@ -2,90 +2,84 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CourseRequestCreate;
-use App\Http\Requests\CourseRequestGet;
-use App\Http\Requests\CourseRequestUpdate;
-use App\Services\CourseService;
+use App\Http\Requests\SpecialtyRequestCreate;
+use App\Services\SpecialtyService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
-class CourseController extends Controller
+class SpecialtyController extends Controller
 {
-    protected $courseService;
+    protected $specialtyService;
 
     /**
-     * Constructor to initialize CourseService.
+     * Constructor to initialize SpecialtyService.
      *
-     * @param CourseService $courseService
+     * @param SpecialtyService $specialtyService
      */
-    public function __construct(CourseService $courseService)
+    public function __construct(SpecialtyService $specialtyService)
     {
-        $this->courseService = $courseService;
+        $this->specialtyService = $specialtyService;
     }
 
     /**
-     * Display a listing of the courses.
+     * Display a listing of the resource.
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index(CourseRequestGet $request)
+    public function index()
     {
-        $validatedData = $request->validated();
-        $result = $this->courseService->showAllCourses($validatedData);
+        $result = $this->specialtyService->showAllSpecialty();
         return response()->json(['message' => $result['message'], 'data' => $result['data']], $result['status']);
     }
 
     /**
-     * Store a newly created course in storage.
+     * Store a newly created resource in storage.
      *
-     * @param CourseRequestCreate $request
+     * @param SpecialtyRequestCreate $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(CourseRequestCreate $request)
+    public function store(SpecialtyRequestCreate $request)
     {
         $validatedData = $request->validated();
-        $result = $this->courseService->createCourse($validatedData);
+        $result = $this->specialtyService->createSpecialty($validatedData);
         return response()->json(['message' => $result['message'], 'data' => $result['data']], $result['status']);
     }
 
     /**
-     * Display the specified course resource.
+     * Display the specified resource.
      *
      * @param string $id
      * @return \Illuminate\Http\JsonResponse
      */
     public function show(string $id)
     {
-        $result = $this->courseService->showCourse($id);
+        $result = $this->specialtyService->showSpecialty($id);
         return response()->json(['message' => $result['message'], 'data' => $result['data']], $result['status']);
     }
 
     /**
-     * Update the specified course in storage.
+     * Update the specified resource in storage.
      *
-     * @param CourseRequestUpdate $request
+     * @param SpecialtyRequestCreate $request
      * @param string $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(CourseRequestUpdate $request, string $id)
+    public function update(SpecialtyRequestCreate $request, string $id)
     {
         $validatedData = $request->validated();
-        $result = $this->courseService->updateCourse($validatedData, $id);
+        $result = $this->specialtyService->updateSpecialty($validatedData, $id);
         return response()->json(['message' => $result['message'], 'data' => $result['data']], $result['status']);
     }
 
     /**
-     * Remove the specified course from storage.
+     * Remove the specified resource from storage.
      *
      * @param string $id
      * @return \Illuminate\Http\JsonResponse
      */
     public function destroy(string $id)
     {
-        $result = $this->courseService->deleteCourse($id);
+        $result = $this->specialtyService->deleteSpecialty($id);
         return response()->json(['message' => $result['message']], $result['status']);
     }
-
-
-
 }
