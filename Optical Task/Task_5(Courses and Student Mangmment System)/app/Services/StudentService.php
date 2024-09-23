@@ -113,7 +113,11 @@ class StudentService
     {
         try {
             // Find the student by ID
-            $student = Student::find($id);
+            $student = Student::select(['name', 'id'])
+    ->with(['courses' => function ($query) {
+        $query->select('name');
+    }])
+    ->get();
             if ($student) {
                 return [
                     'message' => 'الطالب',

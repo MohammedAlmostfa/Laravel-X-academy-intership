@@ -28,7 +28,7 @@ class InstructorRequestGet extends FormRequest
         return [
 
 
-          'filterdata'=>'nullable|string'
+          'datawith'=>'nullable|string'
         ];
     }
 

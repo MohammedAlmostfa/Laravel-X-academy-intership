@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CourseRequestCreate;
 use App\Http\Requests\CourseRequestGet;
 use App\Http\Requests\CourseRequestUpdate;
+use App\Http\Requests\CourseStudenAdd;
 use App\Services\CourseService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -28,10 +29,10 @@ class CourseController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index(CourseRequestGet $request)
+    public function index()
     {
-        $validatedData = $request->validated();
-        $result = $this->courseService->showAllCourses($validatedData);
+
+        $result = $this->courseService->showAllCourses();
         return response()->json(['message' => $result['message'], 'data' => $result['data']], $result['status']);
     }
 
@@ -86,6 +87,20 @@ class CourseController extends Controller
         return response()->json(['message' => $result['message']], $result['status']);
     }
 
+    public function addStudent(CourseStudenAdd $request, string $id)
+    {
+        $validatedData = $request->validated();
+        $result = $this->courseService->AddStudent($validatedData, $id);
+        return response()->json(['message' => $result['message']], $result['status']);
+
+    }
+    public function deletStudent(CourseStudenAdd $request, string $id)
+    {
+        $validatedData = $request->validated();
+        $result = $this->courseService->deleteStudent($validatedData, $id);
+        return response()->json(['message' => $result['message']], $result['status']);
+
+    }
 
 
 }

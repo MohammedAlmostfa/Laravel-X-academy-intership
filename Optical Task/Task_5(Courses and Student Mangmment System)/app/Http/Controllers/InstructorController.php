@@ -55,9 +55,11 @@ class InstructorController extends Controller
      * @param string $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show(string $id)
+    public function show(string $id, InstructorRequestGet $request)
     {
-        $result = $this->instructorService->showInstructor($id);
+        $validatedData = $request->validated();
+
+        $result = $this->instructorService->showInstructor($id, $validatedData);
         return response()->json(['message' => $result['message'], 'data' => $result['data']], $result['status']);
     }
 

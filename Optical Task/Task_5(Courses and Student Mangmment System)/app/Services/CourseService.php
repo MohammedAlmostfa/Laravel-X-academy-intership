@@ -14,16 +14,12 @@ class CourseService
      * @return array
      */
 
-    public function showAllCourses(array $data)
+    public function showAllCourses()
     {
         try {
-            if(isset($data['filterdata']) && $data['filterdata']=='hasinstructors') {
-                $courses = Course::byInstructors()->get();
-            } elseif(isset($data['filterdata'])&& $data['filterdata']=='hasnotinstructors') {
-                $courses = Course::withoutInstructors()->get();
-            } else {
-                $courses = Course::all();
-            }
+
+            $courses = Course::all();
+
 
 
             return [
@@ -34,7 +30,7 @@ class CourseService
         } catch (Exception $e) {
             // Handle any errors that occur during the fetch operation
             return [
-                'message' => 'حدث خطأ أثناء عملية العرض'. $e,
+                'message' => 'حدث خطأ أثناء عملية العرض' . $e,
                 'data' => '',
                 'status' => 500,
             ];
@@ -55,7 +51,7 @@ class CourseService
                 'name' => $data['name'],
                 'start_date' => $data['start_date'],
                 'description' => $data['description'],
-                'instructor_id'=> $data['instructor_id'],
+                'instructor_id' => $data['instructor_id'],
             ]);
             return [
                 'message' => 'تم إضافة دورة',
@@ -65,7 +61,7 @@ class CourseService
         } catch (Exception $e) {
             // Handle any errors that occur during the creation process
             return [
-                'message' => 'حدث خطأ أثناء عملية الإضافة'.$e,
+                'message' => 'حدث خطأ أثناء عملية الإضافة' . $e,
                 'data' => 'لا يوجد بيانات للإضافة',
                 'status' => 500,
             ];
@@ -90,7 +86,8 @@ class CourseService
                     'name' => $data['name'] ?? $course->name,
                     'start_date' => $data['start_date'] ?? $course->start_date,
                     'description' => $data['description'] ?? $course->description,
-                    'instructor_id'=> $data['instructor_id']??$course->instructor_id,]);
+                    'instructor_id' => $data['instructor_id'] ?? $course->instructor_id,
+                ]);
                 return [
                     'message' => 'تم تحديث الدورة',
                     'data' => $course,
@@ -124,8 +121,7 @@ class CourseService
     {
         try {
             // Find the course by ID
-            $course = Course::with('instructors')->find($id);
-
+            $course = Course::with('students')->find($id);
             if ($course) {
                 return [
                     'message' => 'الدورة',
@@ -183,10 +179,71 @@ class CourseService
             ];
         }
     }
-    public function AddStudent($data)
+
+
+    public function AddStudent($data, $courseId)
     {
+        try {
+            $course = Course::find($courseId);
+            if ($course) {
+                $student = $course->students()->wherePivot('student_id', $data['StudentId'])->exists();
+                if ($student) {
+                    return [
+                       'message' => 'تم اضافة الطالب الى الدورة مسبقا',
+                       'status' => 200
+                   ];
+                } else {
+
+                    $course->students()->attach($data['StudentId']);
+                    return [
+                        'message' => 'تم اضافة الطالب الى الدورة',
+                        'status' => 200       ];
+                }
+            } else {
+                return [
+                    'message' => ' الدورة غير موجودة',
+                    'status' => 404
+                ];
+            }
+        } catch (Exception $e) {
+            // Handle any errors that occur during the delete operation
+            return [
+                'message' => 'حدث خطأ أثناء عملية الاضافة' . $e,
+                'status' => 500,
+            ];
+        }
     }
 
-
-
+    public function deleteStudent($data, $courseId)
+    {
+        try {
+            $course = Course::find($courseId);
+            if ($course) {
+                $student = $course->students()->wherePivot('student_id', $data['StudentId'])->exists();
+                if ($student) {
+                    $course->students()->detach($data['StudentId']);
+                    return [
+                        'message' => 'تم حذف الطالب من الدورة',
+                        'status' => 200,
+                    ];
+                } else {
+                    return [
+                        'message' => 'الطالب لا ينتمي الى الدورة',
+                        'status' => 200,
+                    ];
+                }
+            } else {
+                return [
+                    'message' => 'الدورة غير موجودة',
+                    'status' => 404,
+                ];
+            }
+        } catch (Exception $e) {
+            // Handle any errors that occur during the delete operation
+            return [
+                'message' => 'حدث خطأ أثناء عملية الحذف: ' . $e->getMessage(),
+                'status' => 500,
+            ];
+        }
+    }
 }

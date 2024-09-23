@@ -26,3 +26,5 @@ Route::resource('specialty', SpecialtyController::class);
 Route::resource('intructor', InstructorController::class);
 Route::resource('course', CourseController::class);
 Route::resource('student', StudentController::class);
+Route::post('addstudent/{courseId}', [CourseController::class, 'addStudent']);
+Route::post('deletstudent/{courseId}', [CourseController::class, 'deletStudent']);

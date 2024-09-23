@@ -29,4 +29,9 @@ class Instructor extends Model
     {
         return $query->whereDoesntHave('courses');
     }
+    public function students()
+    {
+        return $this->hasManyThrough(Student::class, Course::class, 'instructor_id', 'id', 'id', 'id');
+    }
+
 }
