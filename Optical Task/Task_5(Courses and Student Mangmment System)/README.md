@@ -22,7 +22,7 @@ git clone https://github.com/MohammedAlmostfa/Laravel-X-academy-intership/tree/m
 
 2. Run xampp on your computer.
 
-3. There is a file (user role and permission) that contains all the APIs for the previous operations to try on the Postman application
+3. There is a file (course and student mangmment system) that contains all the APIs for the previous operations to try on the Postman application
 
 #### Important Notes
 

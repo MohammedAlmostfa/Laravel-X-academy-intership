@@ -44,7 +44,7 @@ class StudentService
             $student = Student::create([
                 'name' => $data['name'],
                 'email' => $data['email'],
-                'password' => $data['password'],
+
             ]);
             return [
                 'message' => 'تم إضافة الطالب',
@@ -78,7 +78,7 @@ class StudentService
                 $student->update([
                     'name' => $data['name'] ?? $student->name,
                     'email' => $data['email'] ?? $student->email,
-                    'password' => $data['password']?? $student->password,
+
                 ]);
                 return [
                     'message' => 'تم تحديث الطالب',
