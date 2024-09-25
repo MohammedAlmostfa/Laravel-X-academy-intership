@@ -3,43 +3,48 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Log;
 use App\Models\Order;
+use App\Models\Product;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
-class OrdertService
+class OrderService
 {
     /**
-     * Show all Order
+     * Show all Orders
      * @param none
      * @return array of Order
      */
-    public function ShowAllOrder()
+    public function showAllOrders()
     {
-
+        try {
+            return Order::all();
+        } catch (Exception $e) {
+            Log::error('Error fetching Orders: ' . $e->getMessage());
+            throw new Exception('Error fetching Orders');
+        }
     }
-
 
     /**
      * Create a new Order
      * @param array $data
-     * @return bool
+     * @return Order
      */
     public function createOrder($data)
     {
         try {
-            // Create a new product with the provided data
-            $Order = Order::create([
+            // Create a new order with the provided data
+            $order = Order::create([
                 'product_id' => $data['product_id'],
                 'quantity' => $data['quantity'],
-                'status' => $data['status'],
-                  'order_date' => $data['order_date'],
-                    'customer_id' => $data['customer_id'],
+                'status' => $data['status']??null,
+                'order_date' => $data['order_date'],
+                'customer_id' => $data['customer_id'],
 
             ]);
-            return true;
+            return $order;
         } catch (Exception $e) {
             Log::error('Error creating Order: ' . $e->getMessage());
-            throw new Exception('Error creating Order');
+            throw new Exception('Error creating Order' . $e->getMessage());
         }
     }
 
@@ -47,25 +52,33 @@ class OrdertService
      * Update an existing Order
      * @param array $data
      * @param int $id
-     * @return bool
+     * @return Order
      */
-    public function UpdateOrder($data, $id)
+    public function updateOrder($data, $id)
     {
         try {
-            // Find the product by ID
-            $Order = Order::findOrFail($id);
+            // Find the order by ID
+            $order = Order::findOrFail($id);
 
-            // Update the product with the provided data
-            $Order->Order([
-                'product_id' => $data['product_id']??$Order->product_id,
-                'quantity' => $data['quantity']??$Order->quantity,
-                'status' => $data['status']??$Order->status,
-                  'order_date' => $data['order_date']??$Order->order_date,
-                    'customer_id' => $data['customer_id']??$Order->customer_id,
-
+            // Update the order with the provided data
+            $order->update([
+                'product_id' => $data['product_id'] ?? $order->product_id,
+                'quantity' => $data['quantity'] ?? $order->quantity,
+                'status' => $data['status'] ?? $order->status,
+                'order_date' => $data['order_date'] ?? $order->order_date,
+                'customer_id' => $data['customer_id'] ?? $order->customer_id,
             ]);
 
-            return true;
+            // Check if quantity has changed and update price accordingly
+            if ((isset($data['quantity']))||(isset($data['product_id']) && $data['product_id'])) {
+                $product = Product::find($order->product_id);
+                if ($product) {
+                    $order->price = $product->price * $data['quantity'];
+                    $order->save();
+                }
+            }
+
+            return $order;
         } catch (ModelNotFoundException $e) {
             Log::error('Order not found: ' . $e->getMessage());
             throw new Exception('Order not found');
@@ -75,19 +88,19 @@ class OrdertService
         }
     }
 
+
+
     /**
      * Show a specific Order
      * @param int $id
-     * @return Product
+     * @return Order
      */
-    public function ShowOrder($id)
+    public function showOrder($id)
     {
         try {
-
-
-            // Find the product by ID and select specific fields
-            $Order = Order::select(['product_id', 'quantity', 'price', 'status','order_date','customer_id'])->findOrFail($id);
-            return $Order;
+            // Find the order by ID and select specific fields
+            $order = Order::select(['product_id', 'quantity', 'price', 'status', 'order_date', 'customer_id'])->findOrFail($id);
+            return $order;
         } catch (ModelNotFoundException $e) {
             Log::error('Order not found: ' . $e->getMessage());
             throw new Exception('Order not found');
@@ -102,13 +115,13 @@ class OrdertService
      * @param int $id
      * @return bool
      */
-    public function DeletOrder($id)
+    public function deleteOrder($id)
     {
         try {
-            // Find the Order by ID
-            $Order = Order::findOrFail($id);
-            // Delete the Order
-            $Order->delete();
+            // Find the order by ID
+            $order = Order::findOrFail($id);
+            // Delete the order
+            $order->delete();
             return true;
         } catch (ModelNotFoundException $e) {
             Log::error('Order not found: ' . $e->getMessage());

@@ -13,12 +13,12 @@ return new class extends Migration {
             $table->id();
             // Define foreign keys
 
-            $table->foreignId('product_id')->references('id')->on('products')->onDelete('cascade');
+            $table->foreignId('product_id')->references('id')->on('products');
             $table->integer('quantity');
             $table->integer('price');
-            $table->enum('status', ['done', 'In progress']);
+            $table->enum('status', ['done', 'In progress'])->default('In progress');
             $table->date('order_date');
-            $table->foreignId('customer_id')->references('id')->on('customers')->onDelete('cascade');
+            $table->foreignId('customer_id')->references('id')->on('customers');
             $table->timestamps();
 
 

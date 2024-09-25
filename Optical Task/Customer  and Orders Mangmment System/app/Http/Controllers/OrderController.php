@@ -2,21 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\customer\customernrequestcreat;
-use App\Http\Requests\customer\customernrequestupdate;
+use App\Http\Requests\order\orderformrequestcreat;
+use App\Http\Requests\order\orderformrequestupdate;
+
 use App\Models\Product;
 use App\Services\ApiResponseService;
-use App\Services\OrdertService;
+use App\Services\OrderService;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
-    protected $OrdertService;
+    protected $OrderService;
     protected $apiRseponseService;
 
-    public function __construct(OrdertService $OrdertService, ApiResponseService $apiRseponseService)
+    public function __construct(OrderService $OrderService, ApiResponseService $apiRseponseService)
     {
-        $this->OrdertService = $OrdertService;
+        $this->OrderService = $OrderService;
         $this->apiRseponseService=$apiRseponseService;
     }
 
@@ -30,10 +31,10 @@ class OrderController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(customernrequestcreat $request)
+    public function store(orderformrequestcreat  $request)
     {
         $validateddata=$request->validated();
-        $result=$this->OrdertService->createOrder($validateddata);
+        $result=$this->OrderService->createOrder($validateddata);
         return $this->apiRseponseService->success('Order created successfully');
 
     }
@@ -43,7 +44,7 @@ class OrderController extends Controller
      */
     public function show($id)
     {
-        $result=$this->OrdertService->ShowOrder($id);
+        $result=$this->OrderService->ShowOrder($id);
         return $this->apiRseponseService->ValueShow('Order data:', $result, );
 
     }
@@ -51,10 +52,10 @@ class OrderController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(customernrequestupdate $request, $id)
+    public function update(orderformrequestupdate $request, $id)
     {
         $validateddata=$request->validated();
-        $result=$this->OrdertService->updateOrder($validateddata, $id);
+        $result=$this->OrderService->updateOrder($validateddata, $id);
         return $this->apiRseponseService->success('Order updated successfully');
 
     }
@@ -64,7 +65,7 @@ class OrderController extends Controller
      */
     public function destroy($id)
     {
-        $result=$this->OrdertService->DeletOrder($id);
+        $result=$this->OrderService->deleteOrder($id);
         return $this->apiRseponseService->success('Order deleted successfully');
 
     }
