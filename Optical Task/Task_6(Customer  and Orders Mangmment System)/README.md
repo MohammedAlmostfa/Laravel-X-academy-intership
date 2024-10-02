@@ -1,4 +1,4 @@
-# Customer and ordwr Mangmment System
+# Customer and order Mangmment System
 
 This project aims to build an application programming interface (API) for Managing the order and products process and customers
 
