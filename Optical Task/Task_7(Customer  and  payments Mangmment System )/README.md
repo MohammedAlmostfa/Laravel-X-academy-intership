@@ -6,7 +6,7 @@ This project aims to build an application programming interface (API) for Managi
 
 ### admin Attributes
 
--   Add, Delete, Update , show all specialty of customer and show specialty by $id .
+-   Add, Delete, Update , show all customers and show specialty by $id .
 -   Add, Delete, Dpdate , show all payments with filter by status and payment_ddate and show payments by id .
 -   show oldest , latest , highest , lowest payments
 
