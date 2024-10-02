@@ -15,7 +15,8 @@ This project aims to build an application programming interface (API) for Managi
 1. Clone the repository or download the zip file and extract it.
 
 ```bash
-git https://github.com/MohammedAlmostfa/Laravel-X-academy-intership/tree/main/Optical%20Task/Task_6(Customer%20%20and%20Orders%20Mangmment%20System)
+git https://github.com/MohammedAlmostfa/Laravel-X-academy-intership/tree/main/Optical%20Task/Task_6Customer%20%20and%20Orders%20Mangmment%20System
+```
 
 2. Run xampp on your computer.
 
@@ -43,4 +44,7 @@ For any inquiries or support, please contact:
 ---
 
 Thank you for using our services.
+
+```
+
 ```

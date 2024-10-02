@@ -15,7 +15,7 @@ This project aims to build an application programming interface (API) for Managi
 1. Clone the repository or download the zip file and extract it.
 
 ```bash
-git https://github.com/MohammedAlmostfa/Laravel-X-academy-intership/tree/main/Optical%20Task/Task_7(Customer%20%20and%20%20payments%20Mangmment%20System%20)
+git https://github.com/MohammedAlmostfa/Laravel-X-academy-intership/tree/main/Optical%20Task/Task_7Customer%20%20and%20%20payments%20Mangmment%20System%20
 ```
 
 2. Run xampp on your computer.
