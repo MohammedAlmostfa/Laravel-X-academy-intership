@@ -23,7 +23,6 @@ class CustomerService
                     })->paginate(10);
             } elseif (isset($data['order_date'])) {
 
-
                 $Customers = Customer::select(['id', 'name' ])
                     ->whereHas('orders', function ($q) use ($data) {
                         $q->where('order_date', $data['order_date']);
