@@ -19,4 +19,8 @@ class Task extends Model
     'due_date',
     'assigned_to',
 ];
+    public function comments()
+    {
+        return $this->morphMany(Comment::class, 'commentable');
+    }
 }

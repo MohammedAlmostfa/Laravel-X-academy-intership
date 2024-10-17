@@ -12,7 +12,7 @@ class CheckUserRole
     public function handle($request, Closure $next)
     {
         try {
-            $task = Task::findOrFail($request->route('id'));
+            $task = Task::findOrFail($request->route('taskid'));
 
             if ($task->assigned_to != Auth::user()->id) {
                 return response()->json(['message' => 'This task is not assigned to you'], 403);

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\commentRequestcreat;
 use App\Http\Requests\statusFormRequestUpdate;
 use App\Models\Task;
 use App\Service\TaskService;
@@ -114,7 +115,7 @@ class TaskController extends Controller
      * @param int $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function updateStatus(StatusFormRequestUpdate $request, $id)
+    public function updateStatus(StatusFormRequestUpdate $request, $taskid)
     {
         // Retrieve the task from the request (set by Middleware)
         $task = $request->get('task');
@@ -127,9 +128,6 @@ class TaskController extends Controller
 
         return $this->apiResponseService->success('Status updated successfully');
 
-
-
-
-
     }
+
 }

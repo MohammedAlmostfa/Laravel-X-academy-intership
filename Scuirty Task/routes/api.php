@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\CheckUserRole;
@@ -35,5 +36,9 @@ Route::apiResource('task', TaskController::class);
 
 // Middleware to check if the user is assigned to the task
 Route::middleware(CheckUserRole::class)->group(function () {
-    Route::put('/tasks/{id}/status', [TaskController::class, 'updateStatus']);
+    Route::put('/tasks/{taskid}/status', [TaskController::class, 'updateStatus']);
+    Route::post('/tasks/{taskid}/comments/{id}', [CommentController::class,'return']);
+    Route::apiResource('/tasks/{taskid}/comments', CommentController::class);
+
+
 });
