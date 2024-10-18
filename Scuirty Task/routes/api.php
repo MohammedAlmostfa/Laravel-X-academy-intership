@@ -1,12 +1,15 @@
 <?php
 
+use App\Http\Controllers\AttachmentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\CheckUserRole;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\CommentController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserController;
-use App\Http\Middleware\CheckUserRole;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\FileUploadController;
+use App\Models\Attachment;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,3 +45,7 @@ Route::middleware(CheckUserRole::class)->group(function () {
 
 
 });
+
+
+
+Route::apiResource('/tasks/{taskId}/attachment', AttachmentController::class);
