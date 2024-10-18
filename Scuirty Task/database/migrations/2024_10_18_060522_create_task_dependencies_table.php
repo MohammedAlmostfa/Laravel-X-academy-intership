@@ -10,13 +10,13 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('task_status_updates', function (Blueprint $table) {
+        Schema::create('task_dependencies', function (Blueprint $table) {
             $table->id();
-            $table->string('task_status');
             $table->foreignId('task_id')->references('id')->on('tasks')->onDelete('cascade');
-            $table->index(['task_id', 'task_status'], 'task_status_index');
-            $table->unique(['task_id', 'task_status']);
+            $table->foreignId('task_depend_on')->references('id')->on('tasks')->onDelete('cascade');
             $table->timestamps();
+            // Indexes
+            $table->index(['task_id', 'task_depend_on']);
         });
     }
 
@@ -25,6 +25,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('task_status_updates');
+        Schema::dropIfExists('task_dependencies');
     }
 };

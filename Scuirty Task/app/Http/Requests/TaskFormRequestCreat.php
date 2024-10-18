@@ -42,7 +42,6 @@ class TaskFormRequestCreat extends FormRequest
             'status' => 'required|string',
             'priority' => 'required|string',
             'due_date' => 'required|date',
-            'assigned_to' => 'required|integer|exists:users,id',
         ];
     }
 
@@ -60,7 +59,6 @@ class TaskFormRequestCreat extends FormRequest
             'status' => 'الحالة',
             'priority' => 'أولوية',
             'due_date' => 'تاريخ التسليم',
-            'assigned_to' => 'تم تعيينه إلى',
         ];
     }
 

@@ -4,8 +4,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+use Illuminate\Contracts\Validation\Validator;
+
 class fileuploadformrequest extends FormRequest
 {
+    protected function failedValidation(Validator $validator)
+    {
+        throw new \Illuminate\Validation\ValidationException($validator, response()->json($validator->errors(), 422));
+    }
     /**
      * Determine if the user is authorized to make this request.
      */

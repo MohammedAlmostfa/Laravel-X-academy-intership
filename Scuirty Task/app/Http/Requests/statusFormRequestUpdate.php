@@ -3,8 +3,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+use Illuminate\Contracts\Validation\Validator;
+
 class StatusFormRequestUpdate extends FormRequest
 {
+    protected function failedValidation(Validator $validator)
+    {
+        throw new \Illuminate\Validation\ValidationException($validator, response()->json($validator->errors(), 422));
+    }
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -18,37 +24,39 @@ class StatusFormRequestUpdate extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
-            'status' => 'required|string',
+            'status' => [ 'required','string','unique:task_status_updates,task_status,NULL,id,task_id,' . $this->route('taskid'),
+            ],
         ];
+
     }
 
     /**
      * Get custom attributes for validator errors.
      *
-     * @return array
+     * @return array<string, string>
      */
-    public function attributes()
+    public function attributes(): array
     {
         return [
-            'status' => 'حالة التاسك',
+            'status' => 'حالة المهمة',
         ];
     }
 
     /**
      * Get custom validation messages.
      *
-     * @return array
+     * @return array<string, string>
      */
-    public function messages()
+    public function messages(): array
     {
         return [
-            'status.required' => 'حقل حالة التاسك مطلوب.',
-            'status.string' => 'حقل حالة التاسك يجب أن يكون نصي.',
+            'status.required' => 'حقل حالة المهمة مطلوب.',
+            'status.unique' => 'حالة المهمة هذه موجودة بالفعل لهذه المهمة.',
         ];
     }
 }

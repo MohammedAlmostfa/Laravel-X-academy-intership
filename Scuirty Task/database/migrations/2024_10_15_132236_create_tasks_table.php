@@ -19,7 +19,7 @@ return new class extends Migration {
             $table->enum('priority', ['Low', 'Medium', 'High']);
             $table->date('due_date');
             $table->string('description')->nullable();
-            $table->foreignId('assigned_to')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('assigned_to')->nullable()->constrained('users')->onDelete('cascade');
             $table->index('assigned_to');
         });
 

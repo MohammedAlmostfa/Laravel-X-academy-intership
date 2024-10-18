@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\commentRequestcreat;
-use App\Http\Requests\statusFormRequestUpdate;
+use App\Http\Requests\assiganTaskformrequest;
 use App\Models\Task;
 use App\Service\TaskService;
-
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use App\Service\ApiResponseService;
+use App\Http\Requests\commentRequestcreat;
 use App\Http\Requests\TaskFormRequestCreat;
 use App\Http\Requests\TaskFormRequestUpdate;
+use App\Http\Requests\connectTaskformrequest;
+use App\Http\Requests\statusFormRequestUpdate;
 
 class TaskController extends Controller
 {
@@ -35,10 +36,19 @@ class TaskController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(Request $request)
     {
+        $filters = [
+                'type'        => $request->query('type'),
+                'status'      => $request->query('status'),
+                'assigned_to' => $request->query('assigned_to'),
+                'due_date'    => $request->query('due_date'),
+                'priority'    => $request->query('priority'),
+                'depends_on'  => $request->query('depends_on'),
+            ];
+
         // Retrieve all tasks and return them in the response
-        $tasks = $this->taskService->getAllTasks();
+        $tasks = $this->taskService->getAllTasks($filters);
         return $this->apiResponseService->Showdata('All tasks', $tasks);
     }
 
@@ -52,10 +62,8 @@ class TaskController extends Controller
     {
         // Validate the request data
         $validatedData = $request->validated();
-
         // Create the task using the TaskService
         $this->taskService->createTask($validatedData);
-
         // Return a success response
         return $this->apiResponseService->success('Task created successfully');
     }
@@ -84,10 +92,8 @@ class TaskController extends Controller
     {
         // Validate the request data
         $validatedData = $request->validated();
-
         // Update the task using the TaskService
         $this->taskService->updateTask($id, $validatedData);
-
         // Return a success response
         return $this->apiResponseService->success('Task updated successfully');
     }
@@ -102,32 +108,66 @@ class TaskController extends Controller
     {
         // Delete the task using the TaskService
         $this->taskService->destroyTask($id);
-
         // Return a success response
         return $this->apiResponseService->success('Task deleted successfully');
     }
 
+    /**
+     * Assign a task to a user.
+     *
+     * @param assiganTaskformrequest $request
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function assignTask(assiganTaskformrequest $request, $id)
+    {
+        $validatedData = $request->validated();
+        $this->taskService->assignTask($validatedData, $id);
+        return $this->apiResponseService->success('Task assigned successfully');
+    }
+
+    /**
+     * Reassign a task.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function reassignTask($id)
+    {
+        $this->taskService->reassiganTask($id);
+        return $this->apiResponseService->success('Task reassigned successfully');
+    }
 
     /**
      * Update the status of a task.
      *
      * @param StatusFormRequestUpdate $request
-     * @param int $id
+     * @param int $taskid
      * @return \Illuminate\Http\JsonResponse
      */
     public function updateStatus(StatusFormRequestUpdate $request, $taskid)
     {
         // Retrieve the task from the request (set by Middleware)
         $task = $request->get('task');
-
         // Retrieve the status from the request
         $status = $request->input('status');
-
         // Use the service to update the status
-        $this->taskService->updateStatus($task, $status);
-
-        return $this->apiResponseService->success('Status updated successfully');
-
+        if ($this->taskService->updateStatus($task, $status)) {
+            return $this->apiResponseService->success('Status updated successfully');
+        } else {
+            return $this->apiResponseService->error('Cannot update status because dependent task(s) are not completed.');
+        }
     }
-
+    /**
+     * Connect two tasks.
+     *
+     * @param connectTaskFormRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function connectTask(connectTaskFormRequest $request)
+    {
+        $validatedData = $request->validated();
+        $this->taskService->connectTask($validatedData);
+        return response()->json(['message' => 'Task connected successfully']);
+    }
 }

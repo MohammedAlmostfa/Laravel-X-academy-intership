@@ -8,4 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class TaskStatusUpdate extends Model
 {
     use HasFactory;
+    protected $fillable =
+        [
+            'task_id',
+            'task_status',
+
+        ];
+    public function task()
+    {
+        return $this->belongsTo(Task::class);
+    }
 }

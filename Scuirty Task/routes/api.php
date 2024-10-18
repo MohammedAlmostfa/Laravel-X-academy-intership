@@ -8,8 +8,6 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CommentController;
-use App\Http\Controllers\FileUploadController;
-use App\Models\Attachment;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,5 +45,9 @@ Route::middleware(CheckUserRole::class)->group(function () {
 });
 
 
+Route::post('tasks/{id}/assign', [ TaskController::class,'assignTask']);
+Route::post('tasks/{id}/reassign', [ TaskController::class,'reassiganTask']);
 
 Route::apiResource('/tasks/{taskId}/attachment', AttachmentController::class);
+Route::post('/tasks/connect', [TaskController::class,'connectTask']);
+Route::get('/download/{id}', [AttachmentController::class, 'download']);

@@ -22,7 +22,6 @@ class AttachmentController extends Controller
     public function store(fileuploadformrequest $request, $taskId)
     {
         $validateData = $request->validated();
-
         $file = $request->file('file');
         $url = $this->assetsService->storeFile($file, $taskId);
 
@@ -32,8 +31,15 @@ class AttachmentController extends Controller
     public function listFiles()
     {
         $files = Attachment::all();
-
         return $this->apiResponseService->success('Files retrieved successfully', $files);
+    }
 
+    public function download($id)
+    {
+        try {
+            return $this->assetsService->downloadFile($id);
+        } catch (\Exception $e) {
+            return $this->apiResponseService->error('Failed to download file: ' . $e->getMessage());
+        }
     }
 }
