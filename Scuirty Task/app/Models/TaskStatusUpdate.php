@@ -18,6 +18,7 @@ class TaskStatusUpdate extends Model
     {
         return $this->belongsTo(Task::class);
     }
+
     /**
  * Scope a query to only include tasks created today.
  *

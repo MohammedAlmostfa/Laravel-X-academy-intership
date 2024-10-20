@@ -2,15 +2,16 @@
 
 namespace App\Service;
 
-use App\Jobs\SendEmailJob;
 use PDF;
 use App\Models\Task;
 use App\Models\User;
+use App\Jobs\SendEmailJob;
 use App\Models\TaskDependencies;
 use App\Models\TaskStatusUpdate;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class TaskService
 {
@@ -39,12 +40,12 @@ class TaskService
             $tasks = Cache::remember('tasks', 60, function () use ($filtersdata) {
                 $query = Task::query();
                 return $query->type($filtersdata['type'] ?? null)
-                             ->status($filtersdata['status'] ?? null)
-                             ->assignedTo($filtersdata['assigned_to'] ?? null)
-                             ->dueDate($filtersdata['due_date'] ?? null)
-                             ->priority($filtersdata['priority'] ?? null)
-                             ->dependsOn($filtersdata['depends_on'] ?? null)
-                             ->paginate(5);
+                    ->status($filtersdata['status'] ?? null)
+                    ->assignedTo($filtersdata['assigned_to'] ?? null)
+                    ->dueDate($filtersdata['due_date'] ?? null)
+                    ->priority($filtersdata['priority'] ?? null)
+                    ->dependsOn($filtersdata['depends_on'] ?? null)
+                    ->paginate(5);
             });
 
             return $tasks;
@@ -78,11 +79,10 @@ class TaskService
             ]);
 
             return true;
-
         } catch (\Exception $e) {
             // Log the error and throw an exception
             Log::error('Error creating task: ' . $e->getMessage());
-            throw new \Exception('Error creating task: '. $e->getMessage());
+            throw new \Exception('Error creating task: ');
         }
     }
 
@@ -110,12 +110,10 @@ class TaskService
                 'due_date' => $data['due_date'] ?? $task->due_date,
                 'assigned_to' => $data['assigned_to'] ?? $task->assigned_to,
             ]);
-
         } catch (ModelNotFoundException $e) {
             // Log the error and throw an exception if the task is not found
             Log::error('Task not found: ' . $e->getMessage());
             throw new \Exception('Task not found: ');
-
         } catch (\Exception $e) {
             // Log any other errors and throw an exception
             Log::error('Error updating task: ' . $e->getMessage());
@@ -136,7 +134,6 @@ class TaskService
             // Find the task by its ID
             $task = Task::findOrFail($id);
             return $task;
-
         } catch (ModelNotFoundException $e) {
             // Log the error and throw an exception if the task is not found
             Log::error('Task not found: ' . $e->getMessage());
@@ -159,12 +156,10 @@ class TaskService
             $task->delete();
 
             return true;
-
         } catch (ModelNotFoundException $e) {
             // Log the error and throw an exception if the task is not found
             Log::error('Task not found: ' . $e->getMessage());
             throw new \Exception('Task not found: ');
-
         } catch (\Exception $e) {
             // Log any other errors and throw an exception
             Log::error('Error deleting task: ' . $e->getMessage());
@@ -175,13 +170,13 @@ class TaskService
 
 
     /**
-      * Update the status of a task.
-      *
-      * @param Task $task
-      * @param string $status
-      * @return bool
-      * @throws \Exception
-      */
+     * Update the status of a task.
+     *
+     * @param Task $task
+     * @param string $status
+     * @return bool
+     * @throws \Exception
+     */
     public function updateStatus(Task $task, $status)
     {
         try {
@@ -205,82 +200,113 @@ class TaskService
             return true;
         } catch (\Exception $e) {
             Log::error('Status update failed: ' . $e->getMessage());
-            throw new \Exception('Status update failed: ' . $e->getMessage());
+            throw new \Exception('Status update failed: ');
         }
-
     }
 
+    /**
+       * assign the status to user .
+       *
+       * @param  $data
+       * @param integer $id
+       * @return bool
+       * @throws \Exception
+       */
 
     public function assignTask($data, $id)
     {
         try {
             $task = Task::findOrFail($id);
-            $task->assigned_to = $data['user_id'];
-            $task->save();
+            if ($task->assigned_to !== null) {
+                return false; // Task already assigned
+            } else {
+                $task->assigned_to = $data['user_id'];
+                $task->save();
+            }
+            return true;
         } catch (ModelNotFoundException $e) {
-            // Log the error and throw an exception if the task is not found
             Log::error('Task not found: ' . $e->getMessage());
-            throw new \Exception('Task not found: ' . $e->getMessage());
+            throw new \Exception('Task not found: ');
         } catch (\Exception $e) {
-            // Log any other errors and throw an exception
             Log::error('Error assigning task: ' . $e->getMessage());
-            throw new \Exception('Error assigning task: ' . $e->getMessage());
+            throw new \Exception('Error assigning task: ');
         }
     }
+    /**
+       * reassign the status to user .
+       *
+       * @param integer $id
+       * @return bool
+       * @throws \Exception
+       */
 
-    public function reassiganTask($id)
+    public function reassignTask($id)
     {
         try {
             $task = Task::findOrFail($id);
-            $task->assigned_to = null;
-            $task->save();
+            if ($task->assigned_to === null) {
+                return false; // Task was not assigned to anyone
+            } else {
+                $task->assigned_to = null;
+                $task->save();
+            }
+            return true;
         } catch (ModelNotFoundException $e) {
-            // Log the error and throw an exception if the task is not found
             Log::error('Task not found: ' . $e->getMessage());
             throw new \Exception('Task not found: ' . $e->getMessage());
         } catch (\Exception $e) {
-            // Log any other errors and throw an exception
             Log::error('Error reassigning task: ' . $e->getMessage());
-            throw new \Exception('Error reassigning task: ' . $e->getMessage());
+            throw new \Exception('Error reassigning task: ');
         }
     }
+    /**
+       * connect task in another task .
+       *
+       * @param  $data
+       * @return bool
+       * @throws \Exception
+       */
 
     public function connectTask($data)
     {
         try {
             TaskDependencies::create([
-                'task_id' =>$data['task_id'],
+                'task_id' => $data['task_id'],
                 'task_depend_on' => $data['depend_on_task_id'],
             ]);
-            $task=Task::find($data['task_id']);
+            $task = Task::find($data['task_id']);
 
-            if($task->status!='completed') {
-                $task->status='Blocked';
+            if ($task->status != 'completed') {
+                $task->status = 'Blocked';
                 $task->save();
             }
         } catch (\Exception $e) {
             Log::error('Failed to create task dependency: ' . $e->getMessage());
-            throw new \Exception('Failed to create task dependency: ' . $e->getMessage());
+            throw new \Exception('Failed to create task dependency: ');
         }
     }
 
-
-
+    /**
+     * Generate Daily Report.
+     *
+     * @return bool
+     * @throws \Exception
+     */
     public function generateDailyReport()
     {
         try {
-            $tasks = TaskStatusUpdate::query();
-            $tasks=$tasks->taskData();
+            // Get data
+            $tasks = TaskStatusUpdate::query()->get();
             $data = [
-                'title' => 'Your Daily Report about Tasks',
-                'date' => now()->format('m/d/Y'),
+                'title' => 'تقريرك اليومي عن المهام',
+                'date' => now()->format('Y/m/d'), // تنسيق التاريخ ليكون بالشكل المناسب
                 'tasks' => $tasks
             ];
 
+            // Get admin emails
             $users = User::where('role_id', 1)->pluck('email');
-
             if ($users->isEmpty()) {
-                throw new \Exception('No users found to send the report.');
+                throw new \Exception('لم يتم العثور على المستخدمين لإرسال التقرير.');
             }
 
             $pdf = PDF::loadView('ReportPage', $data);
@@ -289,11 +315,29 @@ class TaskService
 
             SendEmailJob::dispatch($users, $pdfPath);
 
+            return true;
         } catch (\Exception $e) {
             Log::error('Failed to generate daily report: ' . $e->getMessage());
-            throw new \Exception('Failed to generate daily report: '. $e->getMessage());
+            throw new \Exception('Failed to generate daily report: ');
         }
     }
 
 
+    /**
+     * Show tasks of the authenticated user.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     * @throws \Exception
+     */
+    public function showTaskOfUser()
+    {
+        try {
+            $tasks = Auth::user()->tasks;
+            return $tasks;
+        } catch (\Exception $e) {
+            Log::error('Failed to show tasks of the user: ' . $e->getMessage());
+            throw new \Exception('Failed to show tasks of the user');
+        }
+
+    }
 }

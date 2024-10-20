@@ -42,7 +42,7 @@ class PermissionRequestupdate extends FormRequest
     public function rules(): array
     {
         return [
-            'permission_name' => 'string|unique:roles,role_name',
+            'permission_name' => 'string|unique:permissions,permission_name',
             'description' => 'nullable|string',
         ];
     }

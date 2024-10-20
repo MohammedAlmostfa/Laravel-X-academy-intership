@@ -54,6 +54,10 @@ class Task extends Model
         return $this->hasMany(TaskDependencies::class, 'task_depend_on');
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'assigned_to');
+    }
     /**
      * Scope for filtering tasks by type.
      *

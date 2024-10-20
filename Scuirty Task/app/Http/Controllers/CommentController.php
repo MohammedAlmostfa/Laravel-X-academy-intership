@@ -25,6 +25,19 @@ class CommentController extends Controller
     }
 
     /**
+        * show a comment of spacific task.
+        *
+        * @param int $taskid
+        * @return \Illuminate\Http\JsonResponse
+        */
+
+    public function index($taskId)
+    {
+        $result = $this->CommentService->showCommentOfTask($taskId);
+        return $this->apiResponseService->Showdata('Comments of task', $result);
+    }
+
+    /**
      * Add a comment to a task.
      *
      * @param commentRequestcreat $request
@@ -97,4 +110,5 @@ class CommentController extends Controller
         // Return a success response
         return $this->apiResponseService->success('Comment restored successfully');
     }
+
 }

@@ -42,7 +42,7 @@ class PermissionFormRequestcreat extends FormRequest
     public function rules(): array
     {
         return [
-            'permission_name' => 'required|string|unique:roles,role_name',
+            'permission_name' => 'required|unique:permissions,permission_name',
             'description' => 'nullable|string',
         ];
     }

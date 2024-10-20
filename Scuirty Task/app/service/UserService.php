@@ -13,15 +13,15 @@ class UserService
 {
     //**________________________________________________________________________________________________
     /**
-     **This function is created to show all the user.
-     ** @param$ dat(email, password,name,role)
-     ** @return array(message,data[name],status)
+     *This function is created to show all the user.
+     * @param$ dat(email, password,name,role)
+     * @return array(message,data[name],status)
      */
     public function showUsers()
     {
         try {
             //get the data
-            $data = User::byRole('user')->get(['id', 'name']);
+            $data = User::all()->select(['name', 'id']);
             //return data of user
             return [
                 'message' => 'بيانات المستخدمين',
@@ -39,9 +39,9 @@ class UserService
     }
     //**________________________________________________________________________________________________
     /**
-     **This function is created to store a new User.
-     ** @param$ data email, password,name,role)
-     ** @return array (message,data[name,email,role],status)
+     * This function is created to store a new User.
+     * @param$ data email, password,name,role)
+     * @return array (message,data[name,email,role],status)
      */
     public function createUser($data)
     {
@@ -72,12 +72,12 @@ class UserService
         }
     }
 
-    //**________________________________________________________________________________________________
+
     /**
-     * *This function is creat to update a  user.
-     **  @param$ data (email, password,name,role)
-     **  @param $id (id of user)
-     * *@return array (message,data[name,email,role],status)
+     * This function is creat to update a  user.
+     * @param$ data (email, password,name,role)
+     * @param $id (id of user)
+     * @return array (message,data[name,email,role],status)
      */
     public function updateUser($data, $id)
     {
@@ -117,11 +117,11 @@ class UserService
             ];
         }
     }
-    //**________________________________________________________________________________________________
+
     /**
-     * *This function is creat to delet  a user.
-     **@param $id (id of user)
-     * *@return  (status, data,message)
+     * This function is creat to delet  a user.
+     * @param $id (id of user)
+     * @return  (status, data,message)
      */
     public function deletUser($id)
     {
@@ -151,53 +151,11 @@ class UserService
         }
     }
 
-    //**________________________________________________________________________________________________
-    /**
-     * *This function is creat to return task
-     * *@param $id(id of user)
-     **@return array(data,message,status)
-     */
 
-    public function returnUser($id)
-    {
-        try {
-            $user = User::withTrashed()->find($id);
-            if ($user) {
-                if ($user->deleted_at != "") {
-                    $user->restore();
-                    return [
-                        'message' => 'تم اعاد المستخدم بنجاح',
-                        'data' => $user,
-                        'status' => 200,
-                    ];
-                } else {
-                    return [
-                        'message' => ' المستخدم  غير محذوف',
-                        'data' => $user,
-                        'status' => 200,
-                    ];
-                }
-            } else {
-                return [
-                    'message' => ' لايوحد مستخدم',
-                    'data' => 'لايوجد بيانات',
-                    'status' => 200,
-                ];
-            }
-        } catch (Exception $e) {
-            Log::error('Error in returning user: ' . $e->getMessage());
-            return [
-                'message' => 'حدث خطأ أثناءاعادة المستخدم',
-                'status' => 500,
-                'data' => 'لا يوجد بيانات'
-            ];
-        }
-    }
-    //**________________________________________________________________________________________________
     /**
-     * *This function is creat to show  a user.
-     **@param $id(id of user)
-     * *@return ($message,status,data)
+     * This function is creat to show  a user.
+     * @param $id(id of user)
+     * @return ($message,status,data)
      */
     public function showUser($id)
     {

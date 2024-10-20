@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\PermissionFormRequestcreat;
-use App\Http\Requests\PermissionRequestupdate;
 use Illuminate\Http\Request;
 use App\Service\PermissionService;
 use App\Service\ApiResponseService;
+use Illuminate\Support\Facades\Route;
+use App\Http\Requests\PermissionRequestupdate;
+use App\Http\Requests\PermissionFormRequestcreat;
 
 class PermissionController extends Controller
 {
@@ -32,9 +33,14 @@ class PermissionController extends Controller
      */
     public function index()
     {
-        // Retrieve all permissions and return them in the response
-        $permissions = $this->permissionService->getAllPermissions();
-        return $this->apiResponseService->Showdata('All Permissions', $permissions);
+        $routes = collect(Route::getRoutes())->map(function ($route) {
+            return $route->getName();
+        });
+
+        return response()->json($routes);
+
+
+
     }
 
     /**

@@ -2,17 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Task;
-
 use App\Service\TaskService;
 use Illuminate\Http\Request;
-use App\Mail\DailyReportMail;
-use App\Models\TaskStatusUpdate;
 use Illuminate\Routing\Controller;
 use App\Service\ApiResponseService;
-
-use App\Http\Requests\ReportFormRequest;
-use App\Http\Requests\commentRequestcreat;
 use App\Http\Requests\TaskFormRequestCreat;
 use App\Http\Requests\TaskFormRequestUpdate;
 use App\Http\Requests\assiganTaskformrequest;
@@ -44,13 +37,13 @@ class TaskController extends Controller
     public function index(Request $request)
     {
         $filters = [
-                'type'        => $request->query('type'),
-                'status'      => $request->query('status'),
-                'assigned_to' => $request->query('assigned_to'),
-                'due_date'    => $request->query('due_date'),
-                'priority'    => $request->query('priority'),
-                'depends_on'  => $request->query('depends_on'),
-            ];
+            'type'        => $request->query('type'),
+            'status'      => $request->query('status'),
+            'assigned_to' => $request->query('assigned_to'),
+            'due_date'    => $request->query('due_date'),
+            'priority'    => $request->query('priority'),
+            'depends_on'  => $request->query('depends_on'),
+        ];
 
         // Retrieve all tasks and return them in the response
         $tasks = $this->taskService->getAllTasks($filters);
@@ -127,8 +120,15 @@ class TaskController extends Controller
     public function assignTask(assiganTaskformrequest $request, $id)
     {
         $validatedData = $request->validated();
-        $this->taskService->assignTask($validatedData, $id);
-        return $this->apiResponseService->success('Task assigned successfully');
+
+        $result = $this->taskService->assignTask($validatedData, $id);
+        if ($result === false) {
+            return response()->json(['message' => 'Task is already assigned to a user'], 400);
+        } else {
+            return $this->apiResponseService->success('Task assigned successfully');
+        }
+
+
     }
 
     /**
@@ -137,10 +137,14 @@ class TaskController extends Controller
      * @param int $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function reassignTask($id)
+    public function reassiganTask($id)
     {
-        $this->taskService->reassiganTask($id);
-        return $this->apiResponseService->success('Task reassigned successfully');
+        $result = $this->taskService->reassignTask($id);
+        if ($result === false) {
+            return response()->json(['message' => 'Task is not assigned to any user before'], 400);
+        } else {
+            return $this->apiResponseService->success('Task reassigned successfully');
+        }
     }
 
     /**
@@ -150,6 +154,7 @@ class TaskController extends Controller
      * @param int $taskid
      * @return \Illuminate\Http\JsonResponse
      */
+
     public function updateStatus(StatusFormRequestUpdate $request, $taskid)
     {
         // Retrieve the task from the request (set by Middleware)
@@ -163,12 +168,14 @@ class TaskController extends Controller
             return $this->apiResponseService->error('Cannot update status because dependent task(s) are not completed.');
         }
     }
+
     /**
      * Connect two tasks.
      *
      * @param connectTaskFormRequest $request
      * @return \Illuminate\Http\JsonResponse
      */
+
     public function connectTask(connectTaskFormRequest $request)
     {
         $validatedData = $request->validated();
@@ -177,19 +184,26 @@ class TaskController extends Controller
     }
 
     /**
-         * send daily report to admin .
-         *
-         * @return \Illuminate\Http\JsonResponse
-         */
+     * send daily report to admin .
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
 
     public function generateDailyReport()
     {
-
         $this->taskService->generateDailyReport();
         return $this->apiResponseService->success('Report generated and emailed successfully');
     }
+    /**
+         * Show tasks of the authenticated user.
+         *
+         * @return \Illuminate\Http\JsonResponse
+         */
+    public function showTaskOfUser()
+    {
 
+        $tasks = $this->taskService->showTaskOfUser();
+        return $this->apiResponseService->Showdata('Tasks assigned to you', $tasks);
 
-
-
+    }
 }

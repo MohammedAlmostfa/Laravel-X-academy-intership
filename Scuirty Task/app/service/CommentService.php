@@ -9,6 +9,24 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class CommentService
 {
+
+
+    public function showCommentOfTask($taskId)
+    {
+        try {
+            $task = Task::findOrFail($taskId);
+            $comments = $task->comments;
+            return $comments;
+        } catch (ModelNotFoundException $e) {
+            Log::error('Task not found: ' . $e->getMessage());
+            throw new \Exception('Task not found');
+        }
+    }
+
+
+
+
+
     /**
      * Add a comment to a task.
      *

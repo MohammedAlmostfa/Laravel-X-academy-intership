@@ -95,23 +95,6 @@ class UserController extends Controller
         ], $result['status']);
     }
 
-    /**
-     * Return user details.
-     *
-     * @param int $id
-     * @return JsonResponse
-     */
-    public function returnUser(int $id): JsonResponse
-    {
-        // Get the user details
-        $result = $this->userService->returnUser($id);
-
-        // Return the response
-        return response()->json([
-            'message' => $result['message'],
-            'data' => $result['data'],
-        ], $result['status']);
-    }
 
     /**
      * Show a user.

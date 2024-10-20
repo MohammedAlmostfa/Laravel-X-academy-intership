@@ -1,5 +1,7 @@
-<html>
+<!DOCTYPE html>
+<html lang="ar">
 <head>
+    <meta charset="utf-8">
     <title>{{ $title }}</title>
 </head>
 <body>

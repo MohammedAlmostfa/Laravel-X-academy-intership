@@ -1,65 +1,116 @@
 <?php
-
-use App\Http\Controllers\AttachmentController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Middleware\CheckUserRole;
+use App\Http\Controllers\AttachmentController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
-use App\Service\RoleService;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
-*/
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Auth Routes
 Route::controller(AuthController::class)->group(function () {
-    Route::post('login', 'login');
-    Route::post('register', 'register');
-    Route::post('logout', 'logout');
-    Route::post('refresh', 'refresh');
+    Route::post('login', 'login')->name('login');
+    Route::post('logout', 'logout')->name('logout');
+    Route::post('refresh', 'refresh')->name('refresh');
 });
 
-Route::apiResource('user', UserController::class);
-
-Route::apiResource('task', TaskController::class);
 
 
-// Middleware to check if the user is assigned to the task
-Route::middleware(CheckUserRole::class)->group(function () {
-    Route::put('/tasks/{taskid}/status', [TaskController::class, 'updateStatus']);
-    Route::post('/tasks/{taskid}/comments/{id}', [CommentController::class,'return']);
-    Route::apiResource('/tasks/{taskid}/comments', CommentController::class);
 
-
+// User Routes with permission middleware
+Route::middleware(['auth', 'check.permission'])->group(function () {
+    Route::apiResource('user', UserController::class)->names([
+        'index' => 'user.index',
+        'store' => 'user.store',
+        'show' => 'user.show',
+        'update' => 'user.update',
+        'destroy' => 'user.destroy',
+    ]);
 });
 
-Route::apiResource('/permission', PermissionController::class);
-
-Route::post('tasks/{id}/assign', [ TaskController::class,'assignTask']);
-Route::post('tasks/{id}/reassign', [ TaskController::class,'reassiganTask']);
-
-Route::apiResource('/tasks/{taskId}/attachment', AttachmentController::class);
-Route::post('/tasks/connect', [TaskController::class,'connectTask']);
-Route::get('/download/{id}', [AttachmentController::class, 'download']);
-
-Route::get('/reports/daily-tasks', [TaskController::class, 'generateDailyReport']);
 
 
-Route::apiResource('/role', RoleController::class);
 
 
-Route::post('/permission/{permissionId}/role/{roleId}', [PermissionController::class,'addPermissionToRole']);
+// Task Routes with permission middleware
+Route::middleware(['auth', 'check.permission'])->group(function () {
+    Route::apiResource('task', TaskController::class)->names([
+        'index' => 'task.index',
+        'store' => 'task.store',
+        'show' => 'task.show',
+        'update' => 'task.update',
+        'destroy' => 'task.destroy',
+    ]);
+
+
+
+
+
+
+    Route::middleware(['auth', 'check.permission','checkUserRole'])->group(function () {
+        Route::put('/tasks/{taskid}/status', [TaskController::class, 'updateStatus'])->name('task.update.status');
+        Route::post('/tasks/{taskid}/comments/{id}', [CommentController::class, 'return'])->name('task.return');
+        Route::apiResource('/tasks/{taskid}/comments', CommentController::class)->names([
+            'index' => 'comment.index',
+            'store' => 'comment.store',
+            'show' => 'comment.show',
+            'update' => 'comment.update',
+            'destroy' => 'comment.destroy',
+        ]);
+
+    });
+});
+
+
+
+
+// Permission Routes with permission middleware
+Route::middleware(['auth', 'check.permission'])->group(function () {
+    Route::apiResource('permission', PermissionController::class)->names([
+        'index' => 'permission.index',
+        'store' => 'permission.store',
+        'show' => 'permission.show',
+        'update' => 'permission.update',
+        'destroy' => 'permission.destroy',
+    ]);
+});
+
+
+
+// Role Routes with permission middleware
+Route::middleware(['auth', 'check.permission'])->group(function () {
+    Route::apiResource('role', RoleController::class)->names([
+        'index' => 'role.index',
+        'store' => 'role.store',
+        'show' => 'role.show',
+        'update' => 'role.update',
+        'destroy' => 'role.destroy',
+    ]);
+    Route::post('/permission/{permissionId}/role/{roleId}', [PermissionController::class, 'addPermissionToRole'])->name('addPermissionToRole');
+});
+
+
+
+
+// Additional Routes
+Route::middleware(['auth', 'check.permission'])->group(function () {
+    Route::post('tasks/{id}/assign', [TaskController::class, 'assignTask'])->name('assignTask');
+    Route::put('tasks/{id}/reassign', [TaskController::class, 'reassiganTask'])->name('reassignTask');
+});
+
+
+
+Route::middleware(['auth', 'check.permission'])->group(function () {
+    Route::apiResource('/tasks/{taskId}/attachment', AttachmentController::class)->names([
+        'index' => 'attachment.index',
+        'store' => 'attachment.store',
+        'show' => 'attachment.show',
+        'update' => 'attachment.update',
+        'destroy' => 'attachment.destroy',
+    ]);
+
+    Route::post('/tasks/connect', [TaskController::class, 'connectTask'])->name('connectTask');
+    Route::get('/download/{id}', [AttachmentController::class, 'download'])->name('downloadAttachment');
+    Route::get('/reports/daily-tasks', [TaskController::class, 'generateDailyReport'])->name('generateDailyReport');
+});

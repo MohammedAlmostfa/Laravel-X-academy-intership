@@ -40,7 +40,7 @@ class PermissionService
             // Create a new permission using the provided data
             Permission::create([
                 'permission_name' => $data['permission_name'],
-                'description' => $data['description'],
+                'description' => $data['description']?? null,
             ]);
 
             return true;
