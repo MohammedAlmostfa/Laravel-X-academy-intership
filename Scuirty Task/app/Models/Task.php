@@ -19,7 +19,11 @@ class Task extends Model
         'due_date',
         'assigned_to',
     ];
-
+    protected $casts = [
+        'due_date' => 'datetime',
+        'priority' => 'integer',
+        'assigned_to' => 'integer',
+    ];
     // Relationship with comments
     public function comments()
     {

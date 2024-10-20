@@ -2,15 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\assiganTaskformrequest;
 use App\Models\Task;
+
 use App\Service\TaskService;
 use Illuminate\Http\Request;
+use App\Mail\DailyReportMail;
+use App\Models\TaskStatusUpdate;
 use Illuminate\Routing\Controller;
 use App\Service\ApiResponseService;
+
+use App\Http\Requests\ReportFormRequest;
 use App\Http\Requests\commentRequestcreat;
 use App\Http\Requests\TaskFormRequestCreat;
 use App\Http\Requests\TaskFormRequestUpdate;
+use App\Http\Requests\assiganTaskformrequest;
 use App\Http\Requests\connectTaskformrequest;
 use App\Http\Requests\statusFormRequestUpdate;
 
@@ -168,6 +173,23 @@ class TaskController extends Controller
     {
         $validatedData = $request->validated();
         $this->taskService->connectTask($validatedData);
-        return response()->json(['message' => 'Task connected successfully']);
+        return $this->apiResponseService->success('Task connected successfully');
     }
+
+    /**
+         * send daily report to admin .
+         *
+         * @return \Illuminate\Http\JsonResponse
+         */
+
+    public function generateDailyReport()
+    {
+
+        $this->taskService->generateDailyReport();
+        return $this->apiResponseService->success('Report generated and emailed successfully');
+    }
+
+
+
+
 }

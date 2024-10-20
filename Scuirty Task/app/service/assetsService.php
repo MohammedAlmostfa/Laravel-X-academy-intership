@@ -6,16 +6,99 @@ use Exception;
 use App\Models\Task;
 use App\Models\Attachment;
 use Illuminate\Support\Str;
+use League\Flysystem\Visibility;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
 class assetsService
 {
+    protected $apiKey;
+
+    public function __construct()
+    {
+        $this->apiKey = env('VIRUSTOTAL_API_KEY'); // Add your API key to .env
+    }
+
+    public function scanFile($filePath)
+    {
+        $url = 'https://www.virustotal.com/api/v3/files';
+
+        // Upload the file to VirusTotal
+        $response = Http::withHeaders([
+            'x-apikey' => $this->apiKey,
+        ])->attach('file', fopen($filePath, 'r'), basename($filePath))->post($url);
+
+        // Check if the file was uploaded successfully
+        if ($response->successful()) {
+            // Extract the analysis ID from the response
+            $analysisId = $response->json()['data']['id'];
+            return $this->pollScanResult($analysisId);
+        } else {
+            Log::error('VirusTotal API error:', [
+                'status' => $response->status(),
+                'response' => $response->json(),
+            ]);
+            throw new Exception('Failed to scan file: ' . $response->body(), $response->status());
+        }
+    }
+
+    public function pollScanResult($analysisId)
+    {
+        $url = "https://www.virustotal.com/api/v3/analyses/{$analysisId}";
+        $maxAttempts = 10;
+        $attempt = 0;
+
+        // Poll every 10 seconds for the result until the scan is complete
+        do {
+            sleep(10); // wait 10 seconds between polling
+
+            $response = Http::withHeaders([
+                'x-apikey' => $this->apiKey,
+            ])->get($url);
+
+            $scanResult = $response->json();
+
+            // Check if the scan is completed
+            if (isset($scanResult['data']['attributes']['status']) && $scanResult['data']['attributes']['status'] === 'completed') {
+                return $scanResult;
+            }
+
+            $attempt++;
+        } while ($attempt < $maxAttempts);
+
+        throw new Exception('Scan timeout or failed to complete after polling.');
+    }
+    /**
+     * Store a file securely and associate it with a task.
+     *
+     * @param \Illuminate\Http\UploadedFile $file
+     * @param int $taskId
+     * @return string
+     * @throws Exception
+     */
+
+
     public function storeFile($file, $taskId)
     {
         try {
+            $message = '';
+
+            // Scan the file
+            $scanResult = $this->scanFile($file->path());
+
+            // Check scan results for malicious content
+            if (isset($scanResult['data']['attributes']['stats'])) {
+                $maliciousCount = $scanResult['data']['attributes']['stats']['malicious'] ?? 0;
+                if ($maliciousCount > 0) {
+                    throw new Exception('File contains a virus!', 400);
+                } else {
+                    $message = 'Scan completed successfully, no virus found :)';
+                }
+            }
+
             // العثور على المهمة بواسطة معرفها
             $task = Task::findOrFail($taskId);
 
@@ -40,8 +123,8 @@ class assetsService
             // تخزين الملف بشكل آمن
             $path = Storage::disk('public')->putFileAs('Files', $file, $filePath);
 
-            // ضمان أن الملف يمكن الوصول إليه بشكل عام (إذا لزم الأمر)
-            Storage::disk('public')->setVisibility($path, 'public');
+            // ضمان أن الملف يمكن الوصول إليه بشكل عام
+            Storage::disk('public')->setVisibility($path, Visibility::PUBLIC);
 
             // الحصول على رابط URL الكامل للملف المخزن
             $url = Storage::url($path);
@@ -74,4 +157,5 @@ class assetsService
             throw new \Exception('Attachment not found: ' . $e->getMessage());
         }
     }
+
 }

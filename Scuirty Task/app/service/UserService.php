@@ -50,7 +50,7 @@ class UserService
                 'name' => $data['name'],
                 'email' => $data['email'],
                 'password' => bcrypt($data['password']),
-                'role' => $data['role'] ?? 'user',
+                'role_id' => $data['role_id'] ?? '2',
             ]);
 
             // return $user data
@@ -65,7 +65,7 @@ class UserService
         } catch (Exception $e) {
             Log::error('Error in creating user: ' . $e->getMessage());
             return [
-                'message' => 'حدث خطأ أثناء إنشاء الحساب',
+                'message' => 'حدث خطأ أثناء إنشاء الحساب'. $e->getMessage(),
                 'status' => 500,
                 'data' => 'لم يتم عرض البيانات'
             ];
@@ -96,7 +96,7 @@ class UserService
                     'name' => $data['name'] ?? $user->name,
                     'email' => $data['email'] ?? $user->email,
                     'password' => $data['password'] ?? $user->password,
-                    'role' => $data['role'] ?? $user->role,
+                    'role_id' => $data['role_id'] ?? $user->role_id,
                 ]);
                 return [
                     'message' => 'تمت عملية التحديث',

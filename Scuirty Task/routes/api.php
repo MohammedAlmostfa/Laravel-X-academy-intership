@@ -8,6 +8,9 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\RoleController;
+use App\Service\RoleService;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,6 +47,7 @@ Route::middleware(CheckUserRole::class)->group(function () {
 
 });
 
+Route::apiResource('/permission', PermissionController::class);
 
 Route::post('tasks/{id}/assign', [ TaskController::class,'assignTask']);
 Route::post('tasks/{id}/reassign', [ TaskController::class,'reassiganTask']);
@@ -51,3 +55,11 @@ Route::post('tasks/{id}/reassign', [ TaskController::class,'reassiganTask']);
 Route::apiResource('/tasks/{taskId}/attachment', AttachmentController::class);
 Route::post('/tasks/connect', [TaskController::class,'connectTask']);
 Route::get('/download/{id}', [AttachmentController::class, 'download']);
+
+Route::get('/reports/daily-tasks', [TaskController::class, 'generateDailyReport']);
+
+
+Route::apiResource('/role', RoleController::class);
+
+
+Route::post('/permission/{permissionId}/role/{roleId}', [PermissionController::class,'addPermissionToRole']);

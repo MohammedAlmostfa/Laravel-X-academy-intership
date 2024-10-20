@@ -2,14 +2,15 @@
 
 namespace App\Service;
 
-use App\Models\Attachment;
+use App\Jobs\SendEmailJob;
+use PDF;
 use App\Models\Task;
-use App\Models\Comment;
+use App\Models\User;
 use App\Models\TaskDependencies;
 use App\Models\TaskStatusUpdate;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Cache;
 
 class TaskService
 {
@@ -20,27 +21,41 @@ class TaskService
      */
     public function getAllTasks($filters)
     {
-
         try {
+            // استرجاع الفلاتر المخزنة من الكاش
+            $filtersdata = Cache::get('filters');
 
-            $query = Task::query();
+            // التحقق مما إذا كانت الفلاتر الجديدة مختلفة عن المخزنة
+            if ($filters !== $filtersdata) {
+                // إذا كانت الفلاتر مختلفة، قم بتحديث الفلاتر المخزنة في الكاش
+                Cache::forget('filters');
+                Cache::put('filters', $filters, 60);
+                $filtersdata = $filters;
+                // نسيان الكاش الخاص بالمهام لأن الفلاتر تغيرت
+                Cache::forget('tasks');
+            }
 
-            $tasks =$query->type($filters['type'] ?? null)
-                ->status($filters['status'] ?? null)
-                ->assignedTo($filters['assigned_to'] ?? null)
-                ->dueDate($filters['due_date'] ?? null)
-                ->priority($filters['priority'] ?? null)
-                ->dependsOn($filters['depends_on'] ?? null)
-                ->paginate(5);
-
+            // استرجاع المهام مع استخدام الفلاتر المخزنة في الكاش لمدة 60 دقيقة
+            $tasks = Cache::remember('tasks', 60, function () use ($filtersdata) {
+                $query = Task::query();
+                return $query->type($filtersdata['type'] ?? null)
+                             ->status($filtersdata['status'] ?? null)
+                             ->assignedTo($filtersdata['assigned_to'] ?? null)
+                             ->dueDate($filtersdata['due_date'] ?? null)
+                             ->priority($filtersdata['priority'] ?? null)
+                             ->dependsOn($filtersdata['depends_on'] ?? null)
+                             ->paginate(5);
+            });
 
             return $tasks;
         } catch (\Exception $e) {
+            // تسجيل الخطأ وإلقاء استثناء إذا فشلت عملية استرجاع المهام
             Log::error('Failed to retrieve tasks: ' . $e->getMessage());
             throw new \Exception('An error occurred on the server.');
         }
-
     }
+
+
 
     /**
      * Create a new task.
@@ -179,11 +194,8 @@ class TaskService
                     return false;
                 }
             }
-
-
             $task->status = $status;
             $task->save();
-
 
             TaskStatusUpdate::create([
                 'task_id' => $task->id,
@@ -252,6 +264,36 @@ class TaskService
         }
     }
 
+
+
+    public function generateDailyReport()
+    {
+        try {
+            $tasks = TaskStatusUpdate::query();
+            $tasks=$tasks->taskData();
+            $data = [
+                'title' => 'Your Daily Report about Tasks',
+                'date' => now()->format('m/d/Y'),
+                'tasks' => $tasks
+            ];
+
+            $users = User::where('role_id', 1)->pluck('email');
+
+            if ($users->isEmpty()) {
+                throw new \Exception('No users found to send the report.');
+            }
+
+            $pdf = PDF::loadView('ReportPage', $data);
+            $pdfPath = storage_path('app/daily-tasks-report.pdf');
+            $pdf->save($pdfPath);
+
+            SendEmailJob::dispatch($users, $pdfPath);
+
+        } catch (\Exception $e) {
+            Log::error('Failed to generate daily report: ' . $e->getMessage());
+            throw new \Exception('Failed to generate daily report: '. $e->getMessage());
+        }
+    }
 
 
 }

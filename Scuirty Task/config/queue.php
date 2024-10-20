@@ -34,13 +34,12 @@ return [
             'driver' => 'sync',
         ],
 
-        'database' => [
-            'driver' => 'database',
-            'table' => 'jobs',
-            'queue' => 'default',
-            'retry_after' => 90,
-            'after_commit' => false,
-        ],
+         'database' => [
+        'driver' => 'database',
+        'table' => 'jobs',
+        'queue' => 'default',
+        'retry_after' => 90,
+    ],
 
         'beanstalkd' => [
             'driver' => 'beanstalkd',
@@ -62,15 +61,13 @@ return [
             'after_commit' => false,
         ],
 
-        'redis' => [
-            'driver' => 'redis',
-            'connection' => 'default',
-            'queue' => env('REDIS_QUEUE', 'default'),
-            'retry_after' => 90,
-            'block_for' => null,
-            'after_commit' => false,
-        ],
-
+       'redis' => [
+    'driver' => 'redis',
+    'connection' => 'default', // The Redis connection to use
+    'queue' => env('REDIS_QUEUE', 'default'),
+    'retry_after' => 90,
+    'block_for' => null,
+    ],
     ],
 
     /*
