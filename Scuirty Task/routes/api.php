@@ -9,17 +9,18 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
 
 // Auth Routes
-Route::controller(AuthController::class)->group(function () {
-    Route::post('login', 'login')->name('login');
-    Route::post('logout', 'logout')->name('logout');
-    Route::post('refresh', 'refresh')->name('refresh');
+Route::middleware(['throttle:60,1', 'security'])->group(function () {
+    Route::controller(AuthController::class)->group(function () {
+        Route::post('login', 'login')->name('login');
+        Route::post('logout', 'logout')->name('logout');
+        Route::post('refresh', 'refresh')->name('refresh');
+    });
+
 });
 
 
-
-
 // User Routes with permission middleware
-Route::middleware(['auth', 'check.permission'])->group(function () {
+Route::middleware(['auth', 'check.permission','throttle:60,1', 'security'])->group(function () {
     Route::apiResource('user', UserController::class)->names([
         'index' => 'user.index',
         'store' => 'user.store',
@@ -34,22 +35,22 @@ Route::middleware(['auth', 'check.permission'])->group(function () {
 
 
 // Task Routes with permission middleware
+Route::middleware(['auth', 'check.permission','checkUserRole','throttle:60,1', 'security'])->group(function () {
+    Route::apiResource('task', TaskController::class)->names([
+        'index' => 'task.index',
+        'store' => 'task.store',
+        'show' => 'task.show',
+        'update' => 'task.update',
+        'destroy' => 'task.destroy',
+    ]);
 
-Route::apiResource('task', TaskController::class)->names([
-    'index' => 'task.index',
-    'store' => 'task.store',
-    'show' => 'task.show',
-    'update' => 'task.update',
-    'destroy' => 'task.destroy',
-]);
+    Route::get('/tasks/Blocked', [TaskController::class, 'showBlockedtask'])->name('tasksBlocked');
 
-Route::get('/tasks/Blocked', [TaskController::class, 'showBlockedtask'])->name('tasksBlocked');
+});
 
 
 
-
-
-Route::middleware(['auth', 'check.permission','checkUserRole'])->group(function () {
+Route::middleware(['auth', 'check.permission','checkUserRole','throttle:60,1', 'security'])->group(function () {
     Route::put('/tasks/{taskid}/status', [TaskController::class, 'updateStatus'])->name('task.update.status');
     Route::post('/tasks/{taskid}/comments/{id}', [CommentController::class, 'return'])->name('task.return');
     Route::apiResource('/tasks/{taskid}/comments', CommentController::class)->names([
@@ -67,7 +68,7 @@ Route::middleware(['auth', 'check.permission','checkUserRole'])->group(function 
 
 
 // Permission Routes with permission middleware
-Route::middleware(['auth', 'check.permission'])->group(function () {
+Route::middleware(['auth', 'check.permission','throttle:60,1', 'security'])->group(function () {
     Route::apiResource('permission', PermissionController::class)->names([
         'index' => 'permission.index',
         'store' => 'permission.store',
@@ -80,7 +81,7 @@ Route::middleware(['auth', 'check.permission'])->group(function () {
 
 
 // Role Routes with permission middleware
-Route::middleware(['auth', 'check.permission'])->group(function () {
+Route::middleware(['auth', 'check.permission','throttle:60,1', 'security'])->group(function () {
     Route::apiResource('role', RoleController::class)->names([
         'index' => 'role.index',
         'store' => 'role.store',
@@ -95,14 +96,14 @@ Route::middleware(['auth', 'check.permission'])->group(function () {
 
 
 // Additional Routes
-Route::middleware(['auth', 'check.permission'])->group(function () {
+Route::middleware(['auth', 'check.permission','throttle:60,1', 'security'])->group(function () {
     Route::post('tasks/{id}/assign', [TaskController::class, 'assignTask'])->name('assignTask');
     Route::put('tasks/{id}/reassign', [TaskController::class, 'reassiganTask'])->name('reassignTask');
 });
 
 
 
-Route::middleware(['auth', 'check.permission'])->group(function () {
+Route::middleware(['auth', 'check.permission','throttle:60,1', 'security'])->group(function () {
     Route::apiResource('/tasks/{taskId}/attachment', AttachmentController::class)->names([
         'index' => 'attachment.index',
         'store' => 'attachment.store',
