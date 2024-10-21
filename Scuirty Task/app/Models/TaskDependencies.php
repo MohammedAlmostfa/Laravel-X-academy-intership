@@ -12,12 +12,13 @@ class TaskDependencies extends Model
         'task_id',
     'task_depend_on'
 ];
-    public function dependenciestask()
+    public function task()
     {
-        return $this->belongsTo(Task::class);
+        return $this->belongsTo(Task::class, 'task_id');
     }
-    public function dependentstask()
+
+    public function dependsOnTask()
     {
-        return $this->belongsTo(Task::class);
+        return $this->belongsTo(Task::class, 'task_depend_on');
     }
 }

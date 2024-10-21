@@ -185,7 +185,7 @@ class TaskService
 
             if ($dependency) {
                 $dependentTask = Task::find($dependency->task_depend_on);
-                if ($dependentTask->status != 'completed') {
+                if ($dependentTask->status != 'Completed') {
                     return false;
                 }
             }
@@ -337,6 +337,27 @@ class TaskService
         } catch (\Exception $e) {
             Log::error('Failed to show tasks of the user: ' . $e->getMessage());
             throw new \Exception('Failed to show tasks of the user');
+        }
+
+    }
+    /**
+       * show blocked tasks and latest
+       *
+       * @return \Illuminate\Database\Eloquent\Collection
+       * @throws \Exception
+       */
+
+    public function Blockedtask()
+    {
+        try {
+            $tasks = Task::whereHas('dependencies', function ($query) {
+                $query->where('status', '!=', 'Completed')
+                      ->where('due_date', '<=', now());
+            })->get();
+            return $tasks;
+        } catch (\Exception $e) {
+            Log::error('Failed to show blocked tasks: ' . $e->getMessage());
+            throw new \Exception('Failed to show blocked tasks');
         }
 
     }

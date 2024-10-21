@@ -3542,6 +3542,107 @@
 							"body": "{\n    \"message\": \"Tasks assigned to you\",\n    \"data\": [\n        {\n            \"id\": 2,\n            \"created_at\": \"2024-10-20T18:30:47.000000Z\",\n            \"updated_at\": \"2024-10-20T20:13:01.000000Z\",\n            \"title\": \"دروسff\",\n            \"type\": \"Feature\",\n            \"status\": \"In Progress\",\n            \"priority\": 0,\n            \"due_date\": \"2003-01-01T00:00:00.000000Z\",\n            \"description\": \"سسسسسسسسسسسسسسس\",\n            \"assigned_to\": 1\n        },\n        {\n            \"id\": 3,\n            \"created_at\": \"2024-10-20T18:30:48.000000Z\",\n            \"updated_at\": \"2024-10-20T20:09:06.000000Z\",\n            \"title\": \"دروسff\",\n            \"type\": \"Feature\",\n            \"status\": \"Blocked\",\n            \"priority\": 0,\n            \"due_date\": \"2003-01-01T00:00:00.000000Z\",\n            \"description\": \"سسسسسسسسسسسسسسس\",\n            \"assigned_to\": 1\n        }\n    ]\n}"
 						}
 					]
+				},
+				{
+					"name": "showblockedtask",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2xvZ2luIiwiaWF0IjoxNzI5NDg4MjgzLCJleHAiOjE3Mjk0OTE4ODMsIm5iZiI6MTcyOTQ4ODI4MywianRpIjoiczJIZElKWUdFNkV0eElPNiIsInN1YiI6IjEiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.HUWhIfV1E2PVTWmDjKdl25dCejj3jp0YUg9bptO6Ubg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/tasks/Blocked",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"tasks",
+								"Blocked"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "showblockedtask",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://127.0.0.1:8000/api/tasks/Blocked",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"tasks",
+										"Blocked"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Host",
+									"value": "127.0.0.1:8000"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.12"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 21 Oct 2024 05:29:39 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-RateLimit-Limit",
+									"value": "60"
+								},
+								{
+									"key": "X-RateLimit-Remaining",
+									"value": "58"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Blocked Task\",\n    \"data\": [\n        {\n            \"id\": 3,\n            \"created_at\": \"2024-10-20T18:30:48.000000Z\",\n            \"updated_at\": \"2024-10-20T20:09:06.000000Z\",\n            \"title\": \"دروسff\",\n            \"type\": \"Feature\",\n            \"status\": \"Blocked\",\n            \"priority\": 0,\n            \"due_date\": \"2003-01-01T00:00:00.000000Z\",\n            \"description\": \"سسسسسسسسسسسسسسس\",\n            \"assigned_to\": 1\n        }\n    ]\n}"
+						}
+					]
 				}
 			]
 		},

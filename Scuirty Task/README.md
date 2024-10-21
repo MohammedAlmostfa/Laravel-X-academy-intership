@@ -1,8 +1,8 @@
-#Scuirty task
+# Scuirty task
+
+This project was designed to manage tasks
 
 ## Attributes
-
-This project was designed to manage and complete tasks
 
 ### admin Attributes
 
@@ -16,10 +16,9 @@ This project was designed to manage and complete tasks
 -   upluad attachment to task.
 -   add update delet show all ole and specified role.
 -   add update delet show all ole and specified permission.
+-   show blocked tasks and latest
 
--   Add a work team and specify the role of each team member (Manger, tester, developer).
-
-### Manger Attributes
+### User Attributes
 
 -   log in , log out and refresh .
 -   show his tasks list .

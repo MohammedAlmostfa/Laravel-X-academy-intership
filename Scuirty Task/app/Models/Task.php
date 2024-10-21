@@ -42,13 +42,15 @@ class Task extends Model
         return $this->hasMany(TaskStatusUpdate::class);
     }
 
+
     // Relationship with task dependencies
+
     public function dependencies()
     {
         return $this->hasMany(TaskDependencies::class, 'task_id');
     }
-
     // Relationship with dependent tasks
+
     public function dependents()
     {
         return $this->hasMany(TaskDependencies::class, 'task_depend_on');

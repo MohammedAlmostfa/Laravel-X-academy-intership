@@ -206,4 +206,17 @@ class TaskController extends Controller
         return $this->apiResponseService->Showdata('Tasks assigned to you', $tasks);
 
     }
+
+    /**
+    *  show blocked tasks and latest
+    *
+    * @return \Illuminate\Http\JsonResponse
+    */
+
+    public function showBlockedtask()
+    {
+        $tasks= $this->taskService->Blockedtask();
+        return $this->apiResponseService->Showdata('Blocked Task', $tasks);
+
+    }
 }

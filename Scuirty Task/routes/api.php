@@ -34,33 +34,34 @@ Route::middleware(['auth', 'check.permission'])->group(function () {
 
 
 // Task Routes with permission middleware
-Route::middleware(['auth', 'check.permission'])->group(function () {
-    Route::apiResource('task', TaskController::class)->names([
-        'index' => 'task.index',
-        'store' => 'task.store',
-        'show' => 'task.show',
-        'update' => 'task.update',
-        'destroy' => 'task.destroy',
+
+Route::apiResource('task', TaskController::class)->names([
+    'index' => 'task.index',
+    'store' => 'task.store',
+    'show' => 'task.show',
+    'update' => 'task.update',
+    'destroy' => 'task.destroy',
+]);
+
+Route::get('/tasks/Blocked', [TaskController::class, 'showBlockedtask'])->name('tasksBlocked');
+
+
+
+
+
+Route::middleware(['auth', 'check.permission','checkUserRole'])->group(function () {
+    Route::put('/tasks/{taskid}/status', [TaskController::class, 'updateStatus'])->name('task.update.status');
+    Route::post('/tasks/{taskid}/comments/{id}', [CommentController::class, 'return'])->name('task.return');
+    Route::apiResource('/tasks/{taskid}/comments', CommentController::class)->names([
+        'index' => 'comment.index',
+        'store' => 'comment.store',
+        'show' => 'comment.show',
+        'update' => 'comment.update',
+        'destroy' => 'comment.destroy',
     ]);
 
-
-
-
-
-
-    Route::middleware(['auth', 'check.permission','checkUserRole'])->group(function () {
-        Route::put('/tasks/{taskid}/status', [TaskController::class, 'updateStatus'])->name('task.update.status');
-        Route::post('/tasks/{taskid}/comments/{id}', [CommentController::class, 'return'])->name('task.return');
-        Route::apiResource('/tasks/{taskid}/comments', CommentController::class)->names([
-            'index' => 'comment.index',
-            'store' => 'comment.store',
-            'show' => 'comment.show',
-            'update' => 'comment.update',
-            'destroy' => 'comment.destroy',
-        ]);
-
-    });
 });
+
 
 
 
@@ -113,4 +114,6 @@ Route::middleware(['auth', 'check.permission'])->group(function () {
     Route::post('/tasks/connect', [TaskController::class, 'connectTask'])->name('connectTask');
     Route::get('/download/{id}', [AttachmentController::class, 'download'])->name('downloadAttachment');
     Route::get('/reports/daily-tasks', [TaskController::class, 'generateDailyReport'])->name('generateDailyReport');
+
+
 });
