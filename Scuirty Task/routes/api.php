@@ -35,7 +35,7 @@ Route::middleware(['auth', 'check.permission','throttle:60,1', 'security'])->gro
 
 
 // Task Routes with permission middleware
-Route::middleware(['auth', 'check.permission','checkUserRole','throttle:60,1', 'security'])->group(function () {
+Route::middleware(['auth', 'check.permission','throttle:60,1', 'security'])->group(function () {
     Route::apiResource('task', TaskController::class)->names([
         'index' => 'task.index',
         'store' => 'task.store',
@@ -52,7 +52,7 @@ Route::middleware(['auth', 'check.permission','checkUserRole','throttle:60,1', '
 
 Route::middleware(['auth', 'check.permission','checkUserRole','throttle:60,1', 'security'])->group(function () {
     Route::put('/tasks/{taskid}/status', [TaskController::class, 'updateStatus'])->name('task.update.status');
-    Route::post('/tasks/{taskid}/comments/{id}', [CommentController::class, 'return'])->name('task.return');
+    Route::post('/tasks/{taskid}/comments/{id}', [CommentController::class, 'return'])->name('comment.return');
     Route::apiResource('/tasks/{taskid}/comments', CommentController::class)->names([
         'index' => 'comment.index',
         'store' => 'comment.store',

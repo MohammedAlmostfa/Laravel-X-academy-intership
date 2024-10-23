@@ -170,40 +170,49 @@ class TaskService
 
 
     /**
-     * Update the status of a task.
-     *
-     * @param Task $task
-     * @param string $status
-     * @return bool
-     * @throws \Exception
-     */
+ * Update the status of a task.
+ *
+ * @param Task $task
+ * @param string $status
+ * @return bool
+ * @throws \Exception
+ */
     public function updateStatus(Task $task, $status)
     {
         try {
-
+            // Check for dependencies
             $dependency = TaskDependencies::where('task_id', $task->id)->first();
-
             if ($dependency) {
                 $dependentTask = Task::find($dependency->task_depend_on);
                 if ($dependentTask->status != 'Completed') {
-                    return false;
+                    return 0;
                 }
             }
+
+            // Ensure the new status is valid and follows the correct order
+            $allowedStatuses = ['Open', 'In Progress', 'Completed'];
+            $currentStatusIndex = array_search($task->status, $allowedStatuses);
+            $newStatusIndex = array_search($status, $allowedStatuses);
+
+            if ($newStatusIndex === false || $newStatusIndex !== $currentStatusIndex + 1) {
+                return 3;
+            }
+
+            // Update the task status
             $task->status = $status;
             $task->save();
-
+            // Create a record of the task status update
             TaskStatusUpdate::create([
                 'task_id' => $task->id,
                 'task_status' => $status,
             ]);
 
-            return true;
+            return 1;
         } catch (\Exception $e) {
             Log::error('Status update failed: ' . $e->getMessage());
-            throw new \Exception('Status update failed: ');
+            throw new \Exception('Status update failed: ' . $e->getMessage());
         }
     }
-
     /**
        * assign the status to user .
        *

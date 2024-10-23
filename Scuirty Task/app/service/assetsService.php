@@ -148,13 +148,28 @@ class assetsService
         }
     }
 
-    public function downloadFile($id)
+    /**
+     * Download the specified file.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function download($id)
     {
         try {
             $attachment = Attachment::findOrFail($id);
-            return Storage::disk('public')->download($attachment->path, $attachment->name);
+
+            if (Storage::disk('public')->exists($attachment->path)) {
+                return Storage::disk('public')->download($attachment->path, $attachment->name);
+            } else {
+                return response()->json(['message' => 'File not found'], 404);
+            }
         } catch (ModelNotFoundException $e) {
-            throw new \Exception('Attachment not found: ' . $e->getMessage());
+            Log::error('Attachment not found: ' . $e->getMessage());
+            return response()->json(['message' => 'Attachment not found'], 404);
+        } catch (\Exception $e) {
+            Log::error('Error downloading attachment: ' . $e->getMessage());
+            return response()->json(['message' => 'Error downloading attachment'], 500);
         }
     }
 

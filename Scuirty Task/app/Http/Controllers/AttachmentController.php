@@ -37,7 +37,7 @@ class AttachmentController extends Controller
     public function download($id)
     {
         try {
-            return $this->assetsService->downloadFile($id);
+            return $this->assetsService->download($id);
         } catch (\Exception $e) {
             return $this->apiResponseService->error('Failed to download file: ' . $e->getMessage());
         }

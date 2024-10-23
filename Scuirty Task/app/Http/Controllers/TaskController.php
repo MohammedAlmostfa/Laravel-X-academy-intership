@@ -162,12 +162,17 @@ class TaskController extends Controller
         // Retrieve the status from the request
         $status = $request->input('status');
         // Use the service to update the status
-        if ($this->taskService->updateStatus($task, $status)) {
+        $result=$this->taskService->updateStatus($task, $status);
+        if ($result==1) {
             return $this->apiResponseService->success('Status updated successfully');
-        } else {
+        } elseif($result==0) {
             return $this->apiResponseService->error('Cannot update status because dependent task(s) are not completed.');
+        } elseif($result==3) {
+            return $this->apiResponseService->error('Cannot update  to this status');
         }
     }
+
+
 
     /**
      * Connect two tasks.
