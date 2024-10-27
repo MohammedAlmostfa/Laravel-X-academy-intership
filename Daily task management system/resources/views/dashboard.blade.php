@@ -27,6 +27,7 @@
             </div>
         </div>
     @endif
+
     @if (session('error'))
         <div class="toast-container position-fixed top-0 end-0 p-3">
             <div id="welcomeToast" class="toast align-items-center text-bg-danger border-0" role="alert"
@@ -41,7 +42,6 @@
             </div>
         </div>
     @endif
-
 
     <div class="container d-flex flex-column align-items-center" style="margin-top: 120px;">
         <!-- زر فتح النموذج -->
@@ -98,29 +98,71 @@
                             <form action="{{ route('task.destroy', $task->id) }}" method="POST">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-danger mx-1"
+                                <button type="submit" class="btn btn-danger mx-3"
                                     onclick="return confirm('Are you sure you want to delete this task?');">
-                                    <i class="bi bi-x-circle"></i>
+                                    <i class="bi bi-x-circle mx-3"></i>
                                 </button>
                             </form>
-                            <a href="#" class="bi bi-check-circle mx-1"></a>
+                            <button type="button" class="btn btn-primary mx-3" data-bs-toggle="modal"
+                                data-bs-target="#exampleModalCenter">
+                                <i class="bi bi-check-circle mx-3"></i>
+                            </button>
+
+                            <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+                                aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLongTitle">Task Finish</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <form action="{{ route('task.finish', $task->id) }}" method="POST">
+                                            <div class="modal-body">
+                                                <div class="mb-3">
+                                                    <label for="result" class="col-form-label">Task Result:</label>
+                                                    <input type="text" class="form-control" id="result"
+                                                        name="result" required>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">Close</button>
+
+                                                @csrf
+                                                @method('PUT')
+                                                <button type="submit" class="btn btn-primary mx-3">
+                                                    Finish Task
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+
                         </div>
                     </div>
                 </div>
             @endforeach
         </div>
+    </div>
 
-        <script>
-            // Initialize the toast
-            var toastEl = document.getElementById('welcomeToast');
-            if (toastEl) {
-                var toast = new bootstrap.Toast(toastEl);
-                // Show the toast
-                toast.show();
-                // Auto-hide toast after 10 seconds
-                setTimeout(function() {
-                    toast.hide();
-                }, 10000); // 10000 milliseconds = 10 seconds
-            }
-        </script>
+    <!-- Modal -->
+
+
+
+    <script>
+        // Initialize the toast
+        var toastEl = document.getElementById('welcomeToast');
+        if (toastEl) {
+            var toast = new bootstrap.Toast(toastEl);
+            // Show the toast
+            toast.show();
+            // Auto-hide toast after 10 seconds
+            setTimeout(function() {
+                toast.hide();
+            }, 10000); // 10000 milliseconds = 10 seconds
+        }
+    </script>
 </x-app-layout>

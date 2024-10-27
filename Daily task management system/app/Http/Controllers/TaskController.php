@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\taskformrequestcreat;
+use App\Http\Requests\taskformrequestfinish;
 use App\Service\TaskService;  // تأكد من أن اسم المسار والخدمة صحيحة
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -34,5 +35,15 @@ class TaskController extends Controller
     {
         $result = $this->taskService->deletTask($id);
         return redirect()->route('dashboard')->with($result);
+    }
+
+    public function finish(taskformrequestfinish $Result, $id)
+    {
+        $vaildateddata=$Result->validated();
+        $result = $this->taskService->finishTask($vaildateddata, $id);
+        return redirect()->route('dashboard')->with($result);
+
+
+
     }
 }
