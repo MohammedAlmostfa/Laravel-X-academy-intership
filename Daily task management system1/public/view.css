@@ -1,0 +1,127 @@
+@import url("https://fonts.googleapis.com/css?family=Raleway:400,700");
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-family: "Jost", sans-serif;
+    background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e);
+}
+.bi bi-plus-circle-fill .main {
+    width: 350px;
+    height: 500px;
+    background: red;
+    overflow: hidden;
+    background: url("https://doc-08-2c-docs.googleusercontent.com/docs/securesc/68c90smiglihng9534mvqmq1946dmis5/fo0picsp1nhiucmc0l25s29respgpr4j/1631524275000/03522360960922298374/03522360960922298374/1Sx0jhdpEpnNIydS4rnN4kHSJtU1EyWka?e=view&authuser=0&nonce=gcrocepgbb17m&user=03522360960922298374&hash=tfhgbs86ka6divo3llbvp93mg4csvb38")
+        no-repeat center/ cover;
+    border-radius: 10px;
+    box-shadow: 5px 20px 50px #000;
+}
+.card-body {
+    background-color: #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start; /* لضبط محاذاة المحتوى في الأعلى */
+}
+.content {
+    flex-grow: 1; /* لجعل المحتوى الرئيسي (العنوان والنص) ينمو لملء الفراغ */
+}
+
+.card .buttons {
+    display: flex; /* Use flexbox for alignment */
+    justify-content: flex-end; /* Align items to the right */
+    align-items: center; /* Center items vertically */
+}
+
+.card .buttons a {
+    margin-left: 10px; /* Space between buttons */
+    text-decoration: none; /* Remove underline from links */
+    display: inline-flex; /* Allow setting width and height */
+    justify-content: center; /* Center icon within link */
+    align-items: center; /* Center icon vertically */
+    width: 30px; /* Set a fixed width */
+    height: 30px; /* Set a fixed height */
+    border-radius: 50%; /* Make them circular */
+    font-size: 26px; /* Increase icon size */
+}
+
+.card .buttons a.bi-x-circle {
+    background-color: red; /* Background color */
+    color: #eee; /* Icon color */
+}
+
+/* Blue color for the second button */
+.card .buttons a.bi-check-circle {
+    /* لون الروابط */
+    background-color: #302b63; /* Background color */
+    color: #eee; /* Icon color */
+}
+
+/* Optional: Add hover effect */
+.card .buttons a:hover {
+    opacity: 0.8; /* Change opacity on hover */
+}
+
+.navbar {
+    background-color: #eee !important; /* لون الخلفية */
+}
+
+.navbar-toggler {
+    background-color: #302b63 !important;
+}
+
+.navbar-toggler:focus {
+    box-shadow: none; /* إزالة تأثير الظل عند التركيز */
+}
+.offcanvas-title {
+    color: #302b63 !important;
+}
+.navbar-brand {
+    color: #302b63 !important;
+}
+.cc {
+    background-color: #eee !important;
+}
+
+.bb {
+    color: #eee !important;
+}
+
+.nav-link {
+    color: #302b63 !important; /* لون الروابط */
+}
+
+.nav-link.active {
+    color: #302b63 !important; /* لون الرابط النشط */
+}
+
+.offcanvas-body {
+    background-color: #eee !important; /* لون خلفية الـoffcanvas */
+}
+
+.btn-success {
+    background-color: #198754 !important; /* لون الزر */
+    border-color: #198754 !important;
+}
+
+.btn-success:hover {
+    background-color: #157347 !important;
+    border-color: #146c43 !important;
+}
+
+.toast.text-bg {
+    background-color: #302b63; /* لون الخلفية */
+    color: #eee; /* لون النص */
+}
+
+/* Optional: Style the close button */
+.toast .btn-close-white {
+    filter: invert(1);
+}
+
+.modal-title,
+.mb-3 label {
+    color: #302b63;
+}

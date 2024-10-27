@@ -1,15 +1,4 @@
-@import url("https://fonts.googleapis.com/css?family=Raleway:400,700");
-body {
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    font-family: "Jost", sans-serif;
-    background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e);
-}
-.main {
+.bi bi-plus-circle-fill .main {
     width: 350px;
     height: 500px;
     background: red;
@@ -55,58 +44,11 @@ body {
 /* Blue color for the second button */
 .card .buttons a.bi-check-circle {
     /* لون الروابط */
-    background-color: #261448; /* Background color */
+    background-color: #302b63; /* Background color */
     color: #eee; /* Icon color */
 }
 
 /* Optional: Add hover effect */
 .card .buttons a:hover {
     opacity: 0.8; /* Change opacity on hover */
-}
-
-.navbar {
-    background-color: #eee !important; /* لون الخلفية */
-}
-
-.navbar-toggler {
-    background-color: #261448 !important;
-}
-
-.navbar-toggler:focus {
-    box-shadow: none; /* إزالة تأثير الظل عند التركيز */
-}
-.offcanvas-title {
-    color: #261448 !important;
-}
-.navbar-brand {
-    color: #261448 !important;
-}
-.cc {
-    background-color: #eee !important;
-}
-
-.bb {
-    color: #eee !important;
-}
-
-.nav-link {
-    color: #261448 !important; /* لون الروابط */
-}
-
-.nav-link.active {
-    color: #261448 !important; /* لون الرابط النشط */
-}
-
-.offcanvas-body {
-    background-color: #eee !important; /* لون خلفية الـoffcanvas */
-}
-
-.btn-success {
-    background-color: #198754 !important; /* لون الزر */
-    border-color: #198754 !important;
-}
-
-.btn-success:hover {
-    background-color: #157347 !important;
-    border-color: #146c43 !important;
 }
