@@ -64,13 +64,13 @@ Route::middleware('auth')->group(function () {
         'index' => 'task.index',
         'create' => 'task.create',
         'store' => 'task.store',
-
         'edit' => 'task.edit',
         'update' => 'task.update',
         'destroy' => 'task.destroy',
     ]);
 
     Route::put('tasks-finish/{id}', [TaskController::class,'finish'])->name('task.finish');
+    Route::get('tasks-finish', [TaskController::class,'getfinishedTask'])->name('gettask.finish');
 
 
 

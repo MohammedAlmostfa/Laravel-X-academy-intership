@@ -30,4 +30,16 @@ class Task extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function scopeByTask($query, $data)
+    {
+        if ($data === null) {
+            return $query->select(['id', 'Task_name', 'Description', 'Due_time'])
+                         ->where('Status', null)
+                         ->get();
+        } elseif ($data === 'finished') {
+            return $query->select(['id', 'Task_name', 'Description', 'Due_time', 'result'])
+                         ->where('Status', 'finished')
+                         ->get();
+        }
+    }
 }

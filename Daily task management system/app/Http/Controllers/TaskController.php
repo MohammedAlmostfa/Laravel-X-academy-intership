@@ -21,12 +21,15 @@ class TaskController extends Controller
         $tasks = $this->taskService->getAllTasks();
         return view('dashboard', compact('tasks'));
     }
-
+    public function getfinishedTask()
+    {
+        $tasks = $this->taskService->getfinishedTasks();
+        return view('finishidTask', compact('tasks'));
+    }
     public function store(taskformrequestcreat $request)
     {
         $vaildateddata = $request->validated();
         $result = $this->taskService->createTask($vaildateddata);
-
         return redirect()->route('dashboard')->with($result);
 
     }

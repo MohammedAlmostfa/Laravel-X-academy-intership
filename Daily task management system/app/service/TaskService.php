@@ -11,7 +11,12 @@ class TaskService
 {
     public function getAllTasks()
     {
-        return Auth::user()->tasks()->select(['id', 'Task_name', 'Description','Due_time'])->where('Status', null)->get();
+        return Auth::user()->tasks()->byTask(null);
+    }
+
+    public function getFinishedTasks()
+    {
+        return Auth::user()->tasks()->byTask('finished');
     }
 
     public function createTask($data)

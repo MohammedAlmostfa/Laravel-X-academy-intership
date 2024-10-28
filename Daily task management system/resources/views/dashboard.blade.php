@@ -1,9 +1,4 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
-    </x-slot>
 
     <head>
         <title>View Page</title>
@@ -43,56 +38,53 @@
         </div>
     @endif
 
-    <div class="container d-flex flex-column align-items-center" style="margin-top: 120px;">
-        <!-- زر فتح النموذج -->
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"
-            data-bs-whatever="@getbootstrap">Open modal for @getbootstrap</button>
-
-        <!-- نموذج جديد -->
-        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">New Task</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form method="POST" action="{{ route('task.store') }}">
-                            @csrf
-                            <div class="mb-3">
-                                <label for="recipient-name" class="col-form-label">Task Name:</label>
-                                <input type="text" class="form-control" id="recipient-name" name="Task_name"
-                                    required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="message-text" class="col-form-label">Task Description:</label>
-                                <textarea class="form-control" id="message-text" name="Description" required></textarea>
-                            </div>
-                            <div class="mb-3">
-                                <label for="due-time" class="col-form-label">Due Time:</label>
-                                <input type="datetime-local" class="form-control" id="due-time" name="Due_time"
-                                    required>
-                            </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Save Task</button>
-                    </div>
-                    </form>
+    <!-- نموذج جديد -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">New Task</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
+                <div class="modal-body">
+                    <form method="POST" action="{{ route('task.store') }}">
+                        @csrf
+                        <div class="mb-3">
+                            <label for="recipient-name" class="col-form-label">Task Name:</label>
+                            <input type="text" class="form-control" id="recipient-name" name="Task_name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="message-text" class="col-form-label">Task Description:</label>
+                            <textarea class="form-control" id="message-text" name="Description" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="due-time" class="col-form-label">Due Time:</label>
+                            <input type="datetime-local" class="form-control" id="due-time" name="Due_time" required>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Task</button>
+                </div>
+                </form>
             </div>
         </div>
+    </div>
+
+    <div class="container d-flex flex-column align-items-center" style="margin-top: 120px;">
+        <h1 class="mb-4"> Daily Tasks</h1>
 
         <!-- قائمة المهام -->
-        <div class="container d-flex flex-column align-items-center" style="margin-top: 120px;">
+        <div class="container d-flex flex-column align-items-center" style="margin-top: 20px;">
             @foreach ($tasks as $task)
                 <div class="card w-75 mb-3">
                     <div class="card-body d-flex justify-content-between align-items-center">
                         <div class="content">
-                            <h5 class="card-title">{{ $task->Task_name }}</h5>
-                            <p class="card-text">{{ $task->Description }}</p>
-                            <p class="card-text"><small class="text-body-secondary">Due_time
-                                    {{ $task->Due_time }}</small></p>
+                            <h4 class="card-title">{{ $task->Task_name }}</h4>
+                            <h5 class="text-body-secondary">Description: {{ $task->Description }}</h5>
+                            <p class="card-text"><small class="text-body-secondary">Due Time:
+                                    {{ $task->Due_time }}</small>
+                            </p>
                         </div>
                         <div class="buttons">
                             <form action="{{ route('task.destroy', $task->id) }}" method="POST">
@@ -128,7 +120,6 @@
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary"
                                                     data-bs-dismiss="modal">Close</button>
-
                                                 @csrf
                                                 @method('PUT')
                                                 <button type="submit" class="btn btn-primary mx-3">
@@ -140,17 +131,12 @@
                                 </div>
                             </div>
 
-
                         </div>
                     </div>
                 </div>
             @endforeach
         </div>
     </div>
-
-    <!-- Modal -->
-
-
 
     <script>
         // Initialize the toast
