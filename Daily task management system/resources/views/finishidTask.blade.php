@@ -7,7 +7,12 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     </head>
-
+    <div class="container d-flex flex-column align-items-center" style="margin-top: 20px;">
+    </div>
+    <div class="container d-flex flex-column align-items-center" style="margin-top: 20px;">
+    </div>
+    <div class="container d-flex flex-column align-items-center" style="margin-top: 20px;">
+    </div>
     <div class="container d-flex flex-column align-items-center" style="margin-top: 20px;">
         <h1 class="mb-4">Finished Tasks</h1>
         @foreach ($tasks as $task)

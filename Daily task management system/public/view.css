@@ -9,13 +9,13 @@
     box-shadow: 5px 20px 50px #000;
 }
 .card-body {
-    background-color: #eee;
+    background-color: hsl(0, 0%, 100%);
     display: flex;
     justify-content: space-between;
     align-items: flex-start; /* لضبط محاذاة المحتوى في الأعلى */
 }
 .content {
-    flex-grow: 1; /* لجعل المحتوى الرئيسي (العنوان والنص) ينمو لملء الفراغ */
+    flex-grow: 1;
 }
 
 .card .buttons {
