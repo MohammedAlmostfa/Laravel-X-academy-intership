@@ -81,10 +81,39 @@
     <div class="container d-flex flex-column align-items-center" style="margin-top: 20px;">
     </div>
     <div class="container d-flex flex-column align-items-center" style="margin-top: 20px;">
-    </div>
-    <div class="container d-flex flex-column align-items-center" style="margin-top: 20px;">
-        <h1 class="mb-4"> Daily Tasks</h1>
 
+        <h1 class="mb-4">Daily Tasks</h1>
+
+        <!-- Form to delete all tasks based on status -->
+        <div class="container d-flex justify-content-end" style="margin-top: 20px;">
+            <button type="button" class="btn btn-danger btn-lg" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                <i class="bi bi-trash"></i>
+            </button>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Delete Confirmation</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to delete all pending tasks?
+                    </div>
+                    <div class="modal-footer">
+                        <form action="{{ route('delete.tasks', ['status' => 'pending']) }}" method="POST">
+                            @csrf
+                            @method('DELETE')
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-danger">Delete Tasks</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="container d-flex flex-column align-items-center" style="margin-top: 20px;">
             @foreach ($tasks as $task)
                 <div class="card w-75 mb-3">
@@ -93,10 +122,10 @@
                             <h4 class="card-title">{{ $task->Task_name }}</h4>
                             <h5 class="text-body-secondary">Description: {{ $task->Description }}</h5>
                             <p class="card-text"><small class="text-body-secondary">Due Time:
-                                    {{ $task->Due_time }}</small>
-                            </p>
+                                    {{ $task->Due_time }}</small></p>
                         </div>
                         <div class="buttons">
+                            <!-- Form to delete individual task -->
                             <form action="{{ route('task.destroy', $task->id) }}" method="POST">
                                 @csrf
                                 @method('DELETE')
@@ -105,58 +134,63 @@
                                     <i class="bi bi-x-circle"></i>
                                 </button>
                             </form>
+                            <!-- Button to trigger finish task modal -->
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                data-bs-target="#exampleModalCenter">
+                                data-bs-target="#exampleModalCenter-{{ $task->id }}">
                                 <i class="bi bi-check-circle"></i>
                             </button>
                         </div>
-                        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
-                            aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLongTitle">Task Finish</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
-                                    </div>
-                                    <form action="{{ route('task.update', $task->id) }}" method="POST">
-                                        <div class="modal-body">
-                                            <div class="mb-3">
-                                                <label for="result" class="col-form-label">Task Result:</label>
-                                                <input type="text" class="form-control" id="result"
-                                                    name="result" required>
-                                            </div>
-                                        </div>
-                                        <input type="hidden" name="Status" value="finished">
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary"
-                                                data-bs-dismiss="modal">Close</button>
-                                            @csrf
-                                            @method('PUT')
-                                            <button type="submit" class="btn btn-primary mx-3">
-                                                Finish Task
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
+                    </div>
+                </div>
 
+                <!-- Modal for finishing task -->
+                <div class="modal fade" id="exampleModalCenter-{{ $task->id }}" tabindex="-1" role="dialog"
+                    aria-labelledby="exampleModalCenterTitle-{{ $task->id }}" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLongTitle-{{ $task->id }}">Task
+                                    Finish
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <form action="{{ route('task.update', $task->id) }}" method="POST">
+                                @csrf
+                                @method('PUT')
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label for="result-{{ $task->id }}" class="col-form-label">Task
+                                            Result:</label>
+                                        <input type="text" class="form-control" id="result-{{ $task->id }}"
+                                            name="result" required>
+                                    </div>
+                                    <input type="hidden" name="Status" value="finished">
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary mx-3">Finish Task</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             @endforeach
         </div>
-        <script>
-            // Initialize the toast
-            var toastEl = document.getElementById('welcomeToast');
-            if (toastEl) {
-                var toast = new bootstrap.Toast(toastEl);
-                // Show the toast
-                toast.show();
-                // Auto-hide toast after 10 seconds
-                setTimeout(function() {
-                    toast.hide();
-                }, 10000); // 10000 milliseconds = 10 seconds
-            }
-        </script>
+    </div>
+
+    <script>
+        // Initialize the toast
+        var toastEl = document.getElementById('welcomeToast');
+        if (toastEl) {
+            var toast = new bootstrap.Toast(toastEl);
+            // Show the toast
+            toast.show();
+            // Auto-hide toast after 10 seconds
+            setTimeout(function() {
+                toast.hide();
+            }, 10000); // 10000 milliseconds = 10 seconds
+        }
+    </script>
 </x-app-layout>

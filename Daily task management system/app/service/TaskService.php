@@ -78,6 +78,9 @@ class TaskService
 
             // Clear tasks cache after creation
             Cache::forget('tasks_' . Auth::id());
+            Cache::forget('finishedTasks_' . Auth::id());
+            Cache::forget('PendingTasks_' . Auth::id());
+
             return ['success' => 'Task created successfully'];
         } catch (Exception $e) {
             // Log the error in case of failure
@@ -140,6 +143,34 @@ class TaskService
         } catch (Exception $e) {
             Log::error('Error finishing task: ' . $e->getMessage());
             return ['error' => 'Failed to finish task'];
+        }
+    }
+
+
+    public function deleteAllTasks($status)
+    {
+        try {
+            $userId = Auth::id(); // Get the authenticated user's ID
+            if($status=='null') {
+                // Retrieve all tasks for the authenticated user with the given status
+                $tasks = Auth::user()->tasks()->byTask(null)->get();
+            } else {
+                $tasks = Auth::user()->tasks()->byTask($status)->get();
+            }
+            // Loop through each task and delete it
+            foreach ($tasks as $task) {
+                $task->delete();
+            }
+
+            // Clear the cache for tasks
+            Cache::forget('tasks_' . $userId);
+            Cache::forget('finishedTasks_' . $userId);
+            Cache::forget('PendingTasks_' . $userId);
+
+            return ['success' => 'Tasks deleted successfully'];
+        } catch (Exception $e) {
+            Log::error('Error deleting task: ' . $e->getMessage());
+            return ['error' => 'Failed to delete tasks'];
         }
     }
 

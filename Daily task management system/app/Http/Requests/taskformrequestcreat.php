@@ -27,7 +27,7 @@ class taskformrequestcreat extends FormRequest
         return [
             'Task_name' => 'required|string|max:255|min:5',
             'Description' => 'required|string',
-     'Due_time' => 'required|after:now'
+     'Due_time' => 'required'
         ];
     }
 

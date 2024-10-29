@@ -72,4 +72,10 @@ class TaskController extends Controller
         $result = $this->taskService->updateTask($vaildateddata, $id);
         return redirect()->route('dashboard')->with($result);
     }
+    public function delete($stuts)
+    {
+        $tasks = $this->taskService->deleteAllTasks($stuts);
+        return redirect()->back()->with($tasks);
+
+    }
 }

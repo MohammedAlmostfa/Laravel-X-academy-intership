@@ -79,6 +79,8 @@ Route::middleware('auth')->group(function () {
     Route::get('tasks-finish', [TaskController::class,'getfinishedTask'])->name('gettask.finish');
 
     Route::get('tasks-Pending', [TaskController::class,'getPendingTask'])->name('gettask.pending');
+    Route::delete('delettask/{status}', [TaskController::class,'delete'])->name('delete.tasks');
+
 
 
 });
