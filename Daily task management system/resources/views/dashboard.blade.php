@@ -2,11 +2,14 @@
 
     <head>
         <title>View Page</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" type="text/css" href="{{ asset('view.css') }}">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     </head>
+
+
 
     @if (session('success'))
         <div class="toast-container position-fixed top-0 end-0 p-3">
@@ -71,36 +74,42 @@
         </div>
     </div>
 
-    <div class="container d-flex flex-column align-items-center" style="margin-top: 120px;">
-        <h1 class="mb-4"> Daily Tasks</h1>
-    </div>
 
-    <!-- قائمة المهام -->
+
     <div class="container d-flex flex-column align-items-center" style="margin-top: 20px;">
-        @foreach ($tasks as $task)
-            <div class="card w-75 mb-3">
-                <div class="card-body d-flex justify-content-between align-items-center">
-                    <div class="content">
-                        <h4 class="card-title">{{ $task->Task_name }}</h4>
-                        <h5 class="text-body-secondary">Description: {{ $task->Description }}</h5>
-                        <p class="card-text"><small class="text-body-secondary">Due Time:
-                                {{ $task->Due_time }}</small>
-                        </p>
-                    </div>
-                    <div class="buttons">
-                        <form action="{{ route('task.destroy', $task->id) }}" method="POST">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger mx-3"
-                                onclick="return confirm('Are you sure you want to delete this task?');">
-                                <i class="bi bi-x-circle mx-3"></i>
-                            </button>
-                        </form>
-                        <button type="button" class="btn btn-primary mx-3" data-bs-toggle="modal"
-                            data-bs-target="#exampleModalCenter">
-                            <i class="bi bi-check-circle mx-3"></i>
-                        </button>
+    </div>
+    <div class="container d-flex flex-column align-items-center" style="margin-top: 20px;">
+    </div>
+    <div class="container d-flex flex-column align-items-center" style="margin-top: 20px;">
+    </div>
+    <div class="container d-flex flex-column align-items-center" style="margin-top: 20px;">
+        <h1 class="mb-4"> Daily Tasks</h1>
 
+        <div class="container d-flex flex-column align-items-center" style="margin-top: 20px;">
+            @foreach ($tasks as $task)
+                <div class="card w-75 mb-3">
+                    <div class="card-body d-flex justify-content-between align-items-center">
+                        <div class="content">
+                            <h4 class="card-title">{{ $task->Task_name }}</h4>
+                            <h5 class="text-body-secondary">Description: {{ $task->Description }}</h5>
+                            <p class="card-text"><small class="text-body-secondary">Due Time:
+                                    {{ $task->Due_time }}</small>
+                            </p>
+                        </div>
+                        <div class="buttons">
+                            <form action="{{ route('task.destroy', $task->id) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger"
+                                    onclick="return confirm('Are you sure you want to delete this task?');">
+                                    <i class="bi bi-x-circle"></i>
+                                </button>
+                            </form>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#exampleModalCenter">
+                                <i class="bi bi-check-circle"></i>
+                            </button>
+                        </div>
                         <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
                             aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered" role="document">
@@ -110,7 +119,7 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                             aria-label="Close"></button>
                                     </div>
-                                    <form action="{{ route('task.finish', $task->id) }}" method="POST">
+                                    <form action="{{ route('task.update', $task->id) }}" method="POST">
                                         <div class="modal-body">
                                             <div class="mb-3">
                                                 <label for="result" class="col-form-label">Task Result:</label>
@@ -118,6 +127,7 @@
                                                     name="result" required>
                                             </div>
                                         </div>
+                                        <input type="hidden" name="Status" value="finished">
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary"
                                                 data-bs-dismiss="modal">Close</button>
@@ -134,21 +144,19 @@
 
                     </div>
                 </div>
-            </div>
-        @endforeach
-    </div>
-
-    <script>
-        // Initialize the toast
-        var toastEl = document.getElementById('welcomeToast');
-        if (toastEl) {
-            var toast = new bootstrap.Toast(toastEl);
-            // Show the toast
-            toast.show();
-            // Auto-hide toast after 10 seconds
-            setTimeout(function() {
-                toast.hide();
-            }, 10000); // 10000 milliseconds = 10 seconds
-        }
-    </script>
+            @endforeach
+        </div>
+        <script>
+            // Initialize the toast
+            var toastEl = document.getElementById('welcomeToast');
+            if (toastEl) {
+                var toast = new bootstrap.Toast(toastEl);
+                // Show the toast
+                toast.show();
+                // Auto-hide toast after 10 seconds
+                setTimeout(function() {
+                    toast.hide();
+                }, 10000); // 10000 milliseconds = 10 seconds
+            }
+        </script>
 </x-app-layout>

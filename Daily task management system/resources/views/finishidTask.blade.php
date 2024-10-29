@@ -2,11 +2,13 @@
 
     <head>
         <title>View Page</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" type="text/css" href="{{ asset('view.css') }}">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     </head>
+
     <div class="container d-flex flex-column align-items-center" style="margin-top: 20px;">
     </div>
     <div class="container d-flex flex-column align-items-center" style="margin-top: 20px;">
@@ -23,7 +25,7 @@
                         <p class="card-text text-secondary mb-1"><strong>Description:</strong> {{ $task->Description }}
                         </p>
                         <p class="card-text text-secondary mb-1"><strong>Result:</strong> {{ $task->result }}</p>
-                        <p class="card-text text-muted"><small><strong>Due Time:</strong> {{ $task->Due_time }}</small>
+
                         </p>
                     </div>
                 </div>

@@ -21,7 +21,6 @@ class Task extends Model
 'Task_name'=>'string',
 'Description'=>'string',
 'Status'=>'string',
-
 'User_id'=>'integer',
 
     ];
@@ -30,16 +29,24 @@ class Task extends Model
     {
         return $this->belongsTo(User::class);
     }
+    /**
+     * Scope to filter tasks based on their status.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param mixed $data
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     public function scopeByTask($query, $data)
     {
         if ($data === null) {
             return $query->select(['id', 'Task_name', 'Description', 'Due_time'])
-                         ->where('Status', null)
-                         ->get();
-        } elseif ($data === 'finished') {
-            return $query->select(['id', 'Task_name', 'Description', 'Due_time', 'result'])
-                         ->where('Status', 'finished')
-                         ->get();
+                         ->where('Status', null);
+        } else {
+            return $query->select(['id', 'Task_name', 'Description', 'result'])
+                         ->where('Status', $data);
         }
+
+
     }
+
 }

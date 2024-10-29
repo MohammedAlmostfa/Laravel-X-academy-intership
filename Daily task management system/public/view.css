@@ -1,15 +1,5 @@
-.bi bi-plus-circle-fill .main {
-    width: 350px;
-    height: 500px;
-    background: red;
-    overflow: hidden;
-    background: url("https://doc-08-2c-docs.googleusercontent.com/docs/securesc/68c90smiglihng9534mvqmq1946dmis5/fo0picsp1nhiucmc0l25s29respgpr4j/1631524275000/03522360960922298374/03522360960922298374/1Sx0jhdpEpnNIydS4rnN4kHSJtU1EyWka?e=view&authuser=0&nonce=gcrocepgbb17m&user=03522360960922298374&hash=tfhgbs86ka6divo3llbvp93mg4csvb38")
-        no-repeat center/ cover;
-    border-radius: 10px;
-    box-shadow: 5px 20px 50px #000;
-}
 .card-body {
-    background-color: hsl(0, 0%, 100%);
+    background-color: hsla(0, 0%, 79%, 0.713);
     display: flex;
     justify-content: space-between;
     align-items: flex-start; /* لضبط محاذاة المحتوى في الأعلى */
@@ -17,35 +7,36 @@
 .content {
     flex-grow: 1;
 }
-
 .card .buttons {
     display: flex; /* Use flexbox for alignment */
     justify-content: flex-end; /* Align items to the right */
     align-items: center; /* Center items vertically */
 }
 
-.card .buttons a {
+.card .buttons button {
     margin-left: 10px; /* Space between buttons */
     text-decoration: none; /* Remove underline from links */
     display: inline-flex; /* Allow setting width and height */
     justify-content: center; /* Center icon within link */
     align-items: center; /* Center icon vertically */
-    width: 30px; /* Set a fixed width */
-    height: 30px; /* Set a fixed height */
+    width: 40px; /* Set a fixed width */
+    height: 40px; /* Set a fixed height */
     border-radius: 50%; /* Make them circular */
-    font-size: 26px; /* Increase icon size */
+    font-size: 20px; /* Increase icon size */
+    border: none; /* Remove border */
+    color: #eee; /* Icon color */
 }
 
-.card .buttons a.bi-x-circle {
+.card .buttons button i {
+    font-size: 20px; /* Increase icon size */
+}
+
+.card .buttons .btn-danger {
     background-color: red; /* Background color */
-    color: #eee; /* Icon color */
 }
 
-/* Blue color for the second button */
-.card .buttons a.bi-check-circle {
-    /* لون الروابط */
-    background-color: #302b63; /* Background color */
-    color: #eee; /* Icon color */
+.card .buttons .btn-primary {
+    background-color: #200cfa; /* Background color */
 }
 
 /* Optional: Add hover effect */

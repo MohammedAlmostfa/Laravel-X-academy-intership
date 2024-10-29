@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\NewPasswordController;
+use App\Http\Controllers\Auth\SocialLoginController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
@@ -34,6 +35,10 @@ Route::middleware('guest')->group(function () {
 
     Route::post('reset-password', [NewPasswordController::class, 'store'])
                 ->name('password.store');
+
+    Route::get('/{provider}/redirect', [SocialLoginController::class , 'redirect'])->name('auth.socialite.redirect');
+    Route::get('/{provider}/callback', [SocialLoginController::class , 'callback'])->name('auth.socialite.callback');
+
 });
 
 Route::middleware('auth')->group(function () {
@@ -61,17 +66,19 @@ Route::middleware('auth')->group(function () {
 
 
     Route::resource('tasks', TaskController::class)->names([
-        'index' => 'task.index',
-        'create' => 'task.create',
-        'store' => 'task.store',
-        'edit' => 'task.edit',
-        'update' => 'task.update',
-        'destroy' => 'task.destroy',
-    ]);
+     'index' => 'task.index',
+     'create' => 'task.create',
+     'store' => 'task.store',
+     'edit' => 'task.edit',
+     'update' => 'task.update',
+     'destroy' => 'task.destroy',
+]);
 
-    Route::put('tasks-finish/{id}', [TaskController::class,'finish'])->name('task.finish');
+
+
     Route::get('tasks-finish', [TaskController::class,'getfinishedTask'])->name('gettask.finish');
 
+    Route::get('tasks-Pending', [TaskController::class,'getPendingTask'])->name('gettask.pending');
 
 
 });

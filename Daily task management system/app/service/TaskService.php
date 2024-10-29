@@ -1,28 +1,74 @@
 <?php
+
 namespace App\Service;
 
 use Exception;
 use App\Models\Task;
-use App\Jobs\SendMail;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use phpDocumentor\Reflection\Types\Null_;
 
 class TaskService
 {
+    /**
+     * Get all tasks for the authenticated user.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     public function getAllTasks()
     {
-        return Auth::user()->tasks()->byTask(null);
+        $userId = Auth::id(); // Get the authenticated user's ID
+        // Retrieve all tasks for the authenticated user with caching
+        $tasks = Cache::remember("tasks_$userId", 60, function () {
+            return Auth::user()->tasks()->byTask(null)->get(); // Ensure to call get() at the end of the query
+        });
+
+        return $tasks;
     }
 
+    /**
+     * Get all finished tasks for the authenticated user.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     public function getFinishedTasks()
     {
-        return Auth::user()->tasks()->byTask('finished');
+        $userId = Auth::id(); // Get the authenticated user's ID
+        // Retrieve all finished tasks for the authenticated user with caching
+        $finishedTasks = Cache::remember("finishedTasks_$userId", 60, function () {
+            return Auth::user()->tasks()->byTask('finished')->get(); // Ensure to call get() at the end of the query
+        });
+
+        return $finishedTasks;
+    }
+    /**
+    * Get all Pending tasks for the authenticated user.
+    *
+    * @return \Illuminate\Database\Eloquent\Collection
+    */
+
+    public function getPendingTasks()
+    {
+        $userId = Auth::id(); // Get the authenticated user's ID
+        // Retrieve all Pending tasks for the authenticated user with caching
+        $PendingTasks = Cache::remember("PendingTasks_$userId", 60, function () {
+            return Auth::user()->tasks()->byTask('pending')->get();
+        });
+        return $PendingTasks;
+
     }
 
+    /**
+     * Create a new task.
+     *
+     * @param array $data
+     * @return array
+     */
     public function createTask($data)
     {
         try {
+            // Create a new task
             $task = Task::create([
                 'Task_name' => $data['Task_name'],
                 'Description' => $data['Description'],
@@ -30,42 +76,71 @@ class TaskService
                 'User_id' => Auth::user()->id,
             ]);
 
-
-            return ['success'=> 'Task created successfully'];
+            // Clear tasks cache after creation
+            Cache::forget('tasks_' . Auth::id());
+            return ['success' => 'Task created successfully'];
         } catch (Exception $e) {
+            // Log the error in case of failure
             Log::error('Error creating task: ' . $e->getMessage());
-            return ['error'=> 'Failed to create task'];
+            return ['error' => 'Failed to create task ' .$e->getMessage()];
         }
     }
 
-    public function deletTask($id)
+    /**
+     * Delete a task.
+     *
+     * @param int $id
+     * @return array
+     */
+    public function deleteTask($id)
     {
         try {
-            $task=Task::find($id);
+            // Find the task and delete it
+            $task = Task::find($id);
             $task->delete();
-            return ['success'=> 'Task deleted successfully'];
+
+            // Clear tasks cache after deletion
+            Cache::forget('tasks_' . Auth::id());
+            return ['success' => 'Task deleted successfully'];
         } catch (Exception $e) {
+            // Log the error in case of failure
             Log::error('Error deleting task: ' . $e->getMessage());
-            return ['error'=> 'Failed to delete task'];
+            return ['error' => 'Failed to delete task'];
         }
     }
-    public function finishTask($data, $id)
+
+    /**
+ * Update the task with the specified id.
+ *
+ * @param array $data
+ * @param int $id
+ * @return array
+ */
+    public function updateTask($data, $id)
     {
         try {
             $task = Task::findOrFail($id);
             $task->update([
                 'Task_name' => $task->Task_name,
                 'Description' => $task->Description,
-                'Due_time' => $task->Due_time,
+                'Due_time' => $data['Due_time'] ?? $task->Due_time,
                 'User_id' => $task->User_id,
-                'Status' => 'finished',
-                'Result'=>$data['result'],
+                'Status' => $data['Status'] ?? null,
+                'Result' => $data['result'] ?? null,
             ]);
 
+            Cache::forget('tasks_' . Auth::id());
+            Cache::forget('finishedTasks_' . Auth::id());
+            Cache::forget('PendingTasks_' . Auth::id());
+
+            if (!empty($data['Due_time'])) {
+                return ['success' => 'Task active successfully'];
+            }
             return ['success' => 'Task finished successfully'];
         } catch (Exception $e) {
             Log::error('Error finishing task: ' . $e->getMessage());
             return ['error' => 'Failed to finish task'];
         }
     }
+
 }

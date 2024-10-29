@@ -27,7 +27,7 @@ class taskformrequestcreat extends FormRequest
         return [
             'Task_name' => 'required|string|max:255|min:5',
             'Description' => 'required|string',
-            'Due_time' => 'required|date'
+     'Due_time' => 'required|after:now'
         ];
     }
 
@@ -41,8 +41,10 @@ class taskformrequestcreat extends FormRequest
         return [
             'Task_name' => 'task name',
             'Description' => 'task description',
-            'Due_time' => 'due time'
+            'Due_time' => 'due time',
         ];
+
+
     }
 
     /**
@@ -56,7 +58,8 @@ class taskformrequestcreat extends FormRequest
             'Task_name.required' => 'The :attribute is required and must be at least 5 characters.',
             'Task_name.min' => 'The :attribute must be at least :min characters.',
             'Description.required' => 'The :attribute is required.',
-            'Due_time.required' => 'The :attribute is required and must be a valid date.'
+            'Due_time.required' => 'The :attribute is required and must be a valid date.',
+            'Due_time.after' => 'The :attribute must be a date after now.'
         ];
     }
 }
